@@ -320,7 +320,9 @@
 
                 if ($this->_debug)
                 {
-                    file_put_contents(__DIR__ . SLASH . microtime() . '.log', $bufLen, FILE_APPEND);
+                    $handle = fopen(__DIR__ . SLASH . microtime() . '.log', 'wb');
+                    fwrite($handle, $bufLen, strlen($bufLen));
+                    fclose($handle);
                 }
 
                 $this->log('received ' . strlen($bufLen) . ' bytes');
