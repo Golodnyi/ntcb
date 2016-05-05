@@ -308,13 +308,7 @@
 
                 $this->log('receiving data...');
                 $bufLen = '';
-                while (($buf = socket_read($accept, 1)) != '')
-                {
-                    if ($buf === false)
-                    {
-                        $this->log(socket_strerror(socket_last_error($this->getSocket())));
-                        continue;
-                    }
+                while (($buf = socket_read($accept, 1)) != ''){
                     $bufLen .= $buf;
                 }
 
@@ -328,9 +322,6 @@
                 $this->log('received ' . strlen($bufLen) . ' bytes');
                 $this->log('finished the receive data');
 
-                socket_close($accept);
-                $this->log('close the connection!');
-
                 try
                 {
                     $this->unpackHeader($bufLen);
@@ -338,8 +329,10 @@
                 } catch (Exception $e)
                 {
                     $this->log($e->getMessage());
-                    continue;
                 }
+
+                socket_close($accept);
+                $this->log('close the connection!');
             }
         }
 
