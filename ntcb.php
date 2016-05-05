@@ -306,7 +306,7 @@
 
                 $this->log('receiving data...');
                 $bufLen = '';
-                while (($buf = socket_read($accept, 2)))
+                while (($buf = socket_read($accept, 1)) != '')
                 {
                     if ($buf === false)
                     {
