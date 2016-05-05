@@ -8,12 +8,12 @@
      */
     class ntcb
     {
-        const HEADER_LEN = 16;   // размер заголовка в байтах
-        const PREAMBLE_LEN = 4;    // размер преамбулы в байтах
-        const IMEI_LEN = 15;   // размер блока с IMEI в байтах
-        const PREF_IMEI_LEN = 4;    // размер блока с префиксом IMEI в байтах
-        const IMEI_BLOCK_LEN = self::PREF_IMEI_LEN + self::IMEI_LEN; // общий размер блока с IMEI в байтах
-        const PREF_IMEI_VAL = '*>S'; // значение префикса для IMEI от датчика
+        const HEADER_LEN        = 16;       // размер заголовка в байтах
+        const PREAMBLE_LEN      = 4;        // размер преамбулы в байтах
+        const IMEI_LEN          = 15;       // размер блока с IMEI в байтах
+        const PREF_IMEI_LEN     = 3;        // размер блока с префиксом IMEI в байтах
+        const PREF_IMEI_VAL     = '*>S';    // значение префикса для IMEI от датчика
+        const IMEI_BLOCK_LEN    = self::PREF_IMEI_LEN + self::IMEI_LEN; // общий размер блока с IMEI в байтах
 
         private $_socket;       // ссылка на сокет
         private $_address;      // адрес сокета
@@ -236,7 +236,7 @@
                 throw new Exception('substr return error', -21);
             }
 
-            $unpack = unpack("c4prefix/c15IMEI", $bufLen);
+            $unpack = unpack("c3prefix/c15IMEI", $bufLen);
 
             $pref_imei = '';
             for ($i = 1; $i <= self::PREF_IMEI_LEN; $i++)
