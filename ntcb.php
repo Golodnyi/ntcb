@@ -160,7 +160,7 @@
             }
 
             $preamble = '';
-            for ($i = 0; $i < self::PREAMBLE_LEN; $i++)
+            for ($i = 1; $i <= self::PREAMBLE_LEN; $i++)
             {
                 if (!isset($unpack['preamble' . $i]))
                 {
@@ -219,7 +219,7 @@
 
             if (!strlen($bufLen) || strlen($bufLen) < (self::HEADER_LEN + self::IMEI_BLOCK_LEN))
             {
-                throw new Exception('Empty data or length < IMEI LEN', -3);
+                throw new Exception('Empty data or length < ' . self::IMEI_LEN . ' ' . strlen($bufLen), -3);
             }
 
             if (empty($this->getBodySize()))
@@ -239,7 +239,7 @@
             $unpack = unpack("c4prefix/c15IMEI", $bufLen);
 
             $pref_imei = '';
-            for ($i = 0; $i < self::PREF_IMEI_LEN; $i++)
+            for ($i = 1; $i <= self::PREF_IMEI_LEN; $i++)
             {
                 if (!isset($unpack['prefix' . $i]))
                 {
@@ -255,7 +255,7 @@
             }
 
             $imei = '';
-            for ($i = 0; $i < self::IMEI_LEN; $i++)
+            for ($i = 1; $i <= self::IMEI_LEN; $i++)
             {
                 if (!isset($unpack['imei' . $i]))
                 {
@@ -306,7 +306,7 @@
 
                 $this->log('receiving data...');
                 $bufLen = '';
-                while (($buf = socket_read($accept, 1)))
+                while (($buf = socket_read($accept, 2)))
                 {
                     if ($buf === false)
                     {
