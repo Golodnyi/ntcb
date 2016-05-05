@@ -13,6 +13,7 @@
         const IMEI_LEN          = 15;       // размер блока с IMEI в байтах
         const PREF_IMEI_LEN     = 3;        // размер блока с префиксом IMEI в байтах
         const PREF_IMEI_VAL     = '*>S';    // значение префикса для IMEI от датчика
+        const PREAMBLE_VAL      = '@NTC';   // значение преамбулы по умолчанию
         const IMEI_BLOCK_LEN    = self::PREF_IMEI_LEN + self::IMEI_LEN; // общий размер блока с IMEI в байтах
 
         private $_socket;       // ссылка на сокет
@@ -139,11 +140,12 @@
          */
         private function unpackHeader($bufLen)
         {
+            $this->log('unpack header data');
+
             if (!strlen($bufLen) || strlen($bufLen) < self::HEADER_LEN)
             {
                 throw new Exception('Empty data or incorrect length', -3);
             }
-            $this->log('unpack header data');
 
             $bufLen = substr($bufLen, 0, self::HEADER_LEN);
 
@@ -299,8 +301,8 @@
             {
                 if (($accept = socket_accept($this->getSocket())) === false)
                 {
-                    throw new Exception(socket_strerror(socket_last_error($this->getSocket())),
-                        socket_last_error($this->getSocket()));
+                    $this->log(socket_strerror(socket_last_error($this->getSocket())));
+                    continue;
                 }
                 $this->log('connected!');
 
@@ -310,18 +312,15 @@
                 {
                     if ($buf === false)
                     {
-                        throw new Exception(socket_strerror(socket_last_error($this->getSocket())),
-                            socket_last_error($this->getSocket()));
+                        $this->log(socket_strerror(socket_last_error($this->getSocket())));
+                        continue;
                     }
                     $bufLen .= $buf;
                 }
 
                 if ($this->_debug)
                 {
-                    $mt = microtime();
-                    file_put_contents(__DIR__ . SLASH . $mt . '_array.log', print_r($buf, true), FILE_APPEND);
-                    file_put_contents(__DIR__ . SLASH . $mt . '_string.log', print_r(implode('', $buf), true),
-                        FILE_APPEND);
+                    file_put_contents(__DIR__ . SLASH . microtime() . '.log', $bufLen, FILE_APPEND);
                 }
 
                 $this->log('received ' . strlen($bufLen) . ' bytes');
@@ -336,7 +335,8 @@
                     $this->unpackImei($bufLen);
                 } catch (Exception $e)
                 {
-                    throw new Exception($e->getMessage(), $e->getCode());
+                    $this->log($e->getMessage());
+                    continue;
                 }
             }
         }
@@ -446,6 +446,11 @@
             if (strlen($preamble) < self::PREAMBLE_LEN)
             {
                 throw new Exception('Preamble uncorrected length', -5);
+            }
+
+            if ($preamble != self::PREAMBLE_VAL)
+            {
+                throw new Exception('Preamble value not incorrect', -26);
             }
 
             $this->_preamble = $preamble;
