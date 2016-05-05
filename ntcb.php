@@ -315,6 +315,15 @@
                     }
                     $bufLen .= $buf;
                 }
+
+                if ($this->_debug)
+                {
+                    $mt = microtime();
+                    file_put_contents(__DIR__ . SLASH . $mt . '_array.log', print_r($buf, true), FILE_APPEND);
+                    file_put_contents(__DIR__ . SLASH . $mt . '_string.log', print_r(implode('', $buf), true),
+                        FILE_APPEND);
+                }
+
                 $this->log('received ' . strlen($bufLen) . ' bytes');
                 $this->log('finished the receive data');
 
@@ -328,14 +337,6 @@
                 } catch (Exception $e)
                 {
                     throw new Exception($e->getMessage(), $e->getCode());
-                }
-
-                if ($this->_debug)
-                {
-                    $mt = microtime();
-                    file_put_contents(__DIR__ . SLASH . $mt . '_array.log', print_r($buf, true), FILE_APPEND);
-                    file_put_contents(__DIR__ . SLASH . $mt . '_string.log', print_r(implode('', $buf), true),
-                        FILE_APPEND);
                 }
             }
         }
