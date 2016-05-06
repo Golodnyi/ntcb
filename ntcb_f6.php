@@ -20,7 +20,7 @@
 
     require_once __DIR__ . SLASH . 'ntcb.php';
 
-    class ntcb_v6 extends ntcb
+    class ntcb_f6 extends ntcb
     {
         protected function unpackBody($bufLen)
         {
