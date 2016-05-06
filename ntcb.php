@@ -308,12 +308,15 @@
 
                 $this->log('receiving data...');
                 $bufLen = '';
-                $handle = fopen(__DIR__ . SLASH . microtime() . '.bin', 'wb');
                 $length = self::HEADER_LEN;
                 $err = 0;
+                $handle = fopen(__DIR__ . SLASH . microtime() . '.bin', 'wb');
                 while ($length){
                     $buf = socket_read($accept, $length);
-                    if ($buf === false) { break; }
+                    if ($buf === false) {
+                        $this->log(socket_strerror(socket_last_error()));
+                        break;
+                    }
                     $bufLen .= $buf;
 
                     fwrite($handle, $buf, strlen($buf));
@@ -327,15 +330,14 @@
                         {
                             $this->log($e->getMessage());
                             $err = $e->getCode();
-                            $length = 0;
-                            continue;
+                            break;
                         }
                         $length = $this->getBodySize();
                     }
 
                     if (strlen($bufLen) >= (self::HEADER_LEN + $this->getBodySize()))
                     {
-                        $length = 0;
+                        break;
                     }
                 }
                 fclose($handle);
