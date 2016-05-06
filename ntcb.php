@@ -373,6 +373,22 @@
                     continue;
                 }
 
+                if ($this->xor_sum($this->getBody(), $this->getBodySize()) !== $this->getCsd())
+                {
+                    $this->log('CSd sum incorrect!');
+                    socket_close($accept);
+                    $this->log('close the connection!');
+                    continue;
+                }
+
+                if ($this->xor_sum($this->getHeader(), self::HEADER_LEN) !== $this->getCsp())
+                {
+                    $this->log('CSp sum incorrect!');
+                    socket_close($accept);
+                    $this->log('close the connection!');
+                    continue;
+                }
+
                 try
                 {
                     $this->unpackImei($bufLen);
@@ -659,6 +675,18 @@
             {
                 echo '[' . date(DATE_W3C) . '] ' . $message . "\n";
             }
+        }
+
+        protected function xor_sum($bufLen, $length)
+        {
+            $temp_sum = 0;
+
+            while($length-- > 0)
+            {
+                $temp_sum ^= $bufLen++;
+            }
+
+            return $temp_sum;
         }
 
     }
