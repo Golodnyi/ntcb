@@ -6,7 +6,7 @@
      * Time: 9:12
      * NTCB - binary protocol for Signal S-2551
      */
-    class ntcb
+    abstract class ntcb
     {
         const HEADER_LEN        = 16;       // размер заголовка в байтах
         const PREAMBLE_LEN      = 4;        // размер преамбулы в байтах

@@ -47,3 +47,4 @@ fabric.properties
 
 example.php
 *.log
+*.bin
