@@ -16,22 +16,22 @@
         const PREAMBLE_VAL      = '@NTC';   // значение преамбулы по умолчанию
         const IMEI_BLOCK_LEN    = self::PREF_IMEI_LEN + self::IMEI_LEN; // общий размер блока с IMEI в байтах
 
-        private $_socket;       // ссылка на сокет
-        private $_address;      // адрес сокета
-        private $_port;         // порт сокета
-        private $_debug;        // debug true|false
+        protected $_socket;       // ссылка на сокет
+        protected $_address;      // адрес сокета
+        protected $_port;         // порт сокета
+        protected $_debug;        // debug true|false
 
-        private $_header;       // заголовок запроса (16 byte)
-        private $_preamble;     // преамбула char(4) (4 byte)
-        private $_idr;          // идентификатор получателя U32 (4 byte)
-        private $_ids;          // идентификатор отправителя U32 (4 byte)
-        private $_body_size;    // размер тела запроса в байтах U16 (2 byte)
-        private $_csd;          // контрольная сумма тела запроса U8 (1 byte)
-        private $_csp;          // контрольная сумма заголовка U8 (1 byte)
+        protected $_header;       // заголовок запроса (16 byte)
+        protected $_preamble;     // преамбула char(4) (4 byte)
+        protected $_idr;          // идентификатор получателя U32 (4 byte)
+        protected $_ids;          // идентификатор отправителя U32 (4 byte)
+        protected $_body_size;    // размер тела запроса в байтах U16 (2 byte)
+        protected $_csd;          // контрольная сумма тела запроса U8 (1 byte)
+        protected $_csp;          // контрольная сумма заголовка U8 (1 byte)
 
-        private $imei;          // IMEI номер датчика
+        protected $imei;          // IMEI номер датчика
 
-        private $_body;         // тело запроса
+        protected $_body;         // тело запроса
 
         /**
          * get request body
@@ -48,7 +48,7 @@
          *
          * @param mixed $body
          */
-        private function setBody($body)
+        protected function setBody($body)
         {
             $this->_body = $body;
         }
@@ -93,7 +93,7 @@
          *
          * @param mixed $debug
          */
-        private function setDebug($debug)
+        protected function setDebug($debug)
         {
             $this->_debug = $debug;
         }
@@ -138,7 +138,7 @@
          *
          * @param array $buf
          */
-        private function unpackHeader($bufLen)
+        protected function unpackHeader($bufLen)
         {
             $this->log('unpack header data');
 
@@ -215,7 +215,20 @@
             $this->log('unpack header success');
         }
 
-        private function unpackImei($bufLen)
+        /**
+         * разбор body по переменным
+         *
+         * @param $bufLen
+         *
+         * @throws \Exception
+         */
+        protected function unpackBody($bufLen)
+        {
+            throw new Exception('you need override method unpackBody');
+        }
+
+
+        protected function unpackImei($bufLen)
         {
             $this->log('unpack IMEI');
 
@@ -388,7 +401,7 @@
          *
          * @param mixed $socket
          */
-        private function setSocket($socket)
+        protected function setSocket($socket)
         {
             $this->_socket = $socket;
         }
@@ -408,7 +421,7 @@
          *
          * @param mixed $address
          */
-        private function setAddress($address)
+        protected function setAddress($address)
         {
             $this->_address = $address;
         }
@@ -428,7 +441,7 @@
          *
          * @param mixed $port
          */
-        private function setPort($port)
+        protected function setPort($port)
         {
             $this->_port = $port;
         }
@@ -448,7 +461,7 @@
          *
          * @param mixed $header
          */
-        private function setHeader($header)
+        protected function setHeader($header)
         {
             if (strlen($header) < self::HEADER_LEN)
             {
@@ -473,7 +486,7 @@
          *
          * @param mixed $preamble
          */
-        private function setPreamble($preamble)
+        protected function setPreamble($preamble)
         {
             if (strlen($preamble) < self::PREAMBLE_LEN)
             {
@@ -503,7 +516,7 @@
          *
          * @param mixed $idr
          */
-        private function setIdr($idr)
+        protected function setIdr($idr)
         {
             if (!is_int($idr))
             {
@@ -528,7 +541,7 @@
          *
          * @param mixed $ids
          */
-        private function setIds($ids)
+        protected function setIds($ids)
         {
             if (!is_int($ids))
             {
@@ -553,7 +566,7 @@
          *
          * @param mixed $body_size
          */
-        private function setBodySize($body_size)
+        protected function setBodySize($body_size)
         {
             if (!is_int($body_size))
             {
@@ -578,7 +591,7 @@
          *
          * @param mixed $csd
          */
-        private function setCsd($csd)
+        protected function setCsd($csd)
         {
             if (!is_int($csd))
             {
@@ -603,7 +616,7 @@
          *
          * @param mixed $csp
          */
-        private function setCsp($csp)
+        protected function setCsp($csp)
         {
             if (!is_int($csp))
             {
@@ -624,7 +637,7 @@
         /**
          * @param mixed $imei
          */
-        private function setImei($imei)
+        protected function setImei($imei)
         {
             if (strlen($imei) < self::IMEI_LEN)
             {
@@ -640,7 +653,7 @@
          *
          * @param $message
          */
-        private function log($message)
+        protected function log($message)
         {
             if ($this->_debug)
             {
