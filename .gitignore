@@ -45,6 +45,5 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
-example.php
 *.log
 *.bin
