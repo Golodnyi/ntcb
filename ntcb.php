@@ -308,28 +308,33 @@
 
                 $this->log('receiving data...');
                 $bufLen = '';
-                while (($buf = socket_read($accept, 1)) != ''){
-                    if ($buf === false)
-                    {
-                        break;
-                    }
-                    
+                $handle = fopen(__DIR__ . SLASH . microtime() . '.bin', 'wb');
+                $length = self::HEADER_LEN;
+                while ($length){
+                    $buf = socket_read($accept, $length);
+                    if ($buf === false) { break; }
                     $bufLen .= $buf;
-                }
 
-                if ($this->_debug)
-                {
-                    $handle = fopen(__DIR__ . SLASH . microtime() . '.log', 'wb');
-                    fwrite($handle, $bufLen, strlen($bufLen));
-                    fclose($handle);
+                    fwrite($handle, $buf, strlen($buf));
+
+                    if (!$this->getHeader() && strlen($bufLen) >= self::HEADER_LEN)
+                    {
+                        $this->unpackHeader($bufLen);
+                        $length = $this->getBodySize();
+                    }
+
+                    if (strlen($bufLen) >= (self::HEADER_LEN + $this->getBodySize()))
+                    {
+                        $length = 0;
+                    }
                 }
+                fclose($handle);
 
                 $this->log('received ' . strlen($bufLen) . ' bytes');
                 $this->log('finished the receive data');
 
                 try
                 {
-                    $this->unpackHeader($bufLen);
                     $this->unpackImei($bufLen);
                 } catch (Exception $e)
                 {
