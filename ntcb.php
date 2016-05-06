@@ -221,7 +221,7 @@
 
             if (!strlen($bufLen) || strlen($bufLen) < (self::HEADER_LEN + self::IMEI_BLOCK_LEN))
             {
-                throw new Exception('Empty data or length < ' . self::IMEI_LEN . ' ' . strlen($bufLen), -3);
+                throw new Exception('Empty data or length < ' . (self::HEADER_LEN + self::IMEI_BLOCK_LEN) . ' (' . strlen($bufLen) . ')', -3);
             }
 
             if (empty($this->getBodySize()))
@@ -310,6 +310,7 @@
                 $bufLen = '';
                 $handle = fopen(__DIR__ . SLASH . microtime() . '.bin', 'wb');
                 $length = self::HEADER_LEN;
+                $err = 0;
                 while ($length){
                     $buf = socket_read($accept, $length);
                     if ($buf === false) { break; }
@@ -319,7 +320,16 @@
 
                     if (!$this->getHeader() && strlen($bufLen) >= self::HEADER_LEN)
                     {
-                        $this->unpackHeader($bufLen);
+                        try
+                        {
+                            $this->unpackHeader($bufLen);
+                        } catch (Exception $e)
+                        {
+                            $this->log($e->getMessage());
+                            $err = $e->getCode();
+                            $length = 0;
+                            continue;
+                        }
                         $length = $this->getBodySize();
                     }
 
@@ -330,8 +340,23 @@
                 }
                 fclose($handle);
 
+                if ($err != 0)
+                {
+                    socket_close($accept);
+                    $this->log('close the connection!');
+                    continue;
+                }
+
                 $this->log('received ' . strlen($bufLen) . ' bytes');
                 $this->log('finished the receive data');
+
+                if (strlen($bufLen) == self::HEADER_LEN)
+                {
+                    $this->log('received only the header, there is no work');
+                    socket_close($accept);
+                    $this->log('close the connection!');
+                    continue;
+                }
 
                 try
                 {
@@ -518,7 +543,7 @@
          */
         public function getBodySize()
         {
-            return $this->_body_size;
+            return intval($this->_body_size);
         }
 
         /**
