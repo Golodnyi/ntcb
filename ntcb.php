@@ -326,9 +326,6 @@
                     continue;
                 }
 
-                $this->log('received ' . strlen($bufLen) . ' bytes');
-                $this->log('finished the receive data');
-
                 if (strlen($bufLen) == self::HEADER_LEN)
                 {
                     $this->log('received only the header, there is no work');
@@ -425,6 +422,9 @@
             }
             fclose($handle);
 
+            $this->log('received ' . strlen($bufLen) . ' bytes');
+            $this->log('finished the receive data');
+            
             return $bufLen;
         }
 
