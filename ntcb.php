@@ -1,5 +1,5 @@
 <?php
-
+    error_reporting(E_ALL);
     /**
      * User: golodnyi
      * Date: 04.05.16
@@ -13,8 +13,28 @@
         const IMEI_LEN          = 15;       // размер блока с IMEI в байтах
         const PREF_IMEI_LEN     = 3;        // размер блока с префиксом IMEI в байтах
         const PREF_IMEI_VAL     = '*>S';    // значение префикса для IMEI от датчика
+        const HANDSHAKE_VAL     = '*<S';    // значение префикса хендшейка ответа
         const PREAMBLE_VAL      = '@NTC';   // значение преамбулы по умолчанию
         const IMEI_BLOCK_LEN    = self::PREF_IMEI_LEN + self::IMEI_LEN; // общий размер блока с IMEI в байтах
+
+        const FORMAT_TYPE_LEN   = 1;        // длина типа формата в байтах
+        const RECORD_ID_LEN     = 4;        // длина сквозного номера записи в энергонезависимой памяти в байтах
+        const EVENT_CODE_LEN    = 2;        // длина кода события в байтах
+        const DATE_LEN          = 6;        // длина даты в байтах
+        const STATUS_LEN        = 1;        // длина статуса устройства в байтах (битфилд, первые 2 бита)
+        const STATUS_MODULE_LEN = 1;        // длина статуса функциональных модулей в байтах (битфилд, 8 бит)
+        const GSM_LEVEL_LEN     = 1;        // длина уровня сигнала в байтах
+        const STATUS_OUTPUT_LEN = 1;        // длина текущего состояния выходов в байтах
+        const STATUS_DISCR_SENSORS_LEN = 1; // длина состояния дискретных датчиков в байтах
+        const VOLTAGE_POWER_LEN = 2;        // длина напряжения на основном источнике питания в байтах
+        const VOLTAGE_POWER_BACKUP_LEN = 2; // длина напряжения на резервном источнике питания в байтах
+        const A_INPUT1_LEN      = 2;        // длина на аналоговом входе 1 в байтах
+        const A_INPUT2_LEN      = 2;        // длина на аналоговом входе 2 в байтах
+        const A_INPUT3_LEN      = 2;        // длина на аналоговом входе 3 в байтах
+        const PULSE_COUNTER1_LEN = 4;       // длина счетчика импульсов 1 в байтах
+        const PULSE_COUNTER2_LEN = 4;       // длина счетчика импульсов 2 в байтах
+        const A_FREQ_FUEL1_LEN  = 2;        // длина частоты на аналоговом частотном датчике уровня топлива 1 в байтах
+        const A_FREQ_FUEL2_LEN  = 2;        // длина частоты на аналоговом частотном датчике уровня топлива 2 в байтах
 
         protected $_socket;       // ссылка на сокет
         protected $_address;      // адрес сокета
@@ -32,7 +52,8 @@
         protected $imei;          // IMEI номер датчика
 
         protected $_body;         // тело запроса
-
+        protected $_format;       // формат запроса
+        protected $_record_id;    // id записи
         /**
          * get request body
          *
@@ -251,46 +272,14 @@
                 throw new Exception('substr return error', -21);
             }
 
-            $unpack = unpack("c3prefix/c15IMEI", $bufLen);
-
-            $pref_imei = '';
-            for ($i = 1; $i <= self::PREF_IMEI_LEN; $i++)
-            {
-                if (!isset($unpack['prefix' . $i]))
-                {
-                    throw new Exception('prefix IMEI ' . $i . ' not isset', -19);
-                }
-
-                $pref_imei .= chr($unpack['prefix' . $i]);
-            }
-
-            if ($pref_imei != self::PREF_IMEI_VAL)
-            {
-                throw new Exception('pref imei is not valid', -21);
-            }
-
-            $imei = '';
-            for ($i = 1; $i <= self::IMEI_LEN; $i++)
-            {
-                if (!isset($unpack['imei' . $i]))
-                {
-                    throw new Exception('IMEI ' . $i . ' not isset', -20);
-                }
-
-                $imei .= chr($unpack['imei' . $i]);
-            }
+            $imei = explode(':', $bufLen);
 
             try
             {
-                $this->setImei($imei);
+                $this->setImei($imei[1]);
             } catch (Exception $e)
             {
                 throw new Exception($e->getMessage(), $e->getCode());
-            }
-
-            if ($unpack === false)
-            {
-                throw new Exception('Unpack error', -18);
             }
 
             $this->log('unpack IMEI success');
@@ -319,41 +308,14 @@
                 }
                 $this->log('connected!');
 
-                $this->log('receiving data...');
-                $bufLen = '';
-                $length = self::HEADER_LEN;
                 $err = 0;
-                $handle = fopen(__DIR__ . SLASH . microtime() . '.bin', 'wb');
-                while ($length){
-                    $buf = socket_read($accept, $length);
-                    if ($buf === false) {
-                        $this->log(socket_strerror(socket_last_error()));
-                        break;
-                    }
-                    $bufLen .= $buf;
-
-                    fwrite($handle, $buf, strlen($buf));
-
-                    if (!$this->getHeader() && strlen($bufLen) >= self::HEADER_LEN)
-                    {
-                        try
-                        {
-                            $this->unpackHeader($bufLen);
-                        } catch (Exception $e)
-                        {
-                            $this->log($e->getMessage());
-                            $err = $e->getCode();
-                            break;
-                        }
-                        $length = $this->getBodySize();
-                    }
-
-                    if (strlen($bufLen) >= (self::HEADER_LEN + $this->getBodySize()))
-                    {
-                        break;
-                    }
+                try
+                {
+                    $bufLen = $this->readSocket($accept, $err);
+                } catch (Exception $e)
+                {
+                    throw new Exception($e->getMessage(), $e->getCode());
                 }
-                fclose($handle);
 
                 if ($err != 0)
                 {
@@ -373,7 +335,7 @@
                     continue;
                 }
 
-                if ($this->xor_sum($this->getBody(), $this->getBodySize()) !== $this->getCsd())
+                /**if ($this->xor_sum($this->getBody(), $this->getBodySize()) !== $this->getCsd())
                 {
                     $this->log('CSd sum incorrect!');
                     socket_close($accept);
@@ -387,19 +349,114 @@
                     socket_close($accept);
                     $this->log('close the connection!');
                     continue;
-                }
+                }**/
 
+                $err = 0;
                 try
                 {
                     $this->unpackImei($bufLen);
+                    $this->sendHandshake($accept);
+                    $bufLen = $this->readSocket($accept, $err);
                 } catch (Exception $e)
                 {
                     $this->log($e->getMessage());
                 }
 
+                if ($err != 0)
+                {
+                    socket_close($accept);
+                    $this->log('close the connection!');
+                    continue;
+                }
+
+                $this->setBody($bufLen);
+
                 socket_close($accept);
                 $this->log('close the connection!');
             }
+        }
+
+        private function readSocket($accept, &$err = 0)
+        {
+            if (!$this->getSocket())
+            {
+                throw new Exception('socket is not set');
+            }
+
+            $this->log('receiving data...');
+
+            $bufLen = '';
+            $length = self::HEADER_LEN;
+
+            $handle = fopen(__DIR__ . SLASH . microtime() . '.bin', 'wb');
+            while ($length){
+                $buf = socket_read($accept, $length);
+                if ($buf === false) {
+                    $this->log(socket_strerror(socket_last_error()));
+                    break;
+                }
+                $bufLen .= $buf;
+
+                fwrite($handle, $buf, strlen($buf));
+
+                if (!$this->getHeader() && strlen($bufLen) >= self::HEADER_LEN)
+                {
+                    try
+                    {
+                        $this->unpackHeader($bufLen);
+                    } catch (Exception $e)
+                    {
+                        $this->log($e->getMessage());
+                        $err = $e->getCode();
+                        break;
+                    }
+                    $length = $this->getBodySize();
+                }
+
+                if (strlen($bufLen) >= (self::HEADER_LEN + $this->getBodySize()))
+                {
+                    break;
+                }
+            }
+            fclose($handle);
+
+            return $bufLen;
+        }
+
+        private function sendHandshake($accept)
+        {
+            if (!$this->getSocket())
+            {
+                throw new Exception('socket is not set');
+            }
+
+            $this->log('prepare handshake...');
+
+            $preamble = self::PREAMBLE_VAL;
+            $hs = self::HANDSHAKE_VAL;
+            for ($i = 0; $i < strlen($hs); $i++)
+            {
+                $body = pack('c', $hs[$i]);
+            }
+            $binary = pack('cccc', $preamble[0], $preamble[1], $preamble[2], $preamble[3]);
+            $binary .= pack('L', $this->getIds());
+            $binary .= pack('L', $this->getIdr());
+            $binary .= pack('S', strlen($body));
+            $binary .= pack('C', $this->xor_sum($binary, strlen($binary)));
+            $binary .= pack('C', $this->xor_sum($body, strlen($body)));
+            $binary .= $body;
+
+            if (($r = socket_write($accept, $binary, strlen($binary))) === false)
+            {
+                throw new Exception(socket_strerror(socket_last_error($this->getSocket())), socket_last_error($this->getSocket()));
+            }
+
+            if ($r != strlen($binary))
+            {
+                throw new Exception('send ' . $r , ' bytes, total (' . strlen($r) . ')');
+            }
+
+            $this->log('send answer handshake ' . strlen($binary) . ' bytes');
         }
 
         /**
@@ -688,5 +745,27 @@
 
             return $temp_sum;
         }
+
+        /**
+         * @return mixed
+         */
+        public function getFormat()
+        {
+            return $this->_format;
+        }
+
+        /**
+         * @param mixed $format
+         */
+        protected function setFormat($format)
+        {
+            if (strlen($format) != self::FORMAT_TYPE_LEN)
+            {
+                throw new Exception('format type length is not ' . self::FORMAT_TYPE_LEN . ' bytes');
+            }
+
+            $this->_format = $format;
+        }
+
 
     }
