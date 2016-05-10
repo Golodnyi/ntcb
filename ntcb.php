@@ -335,7 +335,9 @@
                     continue;
                 }
 
-                /**if ($this->xor_sum($this->getBody(), $this->getBodySize()) !== $this->getCsd())
+                $this->setBody(substr($bufLen, self::HEADER_LEN, $this->getBodySize()));
+
+                if ($this->xor_sum($this->getBody(), $this->getBodySize()) !== $this->getCsd())
                 {
                     $this->log('CSd sum incorrect!');
                     socket_close($accept);
@@ -343,19 +345,20 @@
                     continue;
                 }
 
-                if ($this->xor_sum($this->getHeader(), self::HEADER_LEN) !== $this->getCsp())
+                if ($this->xor_sum(substr($this->getHeader(), 0, self::HEADER_LEN - 1), self::HEADER_LEN - 1) !== $this->getCsp())
                 {
                     $this->log('CSp sum incorrect!');
                     socket_close($accept);
                     $this->log('close the connection!');
                     continue;
-                }**/
+                }
 
                 $err = 0;
                 try
                 {
                     $this->unpackImei($bufLen);
                     $this->sendHandshake($accept);
+                    $this->setHeader(false);
                     $bufLen = $this->readSocket($accept, $err);
                 } catch (Exception $e)
                 {
@@ -434,16 +437,17 @@
 
             $preamble = self::PREAMBLE_VAL;
             $hs = self::HANDSHAKE_VAL;
+            $body = '';
             for ($i = 0; $i < strlen($hs); $i++)
             {
-                $body = pack('c', $hs[$i]);
+                $body .= pack('c', $hs[$i]);
             }
             $binary = pack('cccc', $preamble[0], $preamble[1], $preamble[2], $preamble[3]);
             $binary .= pack('L', $this->getIds());
             $binary .= pack('L', $this->getIdr());
             $binary .= pack('S', strlen($body));
-            $binary .= pack('C', $this->xor_sum($binary, strlen($binary)));
             $binary .= pack('C', $this->xor_sum($body, strlen($body)));
+            $binary .= pack('C', $this->xor_sum($binary, strlen($binary)));
             $binary .= $body;
 
             if (($r = socket_write($accept, $binary, strlen($binary))) === false)
@@ -536,7 +540,7 @@
          */
         protected function setHeader($header)
         {
-            if (strlen($header) < self::HEADER_LEN)
+            if ($header !== false && strlen($header) < self::HEADER_LEN)
             {
                 throw new Exception('header incorrect length', -23);
             }
@@ -738,9 +742,9 @@
         {
             $temp_sum = 0;
 
-            while($length-- > 0)
+            for ($i = 0; $i < $length; $i++)
             {
-                $temp_sum ^= $bufLen++;
+                $temp_sum ^= ord(substr($bufLen, $i, 1));
             }
 
             return $temp_sum;
