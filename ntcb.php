@@ -155,9 +155,9 @@
         }
 
         /**
-         * разбор header по переменным
+         * @param $bufLen
          *
-         * @param array $buf
+         * @throws \Exception
          */
         protected function unpackHeader($bufLen)
         {
@@ -283,6 +283,8 @@
             }
 
             $this->log('unpack IMEI success');
+
+            return true;
         }
 
         /**
@@ -537,6 +539,8 @@
          * set request header
          *
          * @param mixed $header
+         *
+         * @throws \Exception
          */
         protected function setHeader($header)
         {
@@ -562,6 +566,8 @@
          * set preamble
          *
          * @param mixed $preamble
+         *
+         * @throws \Exception
          */
         protected function setPreamble($preamble)
         {
@@ -592,6 +598,8 @@
          * set id recipient
          *
          * @param mixed $idr
+         *
+         * @throws \Exception
          */
         protected function setIdr($idr)
         {
@@ -617,6 +625,8 @@
          * set id sender
          *
          * @param mixed $ids
+         *
+         * @throws \Exception
          */
         protected function setIds($ids)
         {
@@ -642,6 +652,8 @@
          * set size of body request (in bytes)
          *
          * @param mixed $body_size
+         *
+         * @throws \Exception
          */
         protected function setBodySize($body_size)
         {
@@ -667,6 +679,8 @@
          * set control sum of body request
          *
          * @param mixed $csd
+         *
+         * @throws \Exception
          */
         protected function setCsd($csd)
         {
@@ -692,6 +706,8 @@
          * set control sum of header request
          *
          * @param mixed $csp
+         *
+         * @throws \Exception
          */
         protected function setCsp($csp)
         {
@@ -713,6 +729,8 @@
 
         /**
          * @param mixed $imei
+         *
+         * @throws \Exception
          */
         protected function setImei($imei)
         {
@@ -738,6 +756,14 @@
             }
         }
 
+        /**
+         * calculate hash
+         *
+         * @param $bufLen
+         * @param $length
+         *
+         * @return int
+         */
         protected function xor_sum($bufLen, $length)
         {
             $temp_sum = 0;
@@ -760,6 +786,8 @@
 
         /**
          * @param mixed $format
+         *
+         * @throws \Exception
          */
         protected function setFormat($format)
         {
