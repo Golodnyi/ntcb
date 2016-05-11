@@ -365,7 +365,7 @@
             $body = '';
             for ($i = 0; $i < strlen($hs); $i++)
             {
-                $body .= pack('c', $hs[$i]);
+                $body .= pack('c', ord($hs[$i]));
             }
             $binary = pack('cccc', ord($preamble[0]), ord($preamble[1]), ord($preamble[2]), ord($preamble[3]));
             $binary .= pack('L', $this->getIds());
