@@ -139,88 +139,6 @@
             $this->setSocket($socket);
         }
 
-        /**
-         * @param $bufLen
-         *
-         * @throws \Exception
-         */
-        protected function unpackHeader($bufLen)
-        {
-            $this->log('unpack header data');
-
-            if (!strlen($bufLen) || strlen($bufLen) < self::HEADER_LEN)
-            {
-                throw new Exception('Empty data or incorrect length', -3);
-            }
-
-            $bufLen = substr($bufLen, 0, self::HEADER_LEN);
-
-            if ($bufLen === false)
-            {
-                throw new Exception('substr return error', -21);
-            }
-
-            $unpack = unpack("c4preamble/LIDr/LIDs/Ssize/cCSd/cCSp", $bufLen);
-
-            if ($unpack === false)
-            {
-                throw new Exception('Unpack error', -4);
-            }
-
-            $preamble = '';
-            for ($i = 1; $i <= self::PREAMBLE_LEN; $i++)
-            {
-                if (!isset($unpack['preamble' . $i]))
-                {
-                    throw new Exception('preamble ' . $i . ' not isset', -6);
-                }
-
-                $preamble .= chr($unpack['preamble' . $i]);
-            }
-
-            try
-            {
-                $this->setPreamble($preamble);
-
-                if (!isset($unpack['IDr']))
-                {
-                    throw new Exception('IDr not isset', -7);
-                }
-                $this->setIdr($unpack['IDr']);
-
-                if (!isset($unpack['IDs']))
-                {
-                    throw new Exception('IDs not isset', -8);
-                }
-                $this->setIdr($unpack['IDs']);
-
-                if (!isset($unpack['size']))
-                {
-                    throw new Exception('body size not isset', -10);
-                }
-                $this->setBodySize($unpack['size']);
-
-                if (!isset($unpack['CSd']))
-                {
-                    throw new Exception('CSd not isset', -12);
-                }
-                $this->setCsd($unpack['CSd']);
-
-                if (!isset($unpack['CSp']))
-                {
-                    throw new Exception('CSp not isset', -13);
-                }
-                $this->setCsp($unpack['CSp']);
-
-                $this->setHeader($bufLen);
-            } catch (Exception $e)
-            {
-                throw new Exception($e->getMessage(), $e->getCode());
-            }
-
-            $this->log('unpack header success');
-        }
-
         protected function unpackImei()
         {
             $this->log('unpack IMEI');
@@ -449,7 +367,7 @@
             {
                 $body .= pack('c', $hs[$i]);
             }
-            $binary = pack('cccc', $preamble[0], $preamble[1], $preamble[2], $preamble[3]);
+            $binary = pack('cccc', ord($preamble[0]), ord($preamble[1]), ord($preamble[2]), ord($preamble[3]));
             $binary .= pack('L', $this->getIds());
             $binary .= pack('L', $this->getIdr());
             $binary .= pack('S', strlen($body));
