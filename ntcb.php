@@ -221,19 +221,6 @@
             $this->log('unpack header success');
         }
 
-        /**
-         * разбор body по переменным
-         *
-         * @param $bufLen
-         *
-         * @throws \Exception
-         */
-        protected function unpackBody($bufLen)
-        {
-            throw new Exception('you need override method unpackBody');
-        }
-
-
         protected function unpackImei()
         {
             $this->log('unpack IMEI');
@@ -308,8 +295,8 @@
                     $this->readBody($accept);
                 } catch (Exception $e)
                 {
-                    socket_close($accept);
                     $this->log($e->getMessage());
+                    socket_close($accept);
                     $this->log('close the connection!');
                     continue;
                 }
@@ -350,52 +337,14 @@
             }
         }
 
-        private function logSocket($accept)
+        protected function readTelemetries($accept)
         {
-            $handle = fopen(__DIR__ . SLASH . microtime() . '_telemetries_loging.bin', 'wb');
-            $this->log('loging telemetries data...');
-            while(($buf = socket_read($accept, 1)) != '')
-            {
-                fwrite($handle, $buf, strlen($buf));
-            }
-            $this->log('end loging telemetries data...');
-            fclose($handle);
-        }
-
-        private function readTelemetries($accept)
-        {
-            $this->logSocket($accept);
-            return false;
             if (!$this->getSocket())
             {
                 throw new Exception('socket is not set');
             }
-
-            try
-            {
-                $this->readHeader($accept);
-            } catch (Exception $e)
-            {
-                throw new Exception($e->getMessage(), $e->getCode());
-            }
-
-            $this->log('receiving telemetries data...');
-            $handle = fopen(__DIR__ . SLASH . microtime() . '_telemetries.bin', 'wb');
-
-            $buf = socket_read($accept, $this->getBodySize());
-            if ($buf === false) {
-                throw new Exception(socket_strerror(socket_last_error()), socket_last_error());
-            }
-
-            fwrite($handle, $buf, strlen($buf));
-            fclose($handle);
-
-            $this->log('received ' . strlen($buf) . ' bytes');
-            $this->log('finished the receive data');
-
-            $this->setBody($buf);
         }
-        private function readHeader($accept)
+        protected function readHeader($accept)
         {
             if (!$this->getSocket())
             {
@@ -424,31 +373,37 @@
 
                 $header .= $buf;
 
-                switch($key)
+                try
                 {
-                    case 'preamble':
-                        $p = '';
-                        foreach(unpack('c4', $buf) as $item)
-                        {
-                            $p .= chr($item);
-                        }
-                        $this->setPreamble($p);
-                        break;
-                    case 'IDr':
-                        $this->setIds(current(unpack('L', $buf)));
-                        break;
-                    case 'IDs':
-                        $this->setIdr(current(unpack('L', $buf)));
-                        break;
-                    case 'BODY_LEN':
-                        $this->setBodySize(current(unpack('S', $buf)));
-                        break;
-                    case 'CSd':
-                        $this->setCsd(current(unpack('C', $buf)));
-                        break;
-                    case 'CSp':
-                        $this->setCsp(current(unpack('C', $buf)));
-                        break;
+                    switch ($key)
+                    {
+                        case 'preamble':
+                            $p = '';
+                            foreach (unpack('c4', $buf) as $item)
+                            {
+                                $p .= chr($item);
+                            }
+                            $this->setPreamble($p);
+                            break;
+                        case 'IDr':
+                            $this->setIds(current(unpack('L', $buf)));
+                            break;
+                        case 'IDs':
+                            $this->setIdr(current(unpack('L', $buf)));
+                            break;
+                        case 'BODY_LEN':
+                            $this->setBodySize(current(unpack('S', $buf)));
+                            break;
+                        case 'CSd':
+                            $this->setCsd(current(unpack('C', $buf)));
+                            break;
+                        case 'CSp':
+                            $this->setCsp(current(unpack('C', $buf)));
+                            break;
+                    }
+                } catch (Exception $e)
+                {
+                    throw new Exception($e->getMessage(), $e->getCode());
                 }
 
                 fwrite($handle, $buf, strlen($buf));
@@ -458,7 +413,7 @@
             $this->log('received ' . strlen($header) . ' bytes');
             $this->log('finished the receive handshake');
         }
-        private function readBody($accept)
+        protected function readBody($accept)
         {
             if (!$this->getSocket())
             {
@@ -483,7 +438,7 @@
             $this->log('finished the receive body');
         }
 
-        private function generateHandshake()
+        protected function generateHandshake()
         {
             $this->log('prepare handshake...');
 
@@ -506,7 +461,7 @@
             return $binary;
         }
 
-        private function sendHandshake($accept)
+        protected function sendHandshake($accept)
         {
             if (!$this->getSocket())
             {
