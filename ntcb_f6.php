@@ -48,7 +48,13 @@
 
         protected function readTelemetries($accept)
         {
-            parent::readTelemetries($accept);
+            try {
+                parent::readTelemetries($accept);
+            } catch(Exception $e)
+            {
+                throw new Exception($e->getMessage(), $e->getCode());
+            }
+
             $this->logSocket($accept);
         }
 
@@ -56,12 +62,12 @@
         private function logSocket($accept)
         {
             $handle = fopen(__DIR__ . SLASH . microtime() . '_telemetries_loging.bin', 'wb');
-            $this->log('loging telemetries data...');
+            $this->log('logging telemetries data...');
             while(($buf = socket_read($accept, 1)) != '')
             {
                 fwrite($handle, $buf, strlen($buf));
             }
-            $this->log('end loging telemetries data...');
+            $this->log('end logging telemetries data...');
             fclose($handle);
         }
     }

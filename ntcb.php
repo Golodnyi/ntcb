@@ -793,29 +793,4 @@
 
             return $temp_sum;
         }
-
-        /**
-         * @return mixed
-         */
-        public function getFormat()
-        {
-            return $this->_format;
-        }
-
-        /**
-         * @param mixed $format
-         *
-         * @throws \Exception
-         */
-        protected function setFormat($format)
-        {
-            if (strlen($format) != self::FORMAT_TYPE_LEN)
-            {
-                throw new Exception('format type length is not ' . self::FORMAT_TYPE_LEN . ' bytes');
-            }
-
-            $this->_format = $format;
-        }
-
-
     }
