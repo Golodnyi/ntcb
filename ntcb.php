@@ -10,6 +10,11 @@
     {
         const HEADER_LEN        = 16;       // размер заголовка в байтах
         const PREAMBLE_LEN      = 4;        // размер преамбулы в байтах
+        const IDr_LEN           = 4;        // размер IDr
+        const IDs_LEN           = 4;        // размер IDs
+        const BODY_LEN_LEN      = 2;        // размер поля с размером тела запроса
+        const CSd_LEN           = 1;        // размер контрольной суммы тела
+        const CSp_LEN           = 1;        // размер контрольной суммы заголовка
         const IMEI_LEN          = 15;       // размер блока с IMEI в байтах
         const PREF_IMEI_LEN     = 3;        // размер блока с префиксом IMEI в байтах
         const PREF_IMEI_VAL     = '*>S';    // значение префикса для IMEI от датчика
@@ -229,34 +234,32 @@
         }
 
 
-        protected function unpackImei($bufLen)
+        protected function unpackImei()
         {
             $this->log('unpack IMEI');
 
-            if (!strlen($bufLen) || strlen($bufLen) < (self::HEADER_LEN + self::IMEI_BLOCK_LEN))
+            if (!$this->getBodySize())
             {
-                throw new Exception('Empty data or length < ' . (self::HEADER_LEN + self::IMEI_BLOCK_LEN) . ' (' . strlen($bufLen) . ')', -3);
+                throw new Exception('Empty body data', -3);
             }
 
-            if (empty($this->getBodySize()))
-            {
-                $this->log('body is empty');
+            $buffer = substr($this->getBody(), 0, self::PREF_IMEI_LEN);
 
-                return false;
-            }
-
-            $bufLen = substr($bufLen, self::HEADER_LEN, self::HEADER_LEN + self::IMEI_BLOCK_LEN);
-
-            if ($bufLen === false)
+            if ($buffer === false)
             {
                 throw new Exception('substr return error', -21);
             }
 
-            $imei = explode(':', $bufLen);
+            if ($buffer != self::PREF_IMEI_VAL)
+            {
+                throw new Exception('IMEI not received', -20);
+            }
+
+            $buffer = substr($this->getBody(), self::PREF_IMEI_LEN + 1, self::IMEI_LEN);
 
             try
             {
-                $this->setImei($imei[1]);
+                $this->setImei($buffer);
             } catch (Exception $e)
             {
                 throw new Exception($e->getMessage(), $e->getCode());
@@ -290,31 +293,26 @@
                 }
                 $this->log('connected!');
 
-                $err = 0;
                 try
                 {
-                    $bufLen = $this->readSocket($accept, $err);
+                    $this->readHeader($accept);
+
+                    if (!$this->getBodySize())
+                    {
+                        $this->log('received only the header, there is no work');
+                        socket_close($accept);
+                        $this->log('close the connection!');
+                        continue;
+                    }
+
+                    $this->readBody($accept);
                 } catch (Exception $e)
                 {
-                    throw new Exception($e->getMessage(), $e->getCode());
-                }
-
-                if ($err != 0)
-                {
                     socket_close($accept);
+                    $this->log($e->getMessage());
                     $this->log('close the connection!');
                     continue;
                 }
-
-                if (strlen($bufLen) == self::HEADER_LEN)
-                {
-                    $this->log('received only the header, there is no work');
-                    socket_close($accept);
-                    $this->log('close the connection!');
-                    continue;
-                }
-
-                $this->setBody(substr($bufLen, self::HEADER_LEN, $this->getBodySize()));
 
                 if ($this->xor_sum($this->getBody(), $this->getBodySize()) !== $this->getCsd())
                 {
@@ -323,6 +321,7 @@
                     $this->log('close the connection!');
                     continue;
                 }
+                $this->log('CSd sum correct!');
 
                 if ($this->xor_sum(substr($this->getHeader(), 0, self::HEADER_LEN - 1), self::HEADER_LEN - 1) !== $this->getCsp())
                 {
@@ -331,81 +330,157 @@
                     $this->log('close the connection!');
                     continue;
                 }
+                $this->log('CSp sum correct!');
 
-                $err = 0;
                 try
                 {
-                    $this->unpackImei($bufLen);
+                    $this->unpackImei();
                     $this->sendHandshake($accept);
-                    $this->setHeader(false);
-                    $bufLen = $this->readSocket($accept, $err);
+                    $this->readTelemetries($accept);
                 } catch (Exception $e)
                 {
                     $this->log($e->getMessage());
-                }
-
-                if ($err != 0)
-                {
                     socket_close($accept);
                     $this->log('close the connection!');
                     continue;
                 }
-
-                $this->setBody($bufLen);
 
                 socket_close($accept);
                 $this->log('close the connection!');
             }
         }
 
-        private function readSocket($accept, &$err = 0)
+        private function logSocket($accept)
+        {
+            $handle = fopen(__DIR__ . SLASH . microtime() . '_telemetries_loging.bin', 'wb');
+            $this->log('loging telemetries data...');
+            while(($buf = socket_read($accept, 1)) != '')
+            {
+                fwrite($handle, $buf, strlen($buf));
+            }
+            $this->log('end loging telemetries data...');
+            fclose($handle);
+        }
+
+        private function readTelemetries($accept)
+        {
+            $this->logSocket($accept);
+            return false;
+            if (!$this->getSocket())
+            {
+                throw new Exception('socket is not set');
+            }
+
+            try
+            {
+                $this->readHeader($accept);
+            } catch (Exception $e)
+            {
+                throw new Exception($e->getMessage(), $e->getCode());
+            }
+
+            $this->log('receiving telemetries data...');
+            $handle = fopen(__DIR__ . SLASH . microtime() . '_telemetries.bin', 'wb');
+
+            $buf = socket_read($accept, $this->getBodySize());
+            if ($buf === false) {
+                throw new Exception(socket_strerror(socket_last_error()), socket_last_error());
+            }
+
+            fwrite($handle, $buf, strlen($buf));
+            fclose($handle);
+
+            $this->log('received ' . strlen($buf) . ' bytes');
+            $this->log('finished the receive data');
+
+            $this->setBody($buf);
+        }
+        private function readHeader($accept)
         {
             if (!$this->getSocket())
             {
                 throw new Exception('socket is not set');
             }
 
-            $this->log('receiving data...');
+            $this->log('receiving handshake...');
 
-            $bufLen = '';
-            $length = self::HEADER_LEN;
+            $lengths = [
+                'preamble' => self::PREAMBLE_LEN,
+                'IDr' => self::IDr_LEN,
+                'IDs' => self::IDs_LEN,
+                'BODY_LEN' => self::BODY_LEN_LEN,
+                'CSd' => self::CSd_LEN,
+                'CSp' => self::CSp_LEN
+            ];
 
-            $handle = fopen(__DIR__ . SLASH . microtime() . '.bin', 'wb');
-            while ($length){
+            $header = '';
+            $handle = fopen(__DIR__ . SLASH . microtime() . '_handshake.bin', 'wb');
+            foreach($lengths as $key => $length)
+            {
                 $buf = socket_read($accept, $length);
                 if ($buf === false) {
-                    $this->log(socket_strerror(socket_last_error()));
-                    break;
+                    throw new Exception(socket_strerror(socket_last_error()), socket_last_error());
                 }
-                $bufLen .= $buf;
+
+                $header .= $buf;
+
+                switch($key)
+                {
+                    case 'preamble':
+                        $p = '';
+                        foreach(unpack('c4', $buf) as $item)
+                        {
+                            $p .= chr($item);
+                        }
+                        $this->setPreamble($p);
+                        break;
+                    case 'IDr':
+                        $this->setIds(current(unpack('L', $buf)));
+                        break;
+                    case 'IDs':
+                        $this->setIdr(current(unpack('L', $buf)));
+                        break;
+                    case 'BODY_LEN':
+                        $this->setBodySize(current(unpack('S', $buf)));
+                        break;
+                    case 'CSd':
+                        $this->setCsd(current(unpack('C', $buf)));
+                        break;
+                    case 'CSp':
+                        $this->setCsp(current(unpack('C', $buf)));
+                        break;
+                }
 
                 fwrite($handle, $buf, strlen($buf));
-
-                if (!$this->getHeader() && strlen($bufLen) >= self::HEADER_LEN)
-                {
-                    try
-                    {
-                        $this->unpackHeader($bufLen);
-                    } catch (Exception $e)
-                    {
-                        $this->log($e->getMessage());
-                        $err = $e->getCode();
-                        break;
-                    }
-                    $length = $this->getBodySize();
-                }
-
-                if (strlen($bufLen) >= (self::HEADER_LEN + $this->getBodySize()))
-                {
-                    break;
-                }
             }
             fclose($handle);
+            $this->setHeader($header);
+            $this->log('received ' . strlen($header) . ' bytes');
+            $this->log('finished the receive handshake');
+        }
+        private function readBody($accept)
+        {
+            if (!$this->getSocket())
+            {
+                throw new Exception('socket is not set');
+            }
 
-            $this->log('received ' . strlen($bufLen) . ' bytes');
-            $this->log('finished the receive data');
-            
-            return $bufLen;
+            $this->log('receiving body...');
+
+            $handle = fopen(__DIR__ . SLASH . microtime() . '_body.bin', 'wb');
+
+            $buf = socket_read($accept, $this->getBodySize());
+            if ($buf === false) {
+                throw new Exception(socket_strerror(socket_last_error()), socket_last_error());
+            }
+
+            $this->setBody($buf);
+
+            fwrite($handle, $buf, strlen($buf));
+            fclose($handle);
+
+            $this->log('received ' . strlen($buf) . ' bytes');
+            $this->log('finished the receive body');
         }
 
         private function generateHandshake()
@@ -593,7 +668,7 @@
         {
             if (!is_int($idr))
             {
-                throw new Exception('IDr not int', -8);
+                throw new Exception('IDr is not int', -8);
             }
 
             $this->_idr = $idr;
@@ -620,7 +695,7 @@
         {
             if (!is_int($ids))
             {
-                throw new Exception('IDs not int', -9);
+                throw new Exception('IDs is not int', -8);
             }
 
             $this->_ids = $ids;
@@ -647,7 +722,7 @@
         {
             if (!is_int($body_size))
             {
-                throw new Exception('body size not int', -8);
+                throw new Exception('body size is not int', -8);
             }
 
             $this->_body_size = $body_size;
@@ -674,7 +749,7 @@
         {
             if (!is_int($csd))
             {
-                throw new Exception('csd not int', -14);
+                throw new Exception('csd is not int', -14);
             }
 
             $this->_csd = $csd;
@@ -701,7 +776,7 @@
         {
             if (!is_int($csp))
             {
-                throw new Exception('csp not int', -15);
+                throw new Exception('csp is not int', -15);
             }
 
             $this->_csp = $csp;
