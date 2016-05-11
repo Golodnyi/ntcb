@@ -17,25 +17,6 @@
         const PREAMBLE_VAL      = '@NTC';   // значение преамбулы по умолчанию
         const IMEI_BLOCK_LEN    = self::PREF_IMEI_LEN + self::IMEI_LEN; // общий размер блока с IMEI в байтах
 
-        const FORMAT_TYPE_LEN   = 1;        // длина типа формата в байтах
-        const RECORD_ID_LEN     = 4;        // длина сквозного номера записи в энергонезависимой памяти в байтах
-        const EVENT_CODE_LEN    = 2;        // длина кода события в байтах
-        const DATE_LEN          = 6;        // длина даты в байтах
-        const STATUS_LEN        = 1;        // длина статуса устройства в байтах (битфилд, первые 2 бита)
-        const STATUS_MODULE_LEN = 1;        // длина статуса функциональных модулей в байтах (битфилд, 8 бит)
-        const GSM_LEVEL_LEN     = 1;        // длина уровня сигнала в байтах
-        const STATUS_OUTPUT_LEN = 1;        // длина текущего состояния выходов в байтах
-        const STATUS_DISCR_SENSORS_LEN = 1; // длина состояния дискретных датчиков в байтах
-        const VOLTAGE_POWER_LEN = 2;        // длина напряжения на основном источнике питания в байтах
-        const VOLTAGE_POWER_BACKUP_LEN = 2; // длина напряжения на резервном источнике питания в байтах
-        const A_INPUT1_LEN      = 2;        // длина на аналоговом входе 1 в байтах
-        const A_INPUT2_LEN      = 2;        // длина на аналоговом входе 2 в байтах
-        const A_INPUT3_LEN      = 2;        // длина на аналоговом входе 3 в байтах
-        const PULSE_COUNTER1_LEN = 4;       // длина счетчика импульсов 1 в байтах
-        const PULSE_COUNTER2_LEN = 4;       // длина счетчика импульсов 2 в байтах
-        const A_FREQ_FUEL1_LEN  = 2;        // длина частоты на аналоговом частотном датчике уровня топлива 1 в байтах
-        const A_FREQ_FUEL2_LEN  = 2;        // длина частоты на аналоговом частотном датчике уровня топлива 2 в байтах
-
         protected $_socket;       // ссылка на сокет
         protected $_address;      // адрес сокета
         protected $_port;         // порт сокета
@@ -52,8 +33,7 @@
         protected $imei;          // IMEI номер датчика
 
         protected $_body;         // тело запроса
-        protected $_format;       // формат запроса
-        protected $_record_id;    // id записи
+
         /**
          * get request body
          *
@@ -428,13 +408,8 @@
             return $bufLen;
         }
 
-        private function sendHandshake($accept)
+        private function generateHandshake()
         {
-            if (!$this->getSocket())
-            {
-                throw new Exception('socket is not set');
-            }
-
             $this->log('prepare handshake...');
 
             $preamble = self::PREAMBLE_VAL;
@@ -451,6 +426,19 @@
             $binary .= pack('C', $this->xor_sum($body, strlen($body)));
             $binary .= pack('C', $this->xor_sum($binary, strlen($binary)));
             $binary .= $body;
+            $this->log('complete handshake...');
+
+            return $binary;
+        }
+
+        private function sendHandshake($accept)
+        {
+            if (!$this->getSocket())
+            {
+                throw new Exception('socket is not set');
+            }
+
+            $binary = $this->generateHandshake();
 
             if (($r = socket_write($accept, $binary, strlen($binary))) === false)
             {
@@ -459,7 +447,7 @@
 
             if ($r != strlen($binary))
             {
-                throw new Exception('send ' . $r , ' bytes, total (' . strlen($r) . ')');
+                throw new Exception('send ' . $r , ' bytes, total (' . strlen($binary) . ')');
             }
 
             $this->log('send answer handshake ' . strlen($binary) . ' bytes');
