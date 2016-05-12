@@ -20,7 +20,7 @@
 
     require_once __DIR__ . SLASH . 'ntcb.php';
 
-    class ntcb_f6 extends ntcb
+    class ntcb_flex extends ntcb
     {
         const TELE_VAL          = '*>A';    // значение префикса телеметрических данных от датчика
         const TELE_LEN          = 3;        // длина префикса теле данных
@@ -58,95 +58,6 @@
                 throw new Exception($e->getMessage(), $e->getCode());
             }
 
-            $length = $this->getBlockSize($accept);
-            $this->readBlock($accept, $length);
-        }
 
-        private function readBlock($accept, $length)
-        {
-            $handle = fopen(__DIR__ . SLASH . microtime() . '_tele.bin', 'wb');
-            {
-                $buf = socket_read($accept, $length);
-                if ($buf === false) {
-                    throw new Exception(socket_strerror(socket_last_error()), socket_last_error());
-                }
-
-                switch ($key)
-                {
-                    case 'prefix':
-                        $p = '';
-                        foreach (unpack('c3', $buf) as $item)
-                        {
-                            $p .= chr($item);
-                        }
-
-                        if ($p != self::TELE_VAL)
-                        {
-                            throw new Exception('prefix tele data incorrect', -30);
-                        }
-
-                        break;
-                    case 'size':
-                        $size = current(unpack('С', $buf));
-                        break;
-                }
-
-            }
-
-            fwrite($handle, $buf, strlen($buf));
-        }
-
-        private function getBlockSize($accept)
-        {
-            $size = 0;
-            $lengths = [
-                'prefix' => self::TELE_LEN,
-                'size' => self::TELE_SIZE_LEN
-            ];
-
-            $handle = fopen(__DIR__ . SLASH . microtime() . '_tele.bin', 'wb');
-            foreach($lengths as $key => $length)
-            {
-                $buf = socket_read($accept, $length);
-                if ($buf === false) {
-                    throw new Exception(socket_strerror(socket_last_error()), socket_last_error());
-                }
-
-                switch ($key)
-                {
-                    case 'prefix':
-                        $p = '';
-                        foreach (unpack('c3', $buf) as $item)
-                        {
-                            $p .= chr($item);
-                        }
-
-                        if ($p != self::TELE_VAL)
-                        {
-                            throw new Exception('prefix tele data incorrect', -30);
-                        }
-
-                        break;
-                    case 'size':
-                        $size = current(unpack('С', $buf));
-                        break;
-                }
-
-            }
-
-            fwrite($handle, $buf, strlen($buf));
-            return $size;
-        }
-
-        private function logSocket($accept)
-        {
-            $handle = fopen(__DIR__ . SLASH . microtime() . '_telemetries_loging.bin', 'wb');
-            $this->log('logging telemetries data...');
-            while(($buf = socket_read($accept, 1)) != '')
-            {
-                fwrite($handle, $buf, strlen($buf));
-            }
-            $this->log('end logging telemetries data...');
-            fclose($handle);
         }
     }

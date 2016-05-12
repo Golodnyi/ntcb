@@ -241,8 +241,7 @@
                 {
                     $this->unpackImei();
                     $this->sendHandshake($accept);
-                    $this->readHeader($accept);
-                    $this->readTelemetries($accept);
+                    $this->processing($accept);
                 } catch (Exception $e)
                 {
                     $this->log($e->getMessage());
@@ -256,7 +255,7 @@
             }
         }
 
-        protected function readTelemetries($accept)
+        protected function processing($accept)
         {
             if (!$this->getSocket())
             {

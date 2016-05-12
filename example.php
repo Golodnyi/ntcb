@@ -15,11 +15,11 @@
         define('PORT', 9001);
     }
 
-    require_once __DIR__ . SLASH . 'ntcb_f6.php';
+    require_once __DIR__ . SLASH . 'ntcb_flex.php';
 
     try
     {
-        $ntcb = new ntcb_f6(true);
+        $ntcb = new ntcb_flex(true);
         $ntcb->listen('0.0.0.0', PORT);
         $ntcb->run();
     } catch (Exception $e)
