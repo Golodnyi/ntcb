@@ -1,10 +1,9 @@
 <?php
-    error_reporting(E_ALL);
     /**
      * User: golodnyi
      * Date: 04.05.16
      * Time: 9:12
-     * NTCB - binary protocol for Signal S-2551
+     * NTCB - бинарный протокол для Сигнал S-2551
      */
     abstract class ntcb
     {
@@ -40,7 +39,7 @@
         protected $_body;         // тело запроса
 
         /**
-         * get request body
+         * Получить тело запроса
          *
          * @return mixed
          */
@@ -50,11 +49,11 @@
         }
 
         /**
-         * set request body
+         * Установить тело запроса
          *
          * @param mixed $body
          */
-        protected function setBody($body)
+        private function setBody($body)
         {
             $this->_body = $body;
         }
@@ -80,12 +79,12 @@
             }
 
             $this->setDebug($debug);
-            $this->log('run from: ' . __DIR__ . SLASH);
-            $this->log('set debug: ' . print_r($debug, true));
+            $this->log('Запущен из: ' . __DIR__ . SLASH);
+            $this->log('Режим отладки: ' . print_r($debug, true));
         }
 
         /**
-         * get debug
+         * Получить уровень отладки
          *
          * @return mixed
          */
@@ -95,17 +94,17 @@
         }
 
         /**
-         * set debug
+         * Установить уровень отладки
          *
          * @param mixed $debug
          */
-        protected function setDebug($debug)
+        private function setDebug($debug)
         {
             $this->_debug = $debug;
         }
 
         /**
-         * set listen address and port
+         * Установить прослушку порта
          *
          * @param string $address
          * @param string $port
@@ -119,7 +118,7 @@
                 throw new Exception(socket_strerror(socket_last_error($socket)), socket_last_error($socket));
             }
 
-            $this->log('connect to socket: ' . print_r($socket, true));
+            $this->log('Подключились к сокету: ' . print_r($socket, true));
 
             if (!(socket_bind($socket, $address, $port)))
             {
@@ -134,30 +133,30 @@
             $this->setAddress($address);
             $this->setPort($port);
 
-            $this->log('listen ' . $this->getAddress() . ':' . $this->getPort());
+            $this->log('Слушаем ' . $this->getAddress() . ':' . $this->getPort());
 
             $this->setSocket($socket);
         }
 
-        protected function unpackImei()
+        private function unpackImei()
         {
-            $this->log('unpack IMEI');
+            $this->log('Распаковка IMEI');
 
             if (!$this->getBodySize())
             {
-                throw new Exception('Empty body data', -3);
+                throw new Exception('Пустое тело запроса', -3);
             }
 
             $buffer = substr($this->getBody(), 0, self::PREF_IMEI_LEN);
 
             if ($buffer === false)
             {
-                throw new Exception('substr return error', -21);
+                throw new Exception('Функция substr вернула ошибку', -21);
             }
 
             if ($buffer != self::PREF_IMEI_VAL)
             {
-                throw new Exception('IMEI not received', -20);
+                throw new Exception('IMEI отсутсвует в теле запроса', -20);
             }
 
             $buffer = substr($this->getBody(), self::PREF_IMEI_LEN + 1, self::IMEI_LEN);
@@ -170,7 +169,7 @@
                 throw new Exception($e->getMessage(), $e->getCode());
             }
 
-            $this->log('unpack IMEI success');
+            $this->log('Сохранен IMEI');
 
             return true;
         }
@@ -184,10 +183,10 @@
         {
             if (!$this->getSocket())
             {
-                throw new Exception('Is not connected to the socket, you do not assign the listener?', -1);
+                throw new Exception('Сокет не установлен', -1);
             }
 
-            $this->log('waiting for connection...');
+            $this->log('Ожидания подключения...');
 
             while (true)
             {
@@ -196,7 +195,7 @@
                     $this->log(socket_strerror(socket_last_error($this->getSocket())));
                     continue;
                 }
-                $this->log('connected!');
+                $this->log('Подключился датчик!');
 
                 try
                 {
@@ -204,9 +203,9 @@
 
                     if (!$this->getBodySize())
                     {
-                        $this->log('received only the header, there is no work');
+                        $this->log('Получили только заголовок запроса, работы нет.');
                         socket_close($accept);
-                        $this->log('close the connection!');
+                        $this->log('Отключаемся от датчика!');
                         continue;
                     }
 
@@ -215,27 +214,16 @@
                 {
                     $this->log($e->getMessage());
                     socket_close($accept);
-                    $this->log('close the connection!');
+                    $this->log('Отключаемся от датчика!');
                     continue;
                 }
 
-                if ($this->xor_sum($this->getBody(), $this->getBodySize()) !== $this->getCsd())
+                if (!$this->checkSum())
                 {
-                    $this->log('CSd sum incorrect!');
                     socket_close($accept);
-                    $this->log('close the connection!');
+                    $this->log('Отключаемся от датчика!');
                     continue;
                 }
-                $this->log('CSd sum correct!');
-
-                if ($this->xor_sum(substr($this->getHeader(), 0, self::HEADER_LEN - 1), self::HEADER_LEN - 1) !== $this->getCsp())
-                {
-                    $this->log('CSp sum incorrect!');
-                    socket_close($accept);
-                    $this->log('close the connection!');
-                    continue;
-                }
-                $this->log('CSp sum correct!');
 
                 try
                 {
@@ -246,20 +234,48 @@
                 {
                     $this->log($e->getMessage());
                     socket_close($accept);
-                    $this->log('close the connection!');
+                    $this->log('Отключаемся от датчика!');
                     continue;
                 }
 
                 socket_close($accept);
-                $this->log('close the connection!');
+                $this->log('Отключаемся от датчика!');
             }
         }
 
+        protected function checkSum()
+        {
+            if ($this->xor_sum($this->getBody(), $this->getBodySize()) !== $this->getCsd())
+            {
+                $this->log('Контрольная сумма CSd не корректна!');
+                return false;
+            }
+            $this->log('Контрольная сумма CSd корректна!');
+
+            if ($this->xor_sum(substr($this->getHeader(), 0, self::HEADER_LEN - 1), self::HEADER_LEN - 1) !== $this->getCsp())
+            {
+                $this->log('Контрольная сумма CSp не корректна!');
+                return false;
+            }
+            $this->log('Контрольная сумма CSp корректна!');
+
+            return true;
+        }
+
+        /**
+         * Данный метод должен быть перезагружен в дочернем классе
+         * в нем основная логика работы с конкретной версией
+         * реализации протокола
+         *
+         * @param $accept
+         *
+         * @throws \Exception
+         */
         protected function processing($accept)
         {
             if (!$this->getSocket())
             {
-                throw new Exception('socket is not set');
+                throw new Exception('Сокет не установлен');
             }
         }
 
@@ -267,10 +283,10 @@
         {
             if (!$this->getSocket())
             {
-                throw new Exception('socket is not set');
+                throw new Exception('Сокет не установлен');
             }
 
-            $this->log('receiving handshake...');
+            $this->log('Рукопожатие...');
 
             $lengths = [
                 'preamble' => self::PREAMBLE_LEN,
@@ -329,17 +345,17 @@
             }
             fclose($handle);
             $this->setHeader($header);
-            $this->log('received ' . strlen($header) . ' bytes');
-            $this->log('finished the receive handshake');
+            $this->log('Получено ' . strlen($header) . ' байт');
+            $this->log('Закончили рукопожатие');
         }
         protected function readBody($accept)
         {
             if (!$this->getSocket())
             {
-                throw new Exception('socket is not set');
+                throw new Exception('Сокет не установлен');
             }
 
-            $this->log('receiving body...');
+            $this->log('Получаем тело запроса...');
 
             $handle = fopen(__DIR__ . SLASH . microtime() . '_body.bin', 'wb');
 
@@ -353,13 +369,13 @@
             fwrite($handle, $buf, strlen($buf));
             fclose($handle);
 
-            $this->log('received ' . strlen($buf) . ' bytes');
-            $this->log('finished the receive body');
+            $this->log('Получено ' . strlen($buf) . ' байт');
+            $this->log('Закончили получение тела запроса');
         }
 
-        protected function generateHandshake()
+        private function generateHandshake()
         {
-            $this->log('prepare handshake...');
+            $this->log('Генерация данных для рукопожатия...');
 
             $preamble = self::PREAMBLE_VAL;
             $hs = self::HANDSHAKE_VAL;
@@ -375,16 +391,16 @@
             $binary .= pack('C', $this->xor_sum($body, strlen($body)));
             $binary .= pack('C', $this->xor_sum($binary, strlen($binary)));
             $binary .= $body;
-            $this->log('complete handshake...');
+            $this->log('Данные для рукопожатия сгенерированы...');
 
             return $binary;
         }
 
-        protected function sendHandshake($accept)
+        private function sendHandshake($accept)
         {
             if (!$this->getSocket())
             {
-                throw new Exception('socket is not set');
+                throw new Exception('Сокет не установлен');
             }
 
             $binary = $this->generateHandshake();
@@ -396,14 +412,14 @@
 
             if ($r != strlen($binary))
             {
-                throw new Exception('send ' . $r , ' bytes, total (' . strlen($binary) . ')');
+                throw new Exception('Отправили ' . $r , ' байт, а должны были отправить ' . strlen($binary) . ' байт, проблемы с каналом связи?');
             }
 
-            $this->log('send answer handshake ' . strlen($binary) . ' bytes');
+            $this->log('Отправили ответное рукопожатие (' . strlen($binary) . ' байт)');
         }
 
         /**
-         * get resource socket
+         * Получить ресурс сокета
          *
          * @return mixed
          */
@@ -413,17 +429,17 @@
         }
 
         /**
-         * set resource socket
+         * Установить ресурс сокета
          *
          * @param mixed $socket
          */
-        protected function setSocket($socket)
+        private function setSocket($socket)
         {
             $this->_socket = $socket;
         }
 
         /**
-         * get listen address
+         * Получить адрес сервера
          *
          * @return mixed
          */
@@ -433,17 +449,17 @@
         }
 
         /**
-         * set listen address
+         * Установить адрес сервера
          *
          * @param mixed $address
          */
-        protected function setAddress($address)
+        private function setAddress($address)
         {
             $this->_address = $address;
         }
 
         /**
-         * get listen port
+         * Получить порт сервера
          *
          * @return mixed
          */
@@ -453,17 +469,17 @@
         }
 
         /**
-         * set listen port
+         * Установить порт сервера
          *
          * @param mixed $port
          */
-        protected function setPort($port)
+        private function setPort($port)
         {
             $this->_port = $port;
         }
 
         /**
-         * get request header
+         * Получить заголовок запроса
          *
          * @return mixed
          */
@@ -473,24 +489,24 @@
         }
 
         /**
-         * set request header
+         * Установить заголовок запроса
          *
          * @param mixed $header
          *
          * @throws \Exception
          */
-        protected function setHeader($header)
+        private function setHeader($header)
         {
             if ($header !== false && strlen($header) < self::HEADER_LEN)
             {
-                throw new Exception('header incorrect length', -23);
+                throw new Exception('Неверная длина заголовка, ожидалось ' . self::HEADER_LEN . ' байт, получено ' . strlen($header) . ' байт', -23);
             }
 
             $this->_header = $header;
         }
 
         /**
-         * get preamble
+         * Получить преамбулу заголовка
          *
          * @return mixed
          */
@@ -500,29 +516,29 @@
         }
 
         /**
-         * set preamble
+         * Установить преамбулу заголовка
          *
          * @param mixed $preamble
          *
          * @throws \Exception
          */
-        protected function setPreamble($preamble)
+        private function setPreamble($preamble)
         {
             if (strlen($preamble) < self::PREAMBLE_LEN)
             {
-                throw new Exception('Preamble uncorrected length', -5);
+                throw new Exception('Преамбула заголовка неверной длины, ожидалось ' . self::PREAMBLE_LEN .' байт, получено ' . strlen($preamble) . ' байт.', -5);
             }
 
             if ($preamble != self::PREAMBLE_VAL)
             {
-                throw new Exception('Preamble value not incorrect', -26);
+                throw new Exception('Неверное значение преамбулы, ожидалось ' . self::PREAMBLE_VAL, ', получено ' . $preamble, -26);
             }
 
             $this->_preamble = $preamble;
         }
 
         /**
-         * get id recipient
+         * Получить ID получателя пакета
          *
          * @return mixed
          */
@@ -532,24 +548,24 @@
         }
 
         /**
-         * set id recipient
+         * Установить id получателя пакета
          *
          * @param mixed $idr
          *
          * @throws \Exception
          */
-        protected function setIdr($idr)
+        private function setIdr($idr)
         {
             if (!is_int($idr))
             {
-                throw new Exception('IDr is not int', -8);
+                throw new Exception('IDr не INT', -8);
             }
 
             $this->_idr = $idr;
         }
 
         /**
-         * get id sender
+         * Получить ID отправителя пакета
          *
          * @return mixed
          */
@@ -559,24 +575,24 @@
         }
 
         /**
-         * set id sender
+         * Установить ID отправителя пакета
          *
          * @param mixed $ids
          *
          * @throws \Exception
          */
-        protected function setIds($ids)
+        private function setIds($ids)
         {
             if (!is_int($ids))
             {
-                throw new Exception('IDs is not int', -8);
+                throw new Exception('IDs не INT', -8);
             }
 
             $this->_ids = $ids;
         }
 
         /**
-         * get size of body request (in bytes)
+         * Получить размер тела запроса в байтах
          *
          * @return mixed
          */
@@ -586,24 +602,24 @@
         }
 
         /**
-         * set size of body request (in bytes)
+         * Установить размер тела запроса в байтах
          *
          * @param mixed $body_size
          *
          * @throws \Exception
          */
-        protected function setBodySize($body_size)
+        private function setBodySize($body_size)
         {
             if (!is_int($body_size))
             {
-                throw new Exception('body size is not int', -8);
+                throw new Exception('Размер тела запроса не INT', -8);
             }
 
             $this->_body_size = $body_size;
         }
 
         /**
-         * get control sum of body request
+         * Получить контрольную сумму CSd
          *
          * @return mixed
          */
@@ -613,24 +629,24 @@
         }
 
         /**
-         * set control sum of body request
+         * Установить контрольную сумму CSd
          *
          * @param mixed $csd
          *
          * @throws \Exception
          */
-        protected function setCsd($csd)
+        private function setCsd($csd)
         {
             if (!is_int($csd))
             {
-                throw new Exception('csd is not int', -14);
+                throw new Exception('CSd не INT', -14);
             }
 
             $this->_csd = $csd;
         }
 
         /**
-         * get control sum of header request
+         * Получить контрольную сумму CSp
          *
          * @return mixed
          */
@@ -640,23 +656,25 @@
         }
 
         /**
-         * set control sum of header request
+         * Установить контрольную сумму CSp
          *
          * @param mixed $csp
          *
          * @throws \Exception
          */
-        protected function setCsp($csp)
+        private function setCsp($csp)
         {
             if (!is_int($csp))
             {
-                throw new Exception('csp is not int', -15);
+                throw new Exception('CSP не INT', -15);
             }
 
             $this->_csp = $csp;
         }
 
         /**
+         * Получить IMEI датчика
+         *
          * @return mixed
          */
         public function getImei()
@@ -665,15 +683,17 @@
         }
 
         /**
+         * Установить IMEI датчика
+         *
          * @param mixed $imei
          *
          * @throws \Exception
          */
-        protected function setImei($imei)
+        private function setImei($imei)
         {
             if (strlen($imei) < self::IMEI_LEN)
             {
-                throw new Exception('imei length is not ' . self::IMEI_LEN . ' chars');
+                throw new Exception('Неверная длина IMEI, ожидалось ' . self::IMEI_LEN . ' байт, получено ' . strlen($imei) . ' байт', -18);
             }
 
             $this->imei = $imei;
@@ -681,11 +701,11 @@
 
 
         /**
-         * write log to console
+         * Вывести сообщение в консоли
          *
          * @param $message
          */
-        protected function log($message)
+        public function log($message)
         {
             if ($this->_debug)
             {
@@ -694,7 +714,7 @@
         }
 
         /**
-         * calculate hash
+         * Рассчитать контрольную сумму заголовка или тела запроса
          *
          * @param $bufLen
          * @param $length

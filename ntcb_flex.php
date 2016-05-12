@@ -22,32 +22,8 @@
 
     class ntcb_flex extends ntcb
     {
-        const TELE_VAL          = '*>A';    // значение префикса телеметрических данных от датчика
-        const TELE_LEN          = 3;        // длина префикса теле данных
-        const TELE_SIZE_LEN     = 1;        // длина блока теле данных
-        const FORMAT_TYPE_LEN   = 1;        // длина типа формата в байтах
-        const RECORD_ID_LEN     = 4;        // длина сквозного номера записи в энергонезависимой памяти в байтах
-        const EVENT_CODE_LEN    = 2;        // длина кода события в байтах
-        const DATE_LEN          = 6;        // длина даты в байтах
-        const STATUS_LEN        = 1;        // длина статуса устройства в байтах (битфилд, первые 2 бита)
-        const STATUS_MODULE_LEN = 1;        // длина статуса функциональных модулей в байтах (битфилд, 8 бит)
-        const GSM_LEVEL_LEN     = 1;        // длина уровня сигнала в байтах
-        const STATUS_OUTPUT_LEN = 1;        // длина текущего состояния выходов в байтах
-        const STATUS_DISCR_SENSORS_LEN = 1; // длина состояния дискретных датчиков в байтах
-        const VOLTAGE_POWER_LEN = 2;        // длина напряжения на основном источнике питания в байтах
-        const VOLTAGE_POWER_BACKUP_LEN = 2; // длина напряжения на резервном источнике питания в байтах
-        const A_INPUT1_LEN      = 2;        // длина на аналоговом входе 1 в байтах
-        const A_INPUT2_LEN      = 2;        // длина на аналоговом входе 2 в байтах
-        const A_INPUT3_LEN      = 2;        // длина на аналоговом входе 3 в байтах
-        const PULSE_COUNTER1_LEN = 4;       // длина счетчика импульсов 1 в байтах
-        const PULSE_COUNTER2_LEN = 4;       // длина счетчика импульсов 2 в байтах
-        const A_FREQ_FUEL1_LEN  = 2;        // длина частоты на аналоговом частотном датчике уровня топлива 1 в байтах
-        const A_FREQ_FUEL2_LEN  = 2;        // длина частоты на аналоговом частотном датчике уровня топлива 2 в байтах
-        const FUEL1_PROC_LEN    = 1;        // длина значения толпива в основном баке, в процентах от объема CAN, -1 параметр не считывается
-        const FUEL2_PROC_LEN    = 2;        // длина значения толпива в основном баке, в процентах от объема CAN, -1 параметр не считывается
-
-        protected $_format;       // формат запроса
-        protected $_record_id;    // id записи
+        const MATCHING_PROTOCOLS_VAL        = '*>FLEX'; // префикс команды согласования протоколов
+        const ANSWER_MATCHING_PROTOCOLS_VAL = '*<FLEX'; // ответный префикс команды согласования протоколов
 
         protected function processing($accept)
         {
@@ -56,6 +32,48 @@
             } catch(Exception $e)
             {
                 throw new Exception($e->getMessage(), $e->getCode());
+            }
+
+            $this->readHeader($accept);
+            $this->readBody($accept);
+
+            if (!$this->checkSum())
+            {
+                throw new Exception('Контрольная сумма некорректна', -31);
+            }
+
+            try
+            {
+                $this->sendMatchingProtocol($accept);
+            } catch (Exception $e)
+            {
+                throw new Exception($e->getMessage(), $e->getCode());
+            }
+        }
+
+        private function sendMatchingProtocol($accept)
+        {
+            if (!$this->getBodySize())
+            {
+                throw new Exception('Пустое тело запроса', -33);
+            }
+
+            $temp_pref = unpack('c6', substr($this->getBody(), 0, 6));
+
+            if ($temp_pref === false)
+            {
+                throw new Exception('Функция unpack вернула ошибку', -34);
+            }
+
+            $pref = '';
+            foreach($temp_pref as $char)
+            {
+                $pref .= chr($char);
+            }
+
+            if ($pref != self::MATCHING_PROTOCOLS_VAL)
+            {
+                throw new Exception('Некорректный префикс согласования протоколов', -32);
             }
 
 

@@ -57,43 +57,6 @@
             {
                 throw new Exception($e->getMessage(), $e->getCode());
             }
-
-            $length = $this->getBlockSize($accept);
-            $this->readBlock($accept, $length);
-        }
-
-        private function readBlock($accept, $length)
-        {
-            $handle = fopen(__DIR__ . SLASH . microtime() . '_tele.bin', 'wb');
-            {
-                $buf = socket_read($accept, $length);
-                if ($buf === false) {
-                    throw new Exception(socket_strerror(socket_last_error()), socket_last_error());
-                }
-
-                switch ($key)
-                {
-                    case 'prefix':
-                        $p = '';
-                        foreach (unpack('c3', $buf) as $item)
-                        {
-                            $p .= chr($item);
-                        }
-
-                        if ($p != self::TELE_VAL)
-                        {
-                            throw new Exception('prefix tele data incorrect', -30);
-                        }
-
-                        break;
-                    case 'size':
-                        $size = current(unpack('С', $buf));
-                        break;
-                }
-
-            }
-
-            fwrite($handle, $buf, strlen($buf));
         }
 
         private function getBlockSize($accept)
@@ -141,12 +104,12 @@
         private function logSocket($accept)
         {
             $handle = fopen(__DIR__ . SLASH . microtime() . '_telemetries_loging.bin', 'wb');
-            $this->log('logging telemetries data...');
+            $this->log('Запись телеметрических данных...');
             while(($buf = socket_read($accept, 1)) != '')
             {
                 fwrite($handle, $buf, strlen($buf));
             }
-            $this->log('end logging telemetries data...');
+            $this->log('Окончание записи телеметрических данных...');
             fclose($handle);
         }
     }
