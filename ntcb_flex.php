@@ -32,6 +32,10 @@
         const SIZE_CONFIG10                 = 69;       // размер конфигурационного поля при 10 версии структуры
         const SIZE_CONFIG20                 = 122;      // размер конфигурационного поля, при 20 версии структуры
 
+        const TELEMETRY_PREFIX_VAL          = '~A';     // префикс телеметрических данных из черного ящика
+        const WARNING_PREFIX_VAL            = '~T';     // префикс тревожного сообщения
+        const TELEMETRY_CURRENT_PREFIX_VAL  = '~C';     // префикс телеметрических данных текущего состояния (видимо по запросу или вместо пинга)
+
         private $_prefix;
         private $_protocol;
         private $_protocol_version;
@@ -43,26 +47,130 @@
         {
             try {
                 parent::processing($accept);
+                $this->readHeader($accept);
+                $this->readBody($accept);
+                $this->checkSum();
+                $this->matchingProtocol();
+                $this->sendGenerateMatchingProtocol($accept);
+                $this->readTelemetry($accept);
             } catch(Exception $e)
             {
                 throw new Exception($e->getMessage(), $e->getCode());
             }
+        }
 
-            $this->readHeader($accept);
-            $this->readBody($accept);
-
-            if (!$this->checkSum())
+        private function readTelemetry($accept)
+        {
+            if (!$this->getSocket())
             {
-                throw new Exception('Контрольная сумма некорректна', -31);
+                throw new Exception('Сокет не установлен', -1);
+            }
+
+            $prefix = socket_read($this->getSocket(), 2);
+
+            if ($prefix === false)
+            {
+                throw new Exception('Датчик не вернул телеметрические данные', -37);
+            }
+
+            $prefix = unpack('c2', $prefix);
+
+            if ($prefix === false)
+            {
+                throw new Exception('Функция unpack вернула ошибку', -38);
+            }
+
+            $pref = '';
+            foreach($prefix as $byte)
+            {
+                $prefix .= chr($byte);
             }
 
             try
             {
-                $this->matchingProtocol();
-                $this->sendGenerateMatchingProtocol($accept);
+                switch ($pref)
+                {
+                    case self::TELEMETRY_PREFIX_VAL:
+                        if ($this->getStructVersion() == self::STRUCT_VERSION10)
+                        {
+                            $this->log('Телеметрические данные 10-ой версии');
+                            $this->unpackTelemetryData10($accept);
+                        } else if ($this->getStructVersion() == self::STRUCT_VERSION20)
+                        {
+                            $this->log('Телеметрические данные 20-ой версии');
+                            //TODO: реализовать unpack фцнкцию для 2-ой версии
+                        }
+                        else
+                        {
+                            throw new Exception('Неизвестная версия структурных данных протокола', -38);
+                        }
+                        break;
+                    case self::TELEMETRY_CURRENT_PREFIX_VAL:
+                        //TODO: написать unpack функцию
+                        if ($this->getStructVersion() == self::STRUCT_VERSION10)
+                        {
+                            $this->log('Телеметрические данные текущего состояния 10-ой версии');
+                        } else if ($this->getStructVersion() == self::STRUCT_VERSION20)
+                        {
+                            $this->log('Телеметрические данные текущего состояния 20-ой версии');
+                        }
+                        else
+                        {
+                            throw new Exception('Неизвестная версия структурных данных протокола', -38);
+                        }
+                        break;
+                    case self::WARNING_PREFIX_VAL:
+                        //TODO: написать unpack функцию
+                        if ($this->getStructVersion() == self::STRUCT_VERSION10)
+                        {
+                            $this->log('Тревожный запрос 10-ой версии');
+                        } else if ($this->getStructVersion() == self::STRUCT_VERSION20)
+                        {
+                            $this->log('Тревожный запрос 20-ой версии');
+                        }
+                        else
+                        {
+                            throw new Exception('Неизвестная версия структурных данных протокола', -38);
+                        }
+                        break;
+                    default:
+                        throw new Exception('Неподдерживаемый тип запроса', -39);
+                }
             } catch (Exception $e)
             {
                 throw new Exception($e->getMessage(), $e->getCode());
+            }
+        }
+
+        private function unpackTelemetryData10($accept)
+        {
+            if ($this->getStructVersion() != self::STRUCT_VERSION10)
+            {
+                throw new Exception('Некорректная версия структурных данных', -40);
+            }
+
+            $size = socket_read($accept, 1);
+
+            if ($size === false)
+            {
+                throw new Exception('Датчик не вернул размер телеметрических данных', -37);
+            }
+
+            $size = current(unpack('C', $size));
+
+            for ($i = 0; $i < $size; $i++)
+            {
+                if (($id = socket_read($accept, 4)) === false)
+                {
+                    throw new Exception('Не удалось прочитать ID из сокета', -41);
+                }
+
+                if (($id = unpack('L', $id)) === FALSE)
+                {
+                    throw new Exception('Функция unpack вернула ошибку при парсинге ID', -1);
+                }
+                $id = current($id);
+                $this->log('ID = ' . $id);
             }
         }
 
@@ -70,9 +178,12 @@
         {
             $this->log('Начинаем согласование протоколов');
 
-            if (!$this->getBodySize())
+            try
             {
-                throw new Exception('Пустое тело запроса', -33);
+                $this->getBodySize();
+            } catch(Exception $e)
+            {
+                throw new Exception($e->getMessage(), $e->getCode());
             }
 
             $temp_pref = unpack('c6', substr($this->getBody(), 0, 6));

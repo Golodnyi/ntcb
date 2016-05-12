@@ -142,9 +142,12 @@
         {
             $this->log('Распаковка IMEI');
 
-            if (!$this->getBodySize())
+            try
             {
-                throw new Exception('Пустое тело запроса', -3);
+                $this->getBodySize();
+            } catch(Exception $e)
+            {
+                throw new Exception($e->getMessage(), $e->getCode());
             }
 
             $buffer = substr($this->getBody(), 0, self::PREF_IMEI_LEN);
@@ -200,33 +203,9 @@
                 try
                 {
                     $this->readHeader($accept);
-
-                    if (!$this->getBodySize())
-                    {
-                        $this->log('Получили только заголовок запроса, работы нет.');
-                        socket_close($accept);
-                        $this->log('Отключаемся от датчика!');
-                        continue;
-                    }
-
+                    $this->getBodySize();
                     $this->readBody($accept);
-                } catch (Exception $e)
-                {
-                    $this->log($e->getMessage());
-                    socket_close($accept);
-                    $this->log('Отключаемся от датчика!');
-                    continue;
-                }
-
-                if (!$this->checkSum())
-                {
-                    socket_close($accept);
-                    $this->log('Отключаемся от датчика!');
-                    continue;
-                }
-
-                try
-                {
+                    $this->checkSum();
                     $this->unpackImei();
                     $this->sendHandshake($accept);
                     $this->processing($accept);
@@ -238,27 +217,32 @@
                     continue;
                 }
 
-                //socket_close($accept);
-                //$this->log('Отключаемся от датчика!');
+                socket_close($accept);
+                $this->log('Отключаемся от датчика!');
             }
         }
 
         protected function checkSum()
         {
-            if ($this->xor_sum($this->getBody(), $this->getBodySize()) !== $this->getCsd())
+            try
             {
-                $this->log('Контрольная сумма CSd не корректна!');
-                return false;
-            }
-            $this->log('Контрольная сумма CSd корректна!');
+                if ($this->xor_sum($this->getBody(), $this->getBodySize()) !== $this->getCsd())
+                {
+                    throw new Exception('Контрольная сумма CSd некорректна', -31);
+                }
+                $this->log('Контрольная сумма CSd корректна!');
 
-            if ($this->xor_sum(substr($this->getHeader(), 0, self::HEADER_LEN - 1), self::HEADER_LEN - 1) !== $this->getCsp())
+                if ($this->xor_sum(substr($this->getHeader(), 0, self::HEADER_LEN - 1),
+                        self::HEADER_LEN - 1) !== $this->getCsp()
+                )
+                {
+                    throw new Exception('Контрольная сумма CSp некорректна', -31);
+                }
+                $this->log('Контрольная сумма CSp корректна!');
+            } catch (Exception $e)
             {
-                $this->log('Контрольная сумма CSp не корректна!');
-                return false;
+                throw new Exception($e->getMessage(), $e->getCode());
             }
-            $this->log('Контрольная сумма CSp корректна!');
-
             return true;
         }
 
@@ -359,7 +343,13 @@
 
             $handle = fopen(__DIR__ . SLASH . microtime() . '_body.bin', 'wb');
 
-            $buf = socket_read($accept, $this->getBodySize());
+            try
+            {
+                $buf = socket_read($accept, $this->getBodySize());
+            } catch(Exception $e)
+            {
+                throw new Exception($e->getMessage(), $e->getCode());
+            }
             if ($buf === false) {
                 throw new Exception(socket_strerror(socket_last_error()), socket_last_error());
             }
@@ -598,7 +588,14 @@
          */
         public function getBodySize()
         {
-            return intval($this->_body_size);
+            $size = intval($this->_body_size);
+
+            if (!$size)
+            {
+                throw new Exception('Нулевой размер тела запроса');
+            }
+
+            return $size;
         }
 
         /**
