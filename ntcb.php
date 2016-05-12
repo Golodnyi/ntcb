@@ -241,6 +241,7 @@
                 {
                     $this->unpackImei();
                     $this->sendHandshake($accept);
+                    $this->readHeader($accept);
                     $this->readTelemetries($accept);
                 } catch (Exception $e)
                 {
@@ -262,6 +263,7 @@
                 throw new Exception('socket is not set');
             }
         }
+
         protected function readHeader($accept)
         {
             if (!$this->getSocket())
@@ -304,10 +306,10 @@
                             $this->setPreamble($p);
                             break;
                         case 'IDr':
-                            $this->setIds(current(unpack('L', $buf)));
+                            $this->setIdr(current(unpack('L', $buf)));
                             break;
                         case 'IDs':
-                            $this->setIdr(current(unpack('L', $buf)));
+                            $this->setIds(current(unpack('L', $buf)));
                             break;
                         case 'BODY_LEN':
                             $this->setBodySize(current(unpack('S', $buf)));
