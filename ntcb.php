@@ -238,8 +238,8 @@
                     continue;
                 }
 
-                socket_close($accept);
-                $this->log('Отключаемся от датчика!');
+                //socket_close($accept);
+                //$this->log('Отключаемся от датчика!');
             }
         }
 

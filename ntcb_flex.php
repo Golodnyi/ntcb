@@ -58,14 +58,15 @@
 
             try
             {
-                $this->sendMatchingProtocol($accept);
+                $this->matchingProtocol();
+                $this->sendGenerateMatchingProtocol($accept);
             } catch (Exception $e)
             {
                 throw new Exception($e->getMessage(), $e->getCode());
             }
         }
 
-        private function sendMatchingProtocol($accept)
+        private function matchingProtocol()
         {
             $this->log('Начинаем согласование протоколов');
 
@@ -81,76 +82,124 @@
                 throw new Exception('Функция unpack вернула ошибку', -34);
             }
 
-            $prefix = '';
-            foreach($temp_pref as $char)
+            try
             {
-                $prefix .= chr($char);
+                $prefix = '';
+                foreach ($temp_pref as $char)
+                {
+                    $prefix .= chr($char);
+                }
+
+                $this->setPrefix($prefix);
+
+                $protocol = current(unpack('C', substr($this->getBody(), 6, 1)));
+
+                if ($protocol === false)
+                {
+                    throw new Exception('Функция unpack вернула ошибку', -34);
+                }
+
+                $this->setProtocol($protocol);
+
+                $protocol_version = current(unpack('C', substr($this->getBody(), 7, 1)));
+
+                if ($protocol_version === false)
+                {
+                    throw new Exception('Функция unpack вернула ошибку', -34);
+                }
+
+                $this->setProtocolVersion($protocol_version);
+
+                $stuct_version = current(unpack('C', substr($this->getBody(), 8, 1)));
+
+                if ($stuct_version === false)
+                {
+                    throw new Exception('Функция unpack вернула ошибку', -34);
+                }
+
+                $this->setStructVersion($stuct_version);
+
+                $data_size = current(unpack('C', substr($this->getBody(), 9, 1)));
+
+                if ($data_size === false)
+                {
+                    throw new Exception('Функция unpack вернула ошибку', -34);
+                }
+
+                $this->setDataSize($data_size);
+
+                $this->log('Протокол FLEX, версия ' . $protocol_version . ', структура ' . $stuct_version . ', размер конфигурационного поля ' . $data_size . ' байт');
+
+                $length = ceil($data_size / 8);
+                $bitfield_temp = unpack('C' . $length, substr($this->getBody(), 10, $length));
+                $this->setBitfield($this->getBitfieldFromData($bitfield_temp, $data_size));
+            } catch (Exception $e)
+            {
+                throw new Exception($e->getMessage(), $e->getCode());
+            }
+            $this->log('Закончили согласование протоколов');
+        }
+
+        private function generateMatchingProtocol()
+        {
+            $this->log('Генерация заголовка ответа...');
+
+            $preamble = self::PREAMBLE_VAL;
+            $hs = self::ANSWER_MATCHING_PROTOCOLS_VAL;
+            $body = '';
+            for ($i = 0; $i < strlen($hs); $i++)
+            {
+                $body .= pack('c', ord($hs[$i]));
+            }
+            $body .= pack('C', $this->getProtocol());
+            $body .= pack('C', $this->getProtocolVersion());
+            $body .= pack('C', $this->getStructVersion());
+
+            $binary = pack('cccc', ord($preamble[0]), ord($preamble[1]), ord($preamble[2]), ord($preamble[3]));
+            $binary .= pack('L', $this->getIds());
+            $binary .= pack('L', $this->getIdr());
+            $binary .= pack('S', strlen($body));
+            $binary .= pack('C', $this->xor_sum($body, strlen($body)));
+            $binary .= pack('C', $this->xor_sum($binary, strlen($binary)));
+            $binary .= $body;
+            $this->log('Заголовок ответа сгенерирован...');
+
+            return $binary;
+        }
+
+        private function sendGenerateMatchingProtocol($accept)
+        {
+            $this->log('Отправка согласования протоколов');
+            $binary = $this->generateMatchingProtocol();
+
+            $send = socket_write($accept, $binary, strlen($binary));
+
+            if ($send != strlen($binary))
+            {
+                throw new Exception('Отправили ' . $send . ' байт, должны были отправить ' . strlen($binary) . ' байт', - 36);
             }
 
-            $this->setPrefix($prefix);
+            $this->log('Завершена отправка согласования протоколов');
+        }
 
-            $protocol = current(unpack('C', substr($this->getBody(), 6, 1)));
-
-            if ($protocol === false)
-            {
-                throw new Exception('Функция unpack вернула ошибку', -34);
-            }
-
-            $this->setProtocol($protocol);
-
-            $protocol_version = current(unpack('C', substr($this->getBody(), 7, 1)));
-
-            if ($protocol_version === false)
-            {
-                throw new Exception('Функция unpack вернула ошибку', -34);
-            }
-
-            $this->setProtocolVersion($protocol_version);
-
-            $stuct_version = current(unpack('C', substr($this->getBody(), 8, 1)));
-
-            if ($stuct_version === false)
-            {
-                throw new Exception('Функция unpack вернула ошибку', -34);
-            }
-
-            $this->setStructVersion($stuct_version);
-
-            $data_size = current(unpack('C', substr($this->getBody(), 9, 1)));
-
-            if ($data_size === false)
-            {
-                throw new Exception('Функция unpack вернула ошибку', -34);
-            }
-
-            $this->setDataSize($data_size);
-
-            $this->log('Протокол FLEX, версия ' . $protocol_version .', структура ' . $stuct_version. ', размер конфигурационного поля ' . $data_size . ' байт');
-
-            $length = ceil($data_size / 8);
-            $bitfield_temp = unpack('C'.$length, substr($this->getBody(), 10, $length));
+        private function getBitfieldFromData($bitfield_temp, $data_size)
+        {
             $bitfield = [];
-
             $z = 0;
-            for( $i = 1; $i < count($bitfield_temp) + 1; $i++)
+
+            foreach($bitfield_temp as $byte)
             {
                 for ($j = 0; $j < 8; $j++)
                 {
-
-
-                    $bit = decbin($bitfield_temp[$i])[$j];
-                    $bitfield[] = !$bit ? 0 : 1;
-
+                    $bit = decbin($byte);
+                    $bitfield[] = !$bit[$j] ? 0 : 1;
                     if (++$z >= $data_size)
                     {
                         break;
                     }
                 }
             }
-
-            $this->setBitfield($bitfield);
-
-            $this->log('Закончили согласование протоколов');
+            return $bitfield;
         }
 
         /**
