@@ -459,8 +459,6 @@
                 throw new Exception('Класс telemetry_flex_v10 не найден', -37);
             }
 
-            $telemetry = new telemetry_flex_v10();
-
             if ($this->getPrefixTelemetry() == self::TELEMETRY_PREFIX_VAL)
             {
                 $binary .= $size = socket_read($accept, 1);
@@ -476,6 +474,7 @@
 
             for ($i = 0; $i < $size; $i++)
             {
+                $telemetry = new telemetry_flex_v10();
                 for ($j = 0; $j < count($this->getBitfield()); $j++)
                 {
                     if (!$this->getBitfield()[$j])
@@ -507,9 +506,9 @@
                     $this->log($this->_telemetry_values10[$j][1] . ': ' . $buf);
                     $telemetry->$method($buf);
                 }
+                $this->setTelemetry($telemetry);
             }
-
-            $this->setTelemetry($telemetry);
+            $this->log(var_dump($this->getTelemetry()));
             return $binary;
         }
 
