@@ -630,7 +630,7 @@
         {
             $bitfield = [];
             $z = 0;
-
+            $enabled = [];
             foreach($bitfield_temp as $byte)
             {
                 for ($j = 0; $j < 8; $j++)
@@ -640,6 +640,7 @@
                     if (isset($bit[$j]) && $bit[$j])
                     {
                         $bitfield[] = 1;
+                        $enabled[] = $this->_telemetry_values10[$z][1];
                     }
                     else
                     {
@@ -652,6 +653,8 @@
                     }
                 }
             }
+
+            $this->log('Ожидаем датчики: ' . implode(', ', $enabled));
             return $bitfield;
         }
 

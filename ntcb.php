@@ -177,6 +177,12 @@
             return true;
         }
 
+        private function reconnect($accept)
+        {
+            socket_close($accept);
+            $this->log('Отключаемся от датчика!');
+        }
+
         /**
          * run socket listener
          *
@@ -212,13 +218,11 @@
                 } catch (Exception $e)
                 {
                     $this->log($e->getMessage());
-                    socket_close($accept);
-                    $this->log('Отключаемся от датчика!');
+                    $this->reconnect($accept);
                     continue;
                 }
 
-                socket_close($accept);
-                $this->log('Отключаемся от датчика!');
+                $this->reconnect($accept);
             }
         }
 
