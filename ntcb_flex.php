@@ -491,7 +491,7 @@
 
                     if ($buf === false)
                     {
-                        $this->log('Ошибка получения данных из сокета, параметр ' . $this->_telemetry_values10[$j][1]);
+                        $this->log('Ошибка получения данных из сокета, параметр ' . $this->_telemetry_values10[$j][1] .' (' . socket_strerror(socket_last_error($this->getSocket())) . ' [' . socket_last_error($this->getSocket()) . '])');
                         continue;
                     }
                     $buf = unpack($this->_telemetry_values10[$j][0], $buf);
