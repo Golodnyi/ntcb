@@ -326,7 +326,7 @@
 
                             $this->log('CRC8 корректный');
 
-                            if ($this->export($this->getTelemetry()))
+                            if ($this->export($this->getTelemetry(), $pref))
                             {
                                 $this->sendConfirmFlex10($accept);
                             }
@@ -379,7 +379,7 @@
                             }
 
                             $this->log('CRC8 корректный');
-                            if ($this->export($this->getTelemetry()))
+                            if ($this->export($this->getTelemetry(), $pref))
                             {
                                 $this->sendConfirmFlexWarning10($accept);
                             }
