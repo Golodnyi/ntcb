@@ -489,14 +489,14 @@
                     $size_read = $this->_size_array[strtoupper($this->_telemetry_values10[$j][0])];
                     $binary .= $buf = socket_read($accept, $size_read);
 
-                    if ($buf == false)
+                    if ($buf === false)
                     {
                         $this->log('Ошибка получения данных из сокета, параметр ' . $this->_telemetry_values10[$j][1]);
                         continue;
                     }
                     $buf = unpack($this->_telemetry_values10[$j][0], $buf);
 
-                    if ($buf == false)
+                    if ($buf === false)
                     {
                         throw new Exception('Функция unpack вернула ошибку на параметре ' . $this->_telemetry_values10[$j][1] . ' (' . $this->_telemetry_values10[$i][0] . ')');
                     }
