@@ -140,8 +140,6 @@
 
         private function unpackImei()
         {
-            $this->log('Распаковка IMEI');
-
             try
             {
                 $this->getBodySize();
@@ -171,8 +169,6 @@
             {
                 throw new Exception($e->getMessage(), $e->getCode());
             }
-
-            $this->log('Сохранен IMEI');
 
             return true;
         }
@@ -234,7 +230,6 @@
                 {
                     throw new Exception('Контрольная сумма CSd некорректна', -31);
                 }
-                $this->log('Контрольная сумма CSd корректна!');
 
                 if ($this->xor_sum(substr($this->getHeader(), 0, self::HEADER_LEN - 1),
                         self::HEADER_LEN - 1) !== $this->getCsp()
@@ -242,7 +237,6 @@
                 {
                     throw new Exception('Контрольная сумма CSp некорректна', -31);
                 }
-                $this->log('Контрольная сумма CSp корректна!');
             } catch (Exception $e)
             {
                 throw new Exception($e->getMessage(), $e->getCode());
@@ -273,8 +267,6 @@
             {
                 throw new Exception('Сокет не установлен');
             }
-
-            $this->log('Рукопожатие...');
 
             $lengths = [
                 'preamble' => self::PREAMBLE_LEN,
@@ -333,8 +325,6 @@
             }
             fclose($handle);
             $this->setHeader($header);
-            $this->log('Получено ' . strlen($header) . ' байт');
-            $this->log('Закончили рукопожатие');
         }
         protected function readBody($accept)
         {
@@ -342,8 +332,6 @@
             {
                 throw new Exception('Сокет не установлен');
             }
-
-            $this->log('Получаем тело запроса...');
 
             $handle = fopen(__DIR__ . SLASH . time() . '_' .$this->getImei() . '_body.bin', 'wb');
 
@@ -362,15 +350,10 @@
 
             fwrite($handle, $buf, strlen($buf));
             fclose($handle);
-
-            $this->log('Получено ' . strlen($buf) . ' байт');
-            $this->log('Закончили получение тела запроса');
         }
 
         private function generateHandshake()
         {
-            $this->log('Генерация данных для рукопожатия...');
-
             $preamble = self::PREAMBLE_VAL;
             $hs = self::HANDSHAKE_VAL;
             $body = '';
@@ -385,7 +368,6 @@
             $binary .= pack('C', $this->xor_sum($body, strlen($body)));
             $binary .= pack('C', $this->xor_sum($binary, strlen($binary)));
             $binary .= $body;
-            $this->log('Данные для рукопожатия сгенерированы...');
 
             return $binary;
         }
@@ -408,8 +390,6 @@
             {
                 throw new Exception('Отправили ' . $r , ' байт, а должны были отправить ' . strlen($binary) . ' байт, проблемы с каналом связи?');
             }
-
-            $this->log('Отправили ответное рукопожатие (' . strlen($binary) . ' байт)');
         }
 
         /**

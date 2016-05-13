@@ -475,9 +475,10 @@
                 $size = current(unpack('C', $size));
                 $this->setTelemetryFlex10Size($size);
             }
-
+            $this->log('Получили ' . $size . ' блоков');
             for ($i = 0; $i < $size; $i++)
             {
+                $this->log('==========');
                 $telemetry = new telemetry_flex_v10();
                 for ($j = 0; $j < count($this->getBitfield()); $j++)
                 {
@@ -513,13 +514,12 @@
                 }
                 $this->setTelemetry($telemetry);
             }
+            $this->log('==========');
             return $binary;
         }
 
         private function matchingProtocol()
         {
-            $this->log('Начинаем согласование протоколов');
-
             try
             {
                 $this->getBodySize();
@@ -590,13 +590,10 @@
             {
                 throw new Exception($e->getMessage(), $e->getCode());
             }
-            $this->log('Закончили согласование протоколов');
         }
 
         private function generateMatchingProtocol()
         {
-            $this->log('Генерация заголовка ответа...');
-
             $preamble = self::PREAMBLE_VAL;
             $hs = self::ANSWER_MATCHING_PROTOCOLS_VAL;
             $body = '';
@@ -615,14 +612,12 @@
             $binary .= pack('C', $this->xor_sum($body, strlen($body)));
             $binary .= pack('C', $this->xor_sum($binary, strlen($binary)));
             $binary .= $body;
-            $this->log('Заголовок ответа сгенерирован...');
 
             return $binary;
         }
 
         private function sendGenerateMatchingProtocol($accept)
         {
-            $this->log('Отправка согласования протоколов');
             $binary = $this->generateMatchingProtocol();
 
             $send = socket_write($accept, $binary, strlen($binary));
@@ -631,8 +626,6 @@
             {
                 throw new Exception('Отправили ' . $send . ' байт, должны были отправить ' . strlen($binary) . ' байт', - 36);
             }
-
-            $this->log('Завершена отправка согласования протоколов');
         }
 
         private function getBitfieldFromData($bitfield_temp, $data_size)
