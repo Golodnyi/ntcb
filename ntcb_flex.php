@@ -4,6 +4,7 @@
      * User: golodnyi
      * Date: 06.05.16
      * Time: 15:05
+     * TODO: класс нуждается в рефакторинге
      */
 
     if (!defined('SLASH'))
@@ -473,7 +474,6 @@
                     }
 
                     $size_read = $this->_size_array[strtoupper($this->_telemetry_values10[$j][0])];
-                    $this->log('прочитали ' . $size_read . ' байт');
                     $binary .= $buf = socket_read($accept, $size_read);
 
                     if ($buf == false)
@@ -493,7 +493,9 @@
                         throw new Exception('Метод ' . $method . ' не существует', -50);
                     }
 
-                    $telemetry->$method(current($buf));
+                    $buf = current($buf);
+                    $this->log($this->_telemetry_values10[$j][1] . ': ' . $buf);
+                    $telemetry->$method($buf);
                 }
             }
 
