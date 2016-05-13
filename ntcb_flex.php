@@ -508,7 +508,6 @@
                 }
                 $this->setTelemetry($telemetry);
             }
-            $this->log(var_dump($this->getTelemetry()));
             return $binary;
         }
 
