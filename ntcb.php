@@ -282,7 +282,7 @@
             ];
 
             $header = '';
-            $handle = fopen(__DIR__ . SLASH . microtime() . '_handshake.bin', 'wb');
+            $handle = fopen(__DIR__ . SLASH . time() . '_' .$this->getImei() . '_handshake.bin', 'wb');
             foreach($lengths as $key => $length)
             {
                 $buf = socket_read($accept, $length);
@@ -341,7 +341,7 @@
 
             $this->log('Получаем тело запроса...');
 
-            $handle = fopen(__DIR__ . SLASH . microtime() . '_body.bin', 'wb');
+            $handle = fopen(__DIR__ . SLASH . time() . '_' .$this->getImei() . '_body.bin', 'wb');
 
             try
             {

@@ -272,12 +272,12 @@
 
         private function readTelemetry($accept)
         {
-            $binary = '';
             if (!$this->getSocket())
             {
                 throw new Exception('Сокет не установлен', -1);
             }
 
+            $binary = '';
             $prefix = socket_read($accept, 2);
             $binary .= $prefix;
 
@@ -385,6 +385,10 @@
             {
                 throw new Exception($e->getMessage(), $e->getCode());
             }
+
+            $handle = fopen(__DIR__ . SLASH . time() . '_' .$this->getImei() . '_telemetry.bin', 'wb');
+            fwrite($handle, $binary, strlen($binary));
+            fclose($handle);
         }
 
         private function crc8($data, $length)
