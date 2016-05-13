@@ -53,7 +53,7 @@
          *
          * @param mixed $body
          */
-        private function setBody($body)
+        protected function setBody($body)
         {
             $this->_body = $body;
         }
