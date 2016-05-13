@@ -19,6 +19,7 @@
     }
 
     require_once __DIR__ . SLASH . 'ntcb.php';
+    require_once __DIR__ . SLASH . 'classes' . SLASH . 'telemetry_flex_v10.php';
 
     class ntcb_flex extends ntcb
     {
@@ -115,31 +116,47 @@
         ];
 
         private $_prefix;
+        private $_prefix_telemetry;
         private $_protocol;
         private $_protocol_version;
         private $_struct_version;
         private $_data_size;
         private $_bitfield;
         private $_telemetry_flex10_size;
-        private $_telemetry_flex10_crc8;
+        private $_eventId;
         public $_telemetry;
 
         /**
          * @return mixed
          */
-        public function getTelemetryFlex10Crc8()
+        public function getEventId()
         {
-            return $this->_telemetry_flex10_crc8;
+            return $this->_eventId;
         }
 
         /**
-         * @param mixed $telemetry_flex10_crc8
+         * @param mixed $eventId
          */
-        public function setTelemetryFlex10Crc8($telemetry_flex10_crc8)
+        public function setEventId($eventId)
         {
-            $this->_telemetry_flex10_crc8 = $telemetry_flex10_crc8;
+            $this->_eventId = $eventId;
         }
 
+        /**
+         * @return mixed
+         */
+        public function getPrefixTelemetry()
+        {
+            return $this->_prefix_telemetry;
+        }
+
+        /**
+         * @param mixed $prefix_telemetry
+         */
+        public function setPrefixTelemetry($prefix_telemetry)
+        {
+            $this->_prefix_telemetry = $prefix_telemetry;
+        }
 
         /**
          * @return mixed
@@ -221,6 +238,37 @@
             return $binary;
         }
 
+        private function generateConfirmFlexWarning10()
+        {
+            $this->log('Генерирум подтверждение о получении тревожного сообщения');
+            $binary = '';
+            $tpv = self::WARNING_PREFIX_VAL;
+
+            for ($i = 0; $i < strlen(self::TELEMETRY_PREFIX_VAL); $i++)
+            {
+                $binary .= pack('C', ord($tpv[$i]));
+            }
+            $binary .= pack('L', $this->getEventId());
+            $crc8 = $this->crc8($binary, strlen($binary));
+            $binary .= pack('C', $crc8);
+            $this->log('Закончили генерацию подтверждения о получении тревожного сообщения');
+            return $binary;
+        }
+
+        private function sendConfirmFlexWarning10($accept)
+        {
+            $this->log('Подготовка к отправки подтверждения о получении тревожного сообщения');
+            $binary = $this->generateConfirmFlexWarning10();
+            $send = socket_write($accept, $binary, strlen($binary));
+
+            if ($send != strlen($binary))
+            {
+                throw new Exception('Собирались отправить ' . strlen($binary) . ' байт, а отправили только ' . $send . ' байт');
+            }
+
+            $this->log('Подтверждение отправлено');
+        }
+
         private function readTelemetry($accept)
         {
             $binary = '';
@@ -250,6 +298,8 @@
                 $pref .= chr($byte);
             }
 
+            $this->setPrefixTelemetry($pref);
+
             try
             {
                 switch ($pref)
@@ -258,7 +308,6 @@
                         if ($this->getStructVersion() == self::STRUCT_VERSION10)
                         {
                             $this->log('Телеметрические данные 10-ой версии');
-                            require_once __DIR__ . SLASH . 'classes' . SLASH . 'telemetry_flex_v10.php';
                             $binary .= $this->unpackTelemetryData10($accept);
 
                             $m_crc = $this->crc8($binary, strlen($binary));
@@ -280,7 +329,7 @@
                         }
                         else
                         {
-                            throw new Exception('Неизвестная версия структурных данных протокола', -38);
+                            throw new Exception('Неизвестная версия структурных данных протокола ' . $pref, -38);
                         }
                         break;
                     case self::TELEMETRY_CURRENT_PREFIX_VAL:
@@ -294,21 +343,38 @@
                         }
                         else
                         {
-                            throw new Exception('Неизвестная версия структурных данных протокола', -38);
+                            throw new Exception('Неизвестная версия структурных данных протокола ' . $pref, -38);
                         }
                         break;
                     case self::WARNING_PREFIX_VAL:
                         //ODO: написать unpack функцию
                         if ($this->getStructVersion() == self::STRUCT_VERSION10)
                         {
-                            throw new Exception('Тревожный запрос 10-ой версии не поддерживается', -51);
+                            $this->log('Тревожный запрос, данные 10-ой версии');
+                            $binary .= $eventId = socket_read($accept, 4);
+                            $eventId = current(unpack('L', $eventId));
+                            $this->setEventId($eventId);
+                            $binary .= $this->unpackTelemetryData10($accept);
+
+                            $m_crc = $this->crc8($binary, strlen($binary));
+                            $binary .= $crc = socket_read($accept, 1);
+                            $crc = current(unpack('C', $crc));
+                            $this->setBody($binary);
+
+                            if ($m_crc !== $crc)
+                            {
+                                throw new Exception('CRC8 не сходится, пришло: ' . $crc . ', посчитали ' . $m_crc);
+                            }
+
+                            $this->log('CRC8 корректный');
+                            $this->sendConfirmFlexWarning10($accept);
                         } else if ($this->getStructVersion() == self::STRUCT_VERSION20)
                         {
                             throw new Exception('Тревожный запрос 20-ой версии не поддерживается', -51);
                         }
                         else
                         {
-                            throw new Exception('Неизвестная версия структурных данных протокола', -38);
+                            throw new Exception('Неизвестная версия структурных данных протокола ' . $pref, -38);
                         }
                         break;
                     default:
@@ -374,17 +440,28 @@
                 throw new Exception('Некорректная версия структурных данных', -40);
             }
 
-            $binary = $size = socket_read($accept, 1);
+            $binary = '';
+            $size = 1;
 
-            if ($size === false)
+            if (!class_exists('telemetry_flex_v10'))
             {
-                throw new Exception('Датчик не вернул размер телеметрических данных', -37);
+                throw new Exception('Класс telemetry_flex_v10 не найден', -37);
             }
 
             $telemetry = new telemetry_flex_v10();
 
-            $size = current(unpack('C', $size));
-            $this->setTelemetryFlex10Size($size);
+            if ($this->getPrefixTelemetry() == self::TELEMETRY_PREFIX_VAL)
+            {
+                $binary .= $size = socket_read($accept, 1);
+
+                if ($size === false)
+                {
+                    throw new Exception('Датчик не вернул размер телеметрических данных', -37);
+                }
+
+                $size = current(unpack('C', $size));
+                $this->setTelemetryFlex10Size($size);
+            }
 
             for ($i = 0; $i < $size; $i++)
             {
@@ -410,7 +487,7 @@
                         throw new Exception('Функция unpack вернула ошибку на параметре ' . $this->_telemetry_values10[$j][1] . ' (' . $this->_telemetry_values10[$i][0] . ')');
                     }
 
-                    $method = 'set' . str_replace('_', '', $this->_telemetry_values10[$j][1]);
+                    $method = 'set' . ucfirst(str_replace('_', '', $this->_telemetry_values10[$j][1]));
                     if (!method_exists($telemetry, $method))
                     {
                         throw new Exception('Метод ' . $method . ' не существует', -50);
