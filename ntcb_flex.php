@@ -315,6 +315,10 @@
                             $crc = current(unpack('C', $crc));
                             $this->setBody($binary);
 
+                            $handle = fopen(__DIR__ . SLASH . time() . '_' .$this->getImei() . '_telemetry.bin', 'wb');
+                            fwrite($handle, $binary, strlen($binary));
+                            fclose($handle);
+
                             if ($m_crc !== $crc)
                             {
                                 throw new Exception('CRC8 не сходится, пришло: ' . $crc . ', посчитали ' . $m_crc);
@@ -360,6 +364,10 @@
                             $this->setEventId($eventId);
                             $binary .= $this->unpackTelemetryData10($accept);
 
+                            $handle = fopen(__DIR__ . SLASH . time() . '_' .$this->getImei() . '_telemetry.bin', 'wb');
+                            fwrite($handle, $binary, strlen($binary));
+                            fclose($handle);
+
                             $m_crc = $this->crc8($binary, strlen($binary));
                             $binary .= $crc = socket_read($accept, 1);
                             $crc = current(unpack('C', $crc));
@@ -391,10 +399,6 @@
             {
                 throw new Exception($e->getMessage(), $e->getCode());
             }
-
-            $handle = fopen(__DIR__ . SLASH . time() . '_' .$this->getImei() . '_telemetry.bin', 'wb');
-            fwrite($handle, $binary, strlen($binary));
-            fclose($handle);
         }
 
         private function crc8($data, $length)
