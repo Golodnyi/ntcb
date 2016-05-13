@@ -753,13 +753,13 @@
                 }
 
                 $sql = 'INSERT INTO
-                (IMEI, reqType, eventID, numPage, Code, Time, State, Module1, GSM, StateGauge, LastTime, Lat, Lon, Alt, Speed,
+                (IMEI, reqType, numPage, Code, Time, State, Module1, GSM, StateGauge, LastTime, Lat, Lon, Alt, Speed,
                 Course, Mileage, AllSeconds, SecondLast, StateU_Ain5, Temp5, Temp6, CAN_EngineLoad)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
                 $query = sqlsrv_query($conn, $sql,
                     [
-                        $this->getImei(), $pref, $eventID,
+                        $this->getImei(), $pref,
                         $t->getNumPage(), $t->getCode(), $t->getTime(), $t->getState(), $t->getModule1(),
                         $t->getGSM(), $t->getStateGauge(), $t->getLastTime(), $t->getLat(),
                         $t->getLon(), $t->getAlt(), $t->getSpeed(), $t->getCourse(), $t->getMileage(),
