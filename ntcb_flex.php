@@ -487,7 +487,8 @@
 
                     if ($buf == false)
                     {
-                        throw new Exception('Ошибка получения данных из сокета, параметр ' . $this->_telemetry_values10[$j][1]);
+                        $this->log('Ошибка получения данных из сокета, параметр ' . $this->_telemetry_values10[$j][1]);
+                        continue;
                     }
                     $buf = unpack($this->_telemetry_values10[$j][0], $buf);
 

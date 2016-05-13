@@ -751,24 +751,19 @@
                 return false;
             }
 
-            $conn = mssql_connect('localhost', 'user', 'password');
+            $serverName = "127.0.0.1"; //serverName\instanceName
+            $connectionInfo = array( "Database"=>"dbName", "UID"=>"userName", "PWD"=>"password");
+            $conn = sqlsrv_connect($serverName, $connectionInfo);
 
             if ($conn === false)
             {
                 throw new Exception('Не удалось подключиться к MSSQL', -55);
             }
 
-            $s = mssql_select_db('ntcb', $conn);
-
-            if ($s === false)
-            {
-                throw new Exception('Не удалось найти бд ntcb', -55);
-            }
-
             foreach($telemetry as $t)
             {
-                $sql = 'SELECT 1 FROM ntcb.data WHERE numPage = ' . intval($t->getNumPage());
-                $exist = mssql_fetch_row(mssql_query($sql));
+                $sql = 'SELECT 1 FROM ntcb.data WHERE numPage = ?';
+                $exist = sqlsrv_num_rows(sqlsrv_query($conn, $sql, [$t->getNumPage()]));
 
                 if ($exist)
                 {
@@ -779,26 +774,24 @@
                 $sql = 'INSERT INTO
                 (numPage, Code, Time, State, Module1, GSM, StateGauge, LastTime, Lat, Lon, Alt, Speed,
                 Course, Mileage, AllSeconds, SecondLast, StateU_Ain5, Temp5, Temp6, CAN_EngineLoad)
-                VALUES (
-                ' . intval($t->getNumPage()) . ', ' . intval($t->getCode()) . ',
-                ' . intval($t->getTime()) . ', ' . intval($t->getModule1()) . ',
-                ' . intval($t->getGSM()) . ', ' . intval($t->getStateGauge()) . ',
-                ' . intval($t->getLastTime()) . ', ' . intval($t->getLat()) . ',
-                ' . intval($t->getLon()) . ', ' . intval($t->getAlt()) . ',
-                ' . intval($t->getSpeed()) . ', ' . intval($t->getCourse()) . ',
-                ' . intval($t->getMileage()) . ', ' . intval($t->getAllSeconds()) . ',
-                ' . intval($t->getSecondLast()) . ', ' . intval($t->getStateUAin5()) . ',
-                ' . intval($t->getTemp5()) . ', ' . intval($t->getTemp6()) . ',
-                ' . intval($t->getCANEngineLoad()) . ')';
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
-                $query = mssql_query($sql);
+                $query = sqlsrv_query($conn, $sql,
+                    [
+                        $t->getNumPage(), $t->getCode(), $t->getTime(), $t->getState(), $t->getModule1(),
+                        $t->getGSM(), $t->getStateGauge(), $t->getLastTime(), $t->getLat(),
+                        $t->getLon(), $t->getAlt(), $t->getSpeed(), $t->getCourse(), $t->getMileage(),
+                        $t->getAllSeconds(), $t->getSecondLast(), $t->getStateUAin5(), $t->getTemp5(),
+                        $t->getTemp6(), $t->getCANEngineLoad()
+                    ]
+                );
 
                 if ($query === false)
                 {
                     throw new Exception('Ошибка при insert данных', -55);
                 }
 
-                mssql_execute($query);
+                sqlsrv_execute($query);
             }
 
             return true;
