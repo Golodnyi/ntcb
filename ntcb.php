@@ -740,4 +740,67 @@
 
             return $temp_sum;
         }
+
+        protected function export(array $telemetry)
+        {
+            $this->log('Экспорт данных в бд');
+
+            if (empty($telemetry) || !count($telemetry))
+            {
+                $this->log('Нечего сохранять');
+                return false;
+            }
+
+            $conn = mssql_connect('localhost', 'user', 'password');
+
+            if ($conn === false)
+            {
+                throw new Exception('Не удалось подключиться к MSSQL', -55);
+            }
+
+            $s = mssql_select_db('ntcb', $conn);
+
+            if ($s === false)
+            {
+                throw new Exception('Не удалось найти бд ntcb', -55);
+            }
+
+            foreach($telemetry as $t)
+            {
+                $sql = 'SELECT 1 FROM ntcb.data WHERE numPage = ' . intval($t->getNumPage());
+                $exist = mssql_fetch_row(mssql_query($sql));
+
+                if ($exist)
+                {
+                    $this->log('Данная запись уже есть в бд, пропускаем...');
+                    continue;
+                }
+
+                $sql = 'INSERT INTO
+                (numPage, Code, Time, State, Module1, GSM, StateGauge, LastTime, Lat, Lon, Alt, Speed,
+                Course, Mileage, AllSeconds, SecondLast, StateU_Ain5, Temp5, Temp6, CAN_EngineLoad)
+                VALUES (
+                ' . intval($t->getNumPage()) . ', ' . intval($t->getCode()) . ',
+                ' . intval($t->getTime()) . ', ' . intval($t->getModule1()) . ',
+                ' . intval($t->getGSM()) . ', ' . intval($t->getStateGauge()) . ',
+                ' . intval($t->getLastTime()) . ', ' . intval($t->getLat()) . ',
+                ' . intval($t->getLon()) . ', ' . intval($t->getAlt()) . ',
+                ' . intval($t->getSpeed()) . ', ' . intval($t->getCourse()) . ',
+                ' . intval($t->getMileage()) . ', ' . intval($t->getAllSeconds()) . ',
+                ' . intval($t->getSecondLast()) . ', ' . intval($t->getStateUAin5()) . ',
+                ' . intval($t->getTemp5()) . ', ' . intval($t->getTemp6()) . ',
+                ' . intval($t->getCANEngineLoad()) . ')';
+
+                $query = mssql_query($sql);
+
+                if ($query === false)
+                {
+                    throw new Exception('Ошибка при insert данных', -55);
+                }
+
+                mssql_execute($query);
+            }
+
+            return true;
+        }
     }

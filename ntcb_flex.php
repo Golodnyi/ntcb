@@ -201,7 +201,6 @@
                 $this->matchingProtocol();
                 $this->sendGenerateMatchingProtocol($accept);
                 $this->readTelemetry($accept);
-                file_put_contents('telemetry.serialize', serialize($this->getTelemetry()));
             } catch(Exception $e)
             {
                 throw new Exception($e->getMessage(), $e->getCode());
@@ -322,7 +321,11 @@
                             }
 
                             $this->log('CRC8 корректный');
-                            $this->sendConfirmFlex10($accept);
+
+                            if ($this->export($this->getTelemetry()))
+                            {
+                                $this->sendConfirmFlex10($accept);
+                            }
                         } else if ($this->getStructVersion() == self::STRUCT_VERSION20)
                         {
                             throw new Exception('Телеметрические данные 20-ой версии не поддерживается', -51);
@@ -368,7 +371,10 @@
                             }
 
                             $this->log('CRC8 корректный');
-                            $this->sendConfirmFlexWarning10($accept);
+                            if ($this->export($this->getTelemetry()))
+                            {
+                                $this->sendConfirmFlexWarning10($accept);
+                            }
                         } else if ($this->getStructVersion() == self::STRUCT_VERSION20)
                         {
                             throw new Exception('Тревожный запрос 20-ой версии не поддерживается', -51);
