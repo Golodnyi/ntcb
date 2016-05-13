@@ -361,6 +361,9 @@
                             $this->log('Тревожный запрос, данные 10-ой версии');
                             $binary .= $eventId = socket_read($accept, 4);
                             $eventId = current(unpack('L', $eventId));
+                            $this->log('----------');
+                            $this->log('Событие: ' . $eventId);
+                            $this->log('----------');
                             $this->setEventId($eventId);
                             $binary .= $this->unpackTelemetryData10($accept);
 
