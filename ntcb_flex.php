@@ -210,7 +210,6 @@
 
         private function sendConfirmFlex10($accept)
         {
-            $this->log('Подготовка к отправки подтверждения о получении данных');
             $binary = $this->generateConfirmFlex10();
             $send = socket_write($accept, $binary, strlen($binary));
 
@@ -219,12 +218,10 @@
                 throw new Exception('Собирались отправить ' . strlen($binary) . ' байт, а отправили только ' . $send . ' байт');
             }
 
-            $this->log('Подтверждение отправлено');
         }
 
         private function generateConfirmFlex10()
         {
-            $this->log('Генерирум подтверждение о получении данных');
             $binary = '';
             $tpv = self::TELEMETRY_PREFIX_VAL;
 
@@ -235,13 +232,12 @@
             $binary .= pack('C', $this->getTelemetryFlex10Size());
             $crc8 = $this->crc8($binary, strlen($binary));
             $binary .= pack('C', $crc8);
-            $this->log('Закончили генерацию подтверждения о получении данных');
+            $this->log('Отправили подтверждение о получении данных');
             return $binary;
         }
 
         private function generateConfirmFlexWarning10()
         {
-            $this->log('Генерирум подтверждение о получении тревожного сообщения');
             $binary = '';
             $tpv = self::WARNING_PREFIX_VAL;
 
@@ -252,13 +248,11 @@
             $binary .= pack('L', $this->getEventId());
             $crc8 = $this->crc8($binary, strlen($binary));
             $binary .= pack('C', $crc8);
-            $this->log('Закончили генерацию подтверждения о получении тревожного сообщения');
             return $binary;
         }
 
         private function sendConfirmFlexWarning10($accept)
         {
-            $this->log('Подготовка к отправки подтверждения о получении тревожного сообщения');
             $binary = $this->generateConfirmFlexWarning10();
             $send = socket_write($accept, $binary, strlen($binary));
 
@@ -267,7 +261,7 @@
                 throw new Exception('Собирались отправить ' . strlen($binary) . ' байт, а отправили только ' . $send . ' байт');
             }
 
-            $this->log('Подтверждение отправлено');
+            $this->log('Подтверждение о получении данных отправлено');
         }
 
         private function readTelemetry($accept)
