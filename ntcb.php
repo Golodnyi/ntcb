@@ -189,7 +189,7 @@
                 throw new Exception('Сокет не установлен', -1);
             }
 
-            $this->log('Ожидания подключения...');
+            $this->log('Ожидание подключения...');
 
             while (true)
             {
@@ -706,7 +706,14 @@
         {
             if ($this->_debug)
             {
-                echo '[' . date(DATE_W3C) . '] ' . $message . "\n";
+                $output = '[' . date(DATE_W3C) . '] ' . $message . "\n";
+
+                if (OS == 'win')
+                {
+                    $output = iconv(mb_detect_encoding($output), 'cp866', $output);
+                }
+
+                echo $output;
             }
         }
 

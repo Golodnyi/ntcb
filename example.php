@@ -8,11 +8,13 @@
     {
         define('SLASH', '\\');
         define('PORT', 9000);
+        define('OS', 'win');
     }
     else
     {
         define('SLASH', '/');
         define('PORT', 9001);
+        define('OS', 'lin');
     }
 
     require_once __DIR__ . SLASH . 'ntcb_flex.php';
