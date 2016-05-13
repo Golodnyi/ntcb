@@ -696,7 +696,7 @@
             {
                 throw new Exception('Неверная длина IMEI, ожидалось ' . self::IMEI_LEN . ' байт, получено ' . strlen($imei) . ' байт', -18);
             }
-
+            $this->log('IMEI: ' . $imei);
             $this->imei = $imei;
         }
 
