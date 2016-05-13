@@ -741,7 +741,7 @@
             return $temp_sum;
         }
 
-        protected function export(array $telemetry, $pref)
+        protected function export(array $telemetry, $pref, $eventID = 0)
         {
             $this->log('Экспорт данных в бд');
 
@@ -772,13 +772,13 @@
                 }
 
                 $sql = 'INSERT INTO
-                (IMEI, reqType, numPage, Code, Time, State, Module1, GSM, StateGauge, LastTime, Lat, Lon, Alt, Speed,
+                (IMEI, reqType, eventID, numPage, Code, Time, State, Module1, GSM, StateGauge, LastTime, Lat, Lon, Alt, Speed,
                 Course, Mileage, AllSeconds, SecondLast, StateU_Ain5, Temp5, Temp6, CAN_EngineLoad)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
                 $query = sqlsrv_query($conn, $sql,
                     [
-                        $this->getImei(), $pref,
+                        $this->getImei(), $pref, $eventID,
                         $t->getNumPage(), $t->getCode(), $t->getTime(), $t->getState(), $t->getModule1(),
                         $t->getGSM(), $t->getStateGauge(), $t->getLastTime(), $t->getLat(),
                         $t->getLon(), $t->getAlt(), $t->getSpeed(), $t->getCourse(), $t->getMileage(),
