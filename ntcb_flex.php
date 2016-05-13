@@ -632,7 +632,16 @@
                 for ($j = 0; $j < 8; $j++)
                 {
                     $bit = decbin($byte);
-                    $bitfield[] = !$bit[$j] ? 0 : 1;
+
+                    if (isset($bit[$j]) && $bit[$j])
+                    {
+                        $bitfield[] = 1;
+                    }
+                    else
+                    {
+                        $bitfield[] = 0;
+                    }
+
                     if (++$z >= $data_size)
                     {
                         break;
