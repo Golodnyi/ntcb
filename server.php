@@ -4,6 +4,8 @@
  * Date: 05.05.16
  * Time: 12:03
  */
+    date_default_timezone_set('Europe/Moscow');
+    
     if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN')
     {
         define('SLASH', '\\');
