@@ -743,6 +743,86 @@
             /** @var telemetry_flex_v10 $t */
             foreach($telemetry as $t)
             {
+                if ($this->getImei()  === false)
+                {
+                    throw new Exception('Неверная конфигурация датчика, не передан IMEI ' . var_dump($this->getImei()), -55);
+                }
+
+                if ($pref  === false)
+                {
+                    throw new Exception('Неверная конфигурация датчика, не передан префикс запроса ' . var_dump($pref), -55);
+                }
+
+                if ($t->getNumPage() === false)
+                {
+                    throw new Exception('Неверная конфигурация датчика, не передан номер ' . var_dump($t->getNumPage()), -55);
+                }
+
+                if ($t->getCode() === false)
+                {
+                    throw new Exception('Неверная конфигурация датчика, не передан код события ' . var_dump($t->getCode()), -55);
+                }
+
+                if ($t->getTime() === false)
+                {
+                    throw new Exception('Неверная конфигурация датчика, не передано время события ' . var_dump($t->getTime()), -55);
+                }
+
+                if ($t->getGSM() === false)
+                {
+                    throw new Exception('Неверная конфигурация датчика, не передан уровень сигнала ' . var_dump($t->getGSM()), -55);
+                }
+
+                if ($t->getLastTime()  === false)
+                {
+                    throw new Exception('Неверная конфигурация датчика, не передано время последних координат ' . var_dump($t->getLastTime()), -55);
+                }
+
+                if ($t->getLat() === false)
+                {
+                    throw new Exception('Неверная конфигурация датчика, не передана широта ' . var_dump($t->getLat()), -55);
+                }
+
+                if ($t->getLon() === false)
+                {
+                    throw new Exception('Неверная конфигурация датчика, не передана долгота ' . var_dump($t->getLon()), -55);
+                }
+
+                if ($t->getAlt() === false)
+                {
+                    throw new Exception('Неверная конфигурация датчика, не передана высота ' . var_dump($t->getAlt()), -55);
+                }
+
+                if ($t->getCourse() === false)
+                {
+                    throw new Exception('Неверная конфигурация датчика, не передан курс ' . var_dump($t->getCourse()), -55);
+                }
+
+                if ($t->getMileage() === false)
+                {
+                    throw new Exception('Неверная конфигурация датчика, не передан пробег ' . var_dump($t->getMileage()), -55);
+                }
+
+                if ($t->getTemp5() === false)
+                {
+                    throw new Exception('Неверная конфигурация датчика, не переданы обороты двигателя ' . var_dump($t->getTemp5()), -55);
+                }
+
+                if ($t->getTemp6() === false)
+                {
+                    throw new Exception('Неверная конфигурация датчика, не передана температура ОЖ ' . var_dump($t->getTemp6()), -55);
+                }
+
+                if ($t->getCANEngineLoad() === false)
+                {
+                    throw new Exception('Неверная конфигурация датчика, не передана нагрузка на двигатель ' . var_dump($t->getCANEngineLoad()), -55);
+                }
+
+                if ($t->getCANSpeed() === false)
+                {
+                    throw new Exception('Неверная конфигурация датчика, не передана скорость ' . var_dump($t->getCANSpeed()), -55);
+                }
+
                 $sql = 'SELECT 1 FROM ntcb.data WHERE numPage = ?';
                 $exist = sqlsrv_num_rows(sqlsrv_query($conn, $sql, [$t->getNumPage()]));
 
