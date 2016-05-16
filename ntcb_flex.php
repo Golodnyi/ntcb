@@ -188,7 +188,7 @@
          */
         public function setTelemetry($telemetry)
         {
-            $this->_telemetry[] = $telemetry;
+            $this->_telemetry = $telemetry;
         }
 
         protected function processing($accept)
@@ -457,6 +457,7 @@
                 $this->setTelemetryFlex10Size($size);
             }
             $this->log('Получили ' . $size . ' блоков');
+            $a_telemetry = [];
             for ($i = 0; $i < $size; $i++)
             {
                 $this->log('==========');
@@ -493,8 +494,9 @@
                     $this->log($this->_telemetry_values10[$j][1] . ': ' . $buf);
                     $telemetry->$method($buf);
                 }
-                $this->setTelemetry($telemetry);
+                $a_telemetry[] = $telemetry;
             }
+            $this->setTelemetry($a_telemetry);
             $this->log('==========');
             return $binary;
         }
