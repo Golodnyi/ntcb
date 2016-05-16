@@ -692,7 +692,7 @@
                 }
 
                 echo $output_console;
-                file_put_contents(__DIR__ . SLASH . 'logs/' . date('Y-m-d') . '.log', "\r\n" . $output, FILE_APPEND);
+                file_put_contents(__DIR__ . SLASH . 'logs/' . date('Y-m-d') . '.log', $output, FILE_APPEND);
             }
         }
 
