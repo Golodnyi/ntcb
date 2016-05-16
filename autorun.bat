@@ -1,0 +1,1 @@
+php C:\ntcb\example.php >> C:\ntcb\run.log
