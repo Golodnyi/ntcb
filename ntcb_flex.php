@@ -461,7 +461,7 @@
             {
                 $this->log('==========');
                 $telemetry = new telemetry_flex_v10();
-                for ($j = 0; $j < count($this->getBitfield()); $j++)
+                for ($j = 0; $j < strlen($this->getBitfield()); $j++)
                 {
                     if (!$this->getBitfield()[$j])
                     {
@@ -568,6 +568,12 @@
                  * пропускаем первые 10 байт, это информация до битфилда
                  */
                 $bitfield_temp = unpack('C' . $length, substr($this->getBody(), 10, $length));
+
+                if ($bitfield_temp === false)
+                {
+                    throw new Exception('Функция unpack вернкла ошибку, при распаковке битфилда', -60);
+                }
+
                 $this->setBitfield($this->getBitfieldFromData($bitfield_temp, $data_size));
             } catch (Exception $e)
             {
@@ -613,12 +619,16 @@
 
         private function getBitfieldFromData($bitfield_temp, $data_size)
         {
-            $bitfield = [];
+            $bitfield = '';
             $z = 0;
             $enabled = [];
             foreach($bitfield_temp as $byte)
             {
                 $bit = decbin($byte);
+                /**
+                 * decbin опускает ведущие не значащие нули
+                 * для нас они значащие, дополняем их
+                 */
                 if (strlen($bit) < 8)
                 {
                     for ($i = strlen($bit); $i < 8; $i++)
@@ -630,23 +640,22 @@
 
                 for ($j = 0; $j < 8; $j++)
                 {
-                    if (isset($bit[$j]) && $bit[$j])
+                    $bitfield .= $bit[$j];
+                    if ($bit[$j] == 1)
                     {
-                        $bitfield[] = 1;
                         $enabled[] = $this->_telemetry_values10[$z][1];
-                    }
-                    else
-                    {
-                        $bitfield[] = 0;
                     }
 
                     if (++$z >= $data_size)
                     {
+                        /**
+                         * отрезаем последние не значащие нули
+                         */
                         break;
                     }
                 }
             }
-            $this->log('Битфилд: ' . implode('', $bitfield));
+            $this->log('Битфилд: ' . $bitfield);
             $this->log('Ожидаем датчики: ' . implode(', ', $enabled));
             return $bitfield;
         }
@@ -786,9 +795,9 @@
          */
         private function setBitfield($bitfield)
         {
-            if (count($bitfield) != $this->getDataSize())
+            if (strlen($bitfield) != $this->getDataSize())
             {
-                throw new Exception('Неверный размер битфилда, ожидалось ' . $this->getDataSize() . ', получили ' . count($bitfield));
+                throw new Exception('Неверный размер битфилда, ожидалось ' . $this->getDataSize() . ', получили ' . strlen($bitfield));
             }
 
             $this->_bitfield = $bitfield;

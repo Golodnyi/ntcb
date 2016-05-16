@@ -803,14 +803,14 @@
                     throw new Exception('Неверная конфигурация датчика, не передан пробег ' . var_dump($t->getMileage()), -55);
                 }
 
-                if ($t->getTemp5() === false)
+                if ($t->getCANEngineTurns() === false)
                 {
-                    throw new Exception('Неверная конфигурация датчика, не переданы обороты двигателя ' . var_dump($t->getTemp5()), -55);
+                    throw new Exception('Неверная конфигурация датчика, не переданы обороты двигателя ' . var_dump($t->getCANEngineTurns()), -55);
                 }
 
-                if ($t->getTemp6() === false)
+                if ($t->getCANTemp() === false)
                 {
-                    throw new Exception('Неверная конфигурация датчика, не передана температура ОЖ ' . var_dump($t->getTemp6()), -55);
+                    throw new Exception('Неверная конфигурация датчика, не передана температура ОЖ ' . var_dump($t->getCANTemp()), -55);
                 }
 
                 if ($t->getCANEngineLoad() === false)
@@ -834,26 +834,26 @@
 
                 /**
                  * Записываем:
-                 * IMEI - уникальный идентификатор устройства
-                 * reqType - тип запроса (телеметрические данные или тревожное сообщение)
-                 * numPage - уникальный ID записи
-                 * Code - код события
-                 * Time - время события
-                 * GSM - уровень сигнала
-                 * LastTime - время последних валидных координат
-                 * Lat - широта
-                 * Lon - долгота
-                 * Alt - высота
-                 * Course - куср (в градусах)
-                 * Mileage - текущий пробег в км (float)
-                 * Temp5 - обороты двигателя
-                 * Temp6 - температура охлаждающей жидкости в цельсиях
-                 * CAN_EngineLoad - нагрузка на двигатель в процентах
-                 * CAN_Speed - скорость
+                 * IMEI - уникальный идентификатор устройства (int 15)
+                 * reqType - тип запроса (телеметрические данные или тревожное сообщение)  (char 2)
+                 * numPage - уникальный ID записи (unsigned int 4)
+                 * Code - код события (unsigned int 2)
+                 * Time - время события (unsigned int 4 или timestamp)
+                 * GSM - уровень сигнала (unsigned int 1)
+                 * LastTime - время последних валидных координат (unsigned int 4 или timestamp)
+                 * Lat - широта (signed int 4)
+                 * Lon - долгота (signed int 4)
+                 * Alt - высота (signed int 4)
+                 * Course - куср (в градусах) (unsigned int 2)
+                 * Mileage - текущий пробег в км (float 4 bytes)
+                 * CAN_EngineTurns - обороты двигателя (unsigned int 2)
+                 * CAN_Temp - температура охлаждающей жидкости в цельсиях (signed int 1)
+                 * CAN_EngineLoad - нагрузка на двигатель в процентах (unsigned int 1)
+                 * CAN_Speed - скорость (unsigned int 1)
                  */
                 $sql = 'INSERT INTO
                 (IMEI, reqType, numPage, Code, Time, GSM, LastTime, Lat, Lon, Alt,
-                Course, Mileage, Temp5, Temp6, CAN_EngineLoad, CAN_Speed)
+                Course, Mileage, CAN_EngineTurns, CAN_Temp, CAN_EngineLoad, CAN_Speed)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
                 $query = sqlsrv_query($conn, $sql,
@@ -862,7 +862,7 @@
                         $t->getNumPage(), $t->getCode(), $t->getTime(),
                         $t->getGSM(), $t->getLastTime(), $t->getLat(),
                         $t->getLon(), $t->getAlt(), $t->getCourse(), $t->getMileage(),
-                        $t->getTemp5(), $t->getTemp6(), $t->getCANEngineLoad(), $t->getCANSpeed()
+                        $t->getCANEngineTurns(), $t->getCANTemp(), $t->getCANEngineLoad(), $t->getCANSpeed()
                     ]
                 );
 
