@@ -694,11 +694,12 @@
             {
                 $output = '[' . date(DATE_W3C) . '] ' . $message . "\n";
 
-                /**if (OS == 'win')
+                if (OS == 'win')
                 {
-                    $output = iconv(mb_detect_encoding($output), 'cp866', $output);
-                }**/
+                    $output_console = iconv(mb_detect_encoding($output), 'cp866', $output);
+                }
 
+                echo $output_console;
                 file_put_contents(__DIR__ . SLASH . 'logs/' . date('Y-m-d') . '.log', $output, FILE_APPEND);
             }
         }
