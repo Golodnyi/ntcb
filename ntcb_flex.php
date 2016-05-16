@@ -94,7 +94,7 @@
             45 => [0 => 'c', 1 => 'Temp2'], // 2
             46 => [0 => 'c', 1 => 'Temp3'], // 3
             47 => [0 => 'c', 1 => 'Temp4'], // 4
-            48 => [0 => 'S', 1 => 'Temp5'], // 5
+            48 => [0 => 'c', 1 => 'Temp5'], // 5
             49 => [0 => 'c', 1 => 'Temp6'], // 6
             50 => [0 => 'c', 1 => 'Temp7'], // 7
             51 => [0 => 'c', 1 => 'Temp8'], // 8
@@ -116,7 +116,6 @@
             67 => [0 => 's', 1 => 'CAN_TimeTO'], // расстояние до то
             68 => [0 => 'C', 1 => 'CAN_Speed'], // скорость ТС
         ];
-
         private $_prefix;
         private $_prefix_telemetry;
         private $_protocol;
@@ -562,10 +561,12 @@
                 }
 
                 $this->setDataSize($data_size);
-
                 $this->log('Протокол FLEX, версия ' . $protocol_version . ', структура ' . $stuct_version . ', размер конфигурационного поля ' . $data_size . ' байт');
-
                 $length = ceil($data_size / 8);
+
+                /**
+                 * пропускаем первые 10 байт, это информация до битфилда
+                 */
                 $bitfield_temp = unpack('C' . $length, substr($this->getBody(), 10, $length));
                 $this->setBitfield($this->getBitfieldFromData($bitfield_temp, $data_size));
             } catch (Exception $e)
@@ -617,10 +618,18 @@
             $enabled = [];
             foreach($bitfield_temp as $byte)
             {
+                $bit = decbin($byte);
+                if (strlen($bit) < 8)
+                {
+                    for ($i = strlen($bit); $i < 8; $i++)
+                    {
+                        $bit[$i] = 0;
+                    }
+                    $bit = strrev($bit);
+                }
+
                 for ($j = 0; $j < 8; $j++)
                 {
-                    $bit = decbin($byte);
-
                     if (isset($bit[$j]) && $bit[$j])
                     {
                         $bitfield[] = 1;
@@ -637,7 +646,7 @@
                     }
                 }
             }
-
+            $this->log('Битфилд: ' . implode('', $bitfield));
             $this->log('Ожидаем датчики: ' . implode(', ', $enabled));
             return $bitfield;
         }
@@ -784,7 +793,4 @@
 
             $this->_bitfield = $bitfield;
         }
-
-
-
     }
