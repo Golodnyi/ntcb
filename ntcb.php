@@ -66,6 +66,18 @@
             set_time_limit(0);
             ob_implicit_flush();
 
+            if (file_exists(__DIR__ . '/run.lock'))
+            {
+                $file_pid = file_get_contents(__DIR__ . '/run.lock');
+                $ps = shell_exec('ps -A | grep ' . $file_pid);
+                if (!is_null($ps))
+                {
+                    throw new Exception('already run', -2);
+                }
+            }
+
+            file_put_contents(__DIR__ . '/run.lock', getmypid());
+
             if (!defined('SLASH'))
             {
                 if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
