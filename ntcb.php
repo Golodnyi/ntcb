@@ -726,18 +726,20 @@
                 return false;
             }
 
-            if (!function_exists('sqlsrv_connect'))
-            {
-                throw new Exception('Функция sqlsrv_connect не найдена', -55);
-            }
+            $dbhost = "localhost";
+            $dbname = "getpart";
+            $dbuser = "getpart2";
+            $dbpswd = "BiBxzE";
 
-            $serverName = "127.0.0.1"; //serverName\instanceName
-            $connectionInfo = array( "Database"=>"dbName", "UID"=>"userName", "PWD"=>"password");
-            $conn = sqlsrv_connect($serverName, $connectionInfo);
+            try {
 
-            if ($conn === false)
-            {
-                throw new Exception('Не удалось подключиться к MSSQL', -55);
+                $db = new PDO("mysql:host=".$dbhost.";dbname=".$dbname,$dbuser,$dbpswd);
+                $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+                $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
+                $db->setAttribute(PDO::MYSQL_ATTR_INIT_COMMAND,'SET NAMES UTF8');
+
+            } catch (PDOException $e) {
+                throw new Exception($e->getMessage(), $e->getCode());
             }
 
             /** @var telemetry_flex_v10 $t */
@@ -823,8 +825,16 @@
                     throw new Exception('Неверная конфигурация датчика, не передана скорость ' . var_dump($t->getCANSpeed()), -55);
                 }
 
-                $sql = 'SELECT 1 FROM ntcb.data WHERE numPage = ?';
-                $exist = sqlsrv_num_rows(sqlsrv_query($conn, $sql, [$t->getNumPage()]));
+                try
+                {
+                    $stmt = $db->prepare('SELECT 1 FROM ntcb WHERE `IMEI` = ? AND `numPage` = ? LIMIT 1');
+                    $stmt->bindValue(1, $this->getImei(), PDO::PARAM_INT);
+                    $stmt->bindValue(2, $t->getNumPage(),  PDO::PARAM_INT);
+                    $exist = $stmt->rowCount();
+                } catch (PDOException $e)
+                {
+                    throw new Exception($e->getMessage(), $e->getCode());
+                }
 
                 if ($exist)
                 {
@@ -851,27 +861,42 @@
                  * CAN_EngineLoad - нагрузка на двигатель в процентах (unsigned int 1)
                  * CAN_Speed - скорость (unsigned int 1)
                  */
-                $sql = 'INSERT INTO
-                (IMEI, reqType, numPage, Code, Time, GSM, LastTime, Lat, Lon, Alt,
-                Course, Mileage, CAN_EngineTurns, CAN_Temp, CAN_EngineLoad, CAN_Speed)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+                try
+                {
+                    $stmt = $db->prepare('
+                        INSERT INTO ntcb
+                            (`IMEI`, `reqType`, `numPage`, `Code`, `Time`, `GSM`, `LastTime`, `Lat`, `Lon`, `Alt`, `Course`, `Mileage`, `CAN_EngineTurns`, `CAN_Temp`, `CAN_EngineLoad`, `CAN_Speed`)
+                        VALUES (
+                            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ');
 
-                $query = sqlsrv_query($conn, $sql,
-                    [
-                        $this->getImei(), $pref,
-                        $t->getNumPage(), $t->getCode(), $t->getTime(),
-                        $t->getGSM(), $t->getLastTime(), $t->getLat(),
-                        $t->getLon(), $t->getAlt(), $t->getCourse(), $t->getMileage(),
-                        $t->getCANEngineTurns(), $t->getCANTemp(), $t->getCANEngineLoad(), $t->getCANSpeed()
-                    ]
-                );
+                    $stmt->bindValue(1, $this->getImei(), PDO::PARAM_INT);
+                    $stmt->bindValue(2, $pref, PDO::PARAM_STR);
+                    $stmt->bindValue(3, $t->getNumPage(), PDO::PARAM_INT);
+                    $stmt->bindValue(4, $t->getCode(), PDO::PARAM_INT);
+                    $stmt->bindValue(5, $t->getTime(), PDO::PARAM_INT);
+                    $stmt->bindValue(6, $t->getGSM(), PDO::PARAM_INT);
+                    $stmt->bindValue(7, $t->getLastTime(), PDO::PARAM_INT);
+                    $stmt->bindValue(8, $t->getLat(), PDO::PARAM_INT);
+                    $stmt->bindValue(9, $t->getLon(), PDO::PARAM_INT);
+                    $stmt->bindValue(10, $t->getAlt(), PDO::PARAM_INT);
+                    $stmt->bindValue(11, $t->getCourse(), PDO::PARAM_INT);
+                    $stmt->bindValue(12, $t->getMileage(), PDO::PARAM_INT);
+                    $stmt->bindValue(13, $t->getCANEngineTurns(), PDO::PARAM_INT);
+                    $stmt->bindValue(14, $t->getCANTemp(), PDO::PARAM_INT);
+                    $stmt->bindValue(15, $t->getCANEngineLoad(), PDO::PARAM_INT);
+                    $stmt->bindValue(16, $t->getCANSpeed(), PDO::PARAM_INT);
+                    $insert = $stmt->execute();
+                } catch (PDOException $e)
+                {
+                    throw new Exception($e->getMessage(), $e->getCode());
+                }
 
-                if ($query === false)
+                if ($insert === false)
                 {
                     throw new Exception('Ошибка при insert данных', -55);
                 }
 
-                sqlsrv_execute($query);
             }
 
             return true;
