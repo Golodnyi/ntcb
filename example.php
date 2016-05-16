@@ -21,6 +21,7 @@
 
     try
     {
+        error_reporting(E_ALL);
         $ntcb = new ntcb_flex(true);
         $ntcb->listen('0.0.0.0', PORT);
         $ntcb->run();

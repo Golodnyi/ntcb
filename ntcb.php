@@ -279,7 +279,6 @@
             ];
 
             $header = '';
-            $handle = fopen(__DIR__ . SLASH . time() . '_' .$this->getImei() . '_handshake.bin', 'wb');
             foreach($lengths as $key => $length)
             {
                 $buf = socket_read($accept, $length);
@@ -322,9 +321,7 @@
                     throw new Exception($e->getMessage(), $e->getCode());
                 }
 
-                fwrite($handle, $buf, strlen($buf));
             }
-            fclose($handle);
             $this->setHeader($header);
         }
         protected function readBody($accept)
@@ -333,8 +330,6 @@
             {
                 throw new Exception('Сокет не установлен');
             }
-
-            $handle = fopen(__DIR__ . SLASH . time() . '_' .$this->getImei() . '_body.bin', 'wb');
 
             try
             {
@@ -348,9 +343,6 @@
             }
 
             $this->setBody($buf);
-
-            fwrite($handle, $buf, strlen($buf));
-            fclose($handle);
         }
 
         private function generateHandshake()
@@ -732,6 +724,11 @@
             {
                 $this->log('Нечего сохранять');
                 return false;
+            }
+
+            if (!function_exists('sqlsrv_connect'))
+            {
+                throw new Exception('Функция sqlsrv_connect не найдена', -55);
             }
 
             $serverName = "127.0.0.1"; //serverName\instanceName
