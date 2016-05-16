@@ -1,1 +1,1 @@
-php C:\ntcb\example.php >> C:\ntcb\run.log
+php C:\ntcb\example.php >> C:\ntcb\logs\%date%.log
