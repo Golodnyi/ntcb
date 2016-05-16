@@ -762,37 +762,30 @@
                  * numPage - уникальный ID записи
                  * Code - код события
                  * Time - время события
-                 * State - статус устройства (не разобранный битфилд) unsigned byte
-                 * Module1 - статус функциональных модулей (не разобранный битфилд) unsigned byte
                  * GSM - уровень сигнала
-                 * StateGauge - состояние навигационного датчика (не разобранный битфилд) unsigned byte
                  * LastTime - время последних валидных координат
                  * Lat - широта
                  * Lon - долгота
                  * Alt - высота
-                 * Speed - скорость в км (float)
                  * Course - куср (в градусах)
                  * Mileage - текущий пробег в км (float)
-                 * AllSeconds - общее количество точек вычисления навигационным приемником координат с темпом раз в секунду
-                 * SecondLast - количество точек вычисления навигационным приемником координат с темпом раз в секунду при валидных навигационных данных.
-                 * StateU_Ain5 - напряжение на аналоговом входе 5 в милливольтах
-                 * Temp5 - температура в цельсиях
+                 * Temp5 - обороты двигателя
                  * Temp6 - температура охлаждающей жидкости в цельсиях
                  * CAN_EngineLoad - нагрузка на двигатель в процентах
+                 * CAN_Speed - скорость
                  */
                 $sql = 'INSERT INTO
-                (IMEI, reqType, numPage, Code, Time, State, Module1, GSM, StateGauge, LastTime, Lat, Lon, Alt, Speed,
-                Course, Mileage, AllSeconds, SecondLast, StateU_Ain5, Temp5, Temp6, CAN_EngineLoad)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+                (IMEI, reqType, numPage, Code, Time, GSM, LastTime, Lat, Lon, Alt,
+                Course, Mileage, Temp5, Temp6, CAN_EngineLoad, CAN_Speed)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
                 $query = sqlsrv_query($conn, $sql,
                     [
                         $this->getImei(), $pref,
-                        $t->getNumPage(), $t->getCode(), $t->getTime(), $t->getState(), $t->getModule1(),
-                        $t->getGSM(), $t->getStateGauge(), $t->getLastTime(), $t->getLat(),
-                        $t->getLon(), $t->getAlt(), $t->getSpeed(), $t->getCourse(), $t->getMileage(),
-                        $t->getAllSeconds(), $t->getSecondLast(), $t->getStateUAin5(), $t->getTemp5(),
-                        $t->getTemp6(), $t->getCANEngineLoad()
+                        $t->getNumPage(), $t->getCode(), $t->getTime(),
+                        $t->getGSM(), $t->getLastTime(), $t->getLat(),
+                        $t->getLon(), $t->getAlt(), $t->getCourse(), $t->getMileage(),
+                        $t->getTemp5(), $t->getTemp6(), $t->getCANEngineLoad(), $t->getCANSpeed()
                     ]
                 );
 
