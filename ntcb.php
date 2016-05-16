@@ -258,7 +258,7 @@
         {
             if (!$this->getSocket())
             {
-                throw new Exception('Сокет не установлен');
+                throw new Exception('Сокет не установлен ' . var_dump($accept));
             }
         }
 
@@ -506,7 +506,7 @@
 
             if ($preamble != self::PREAMBLE_VAL)
             {
-                throw new Exception('Неверное значение преамбулы, ожидалось ' . self::PREAMBLE_VAL, ', получено ' . $preamble, -26);
+                throw new Exception('Неверное значение преамбулы, ожидалось ' . self::PREAMBLE_VAL . ' получено ' . $preamble, -26);
             }
 
             $this->_preamble = $preamble;
@@ -570,6 +570,7 @@
          * Получить размер тела запроса в байтах
          *
          * @return mixed
+         * @throws \Exception
          */
         public function getBodySize()
         {
@@ -722,7 +723,7 @@
             return $temp_sum;
         }
 
-        protected function export(array $telemetry, $pref, $eventID = 0)
+        protected function export(array $telemetry, $pref)
         {
             $this->log('Экспорт данных в бд');
 
@@ -741,6 +742,7 @@
                 throw new Exception('Не удалось подключиться к MSSQL', -55);
             }
 
+            /** @var telemetry_flex_v10 $t */
             foreach($telemetry as $t)
             {
                 $sql = 'SELECT 1 FROM ntcb.data WHERE numPage = ?';

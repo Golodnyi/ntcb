@@ -320,11 +320,8 @@
                             }
 
                             $this->log('CRC8 корректный');
-
-                            if ($this->export($this->getTelemetry(), $pref))
-                            {
-                                $this->sendConfirmFlex10($accept);
-                            }
+                            $this->export($this->getTelemetry(), $pref);
+                            $this->sendConfirmFlex10($accept);
                         } else if ($this->getStructVersion() == self::STRUCT_VERSION20)
                         {
                             throw new Exception('Телеметрические данные 20-ой версии не поддерживается', -51);
@@ -374,10 +371,8 @@
                             }
 
                             $this->log('CRC8 корректный');
-                            if ($this->export($this->getTelemetry(), $pref, $eventId))
-                            {
-                                $this->sendConfirmFlexWarning10($accept);
-                            }
+                            $this->export($this->getTelemetry(), $pref);
+                            $this->sendConfirmFlexWarning10($accept);
                         } else if ($this->getStructVersion() == self::STRUCT_VERSION20)
                         {
                             throw new Exception('Тревожный запрос 20-ой версии не поддерживается', -51);
@@ -665,6 +660,8 @@
 
         /**
          * @param mixed $prefix
+         *
+         * @throws \Exception
          */
         private function setPrefix($prefix)
         {
@@ -686,6 +683,8 @@
 
         /**
          * @param mixed $protocol
+         *
+         * @throws \Exception
          */
         private function setProtocol($protocol)
         {
@@ -707,6 +706,8 @@
 
         /**
          * @param mixed $protocol_version
+         *
+         * @throws \Exception
          */
         private function setProtocolVersion($protocol_version)
         {
@@ -728,6 +729,8 @@
 
         /**
          * @param mixed $struct_version
+         *
+         * @throws \Exception
          */
         private function setStructVersion($struct_version)
         {
@@ -749,6 +752,8 @@
 
         /**
          * @param mixed $data_size
+         *
+         * @throws \Exception
          */
         private function setDataSize($data_size)
         {
@@ -775,6 +780,8 @@
 
         /**
          * @param mixed $bitfield
+         *
+         * @throws \Exception
          */
         private function setBitfield($bitfield)
         {
