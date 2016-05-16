@@ -692,7 +692,7 @@
         {
             if ($this->_debug)
             {
-                $output = '[' . date(DATE_W3C) . '] ' . $message . "\n";
+                $output = $output_console = '[' . date(DATE_W3C) . '] ' . $message . "\n";
 
                 if (OS == 'win')
                 {
