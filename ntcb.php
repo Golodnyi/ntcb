@@ -842,6 +842,7 @@
                     $stmt = $db->prepare('SELECT 1 FROM ntcb WHERE `IMEI` = ? AND `numPage` = ? LIMIT 1');
                     $stmt->bindValue(1, $this->getImei(), PDO::PARAM_INT);
                     $stmt->bindValue(2, $t->getNumPage(),  PDO::PARAM_INT);
+                    $stmt->execute();
                     $exist = $stmt->rowCount();
                 } catch (PDOException $e)
                 {
