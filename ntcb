@@ -3,10 +3,12 @@
 case "$@" in
     start)
         sudo -u ftp nohup php /www/ntcb/www/start.php >> /dev/null &
+        sleep 1
         sudo -u ftp php /www/ntcb/www/status.php
         ;;
     stop)
         sudo -u ftp php /www/ntcb/www/stop.php
+        sleep 1
         sudo -u ftp php /www/ntcb/www/status.php
         ;;
     status)
@@ -14,6 +16,7 @@ case "$@" in
         ;;
     reload)
         sudo -u ftp php /www/ntcb/www/stop.php
+        sleep 1
         sudo -u ftp php /www/ntcb/www/status.php
         sudo -u ftp nohup php /www/ntcb/www/start.php >> /dev/null &
         sleep 1
