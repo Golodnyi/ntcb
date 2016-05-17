@@ -15,7 +15,7 @@
     else
     {
         define('SLASH', '/');
-        define('PORT', 9000);
+        define('PORT', 9002);
         define('OS', 'lin');
     }
 

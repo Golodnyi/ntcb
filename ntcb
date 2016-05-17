@@ -1,0 +1,24 @@
+#!/bin/bash
+
+case "$@" in
+    start)
+        sudo -u ftp nohup php /www/ntcb/www/start.php >> /dev/null &
+        sudo -u ftp php /www/ntcb/www/status.php
+        ;;
+    stop)
+        sudo -u ftp php /www/ntcb/www/stop.php
+        sudo -u ftp php /www/ntcb/www/status.php
+        ;;
+    status)
+        sudo -u ftp php /www/ntcb/www/status.php
+        ;;
+    reload)
+        sudo -u ftp php /www/ntcb/www/stop.php
+        sudo -u ftp php /www/ntcb/www/status.php
+        sudo -u ftp nohup php /www/ntcb/www/start.php >> /dev/null &
+        sleep 1
+        sudo -u ftp php /www/ntcb/www/status.php
+        ;;
+    *) echo "Неизвестная команда. Допустимые команды: start, stop, reload, status."
+        ;;
+esac
