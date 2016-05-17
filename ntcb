@@ -22,6 +22,9 @@ case "$@" in
         sleep 1
         sudo -u ftp php /www/ntcb/www/status.php
         ;;
-    *) echo "Неизвестная команда. Допустимые команды: start, stop, reload, status."
+    update)
+        sudo -u ftp cd /www/ntcb/www/ && git pull
+        ;;
+    *) echo "Неизвестная команда. Допустимые команды: start, stop, reload, status, update"
         ;;
 esac
