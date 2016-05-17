@@ -23,7 +23,8 @@ case "$@" in
         sudo -u ftp php /www/ntcb/www/status.php
         ;;
     update)
-        sudo -u ftp cd /www/ntcb/www/ && git pull
+        cd /www/ntcb/www
+        sudo -u ftp git pull
         ;;
     *) echo "Неизвестная команда. Допустимые команды: start, stop, reload, status, update"
         ;;
