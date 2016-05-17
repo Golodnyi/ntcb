@@ -6,82 +6,82 @@
  */
 
 class telemetry_flex_v10 {
-    private $_numPage = false;
-    private $_Code = false;
-    private $_Time = false;
-    private $_State = false;
-    private $_Module1 = false;
-    private $_Module2 = false;
-    private $_GSM = false;
-    private $_StateGauge = false;
-    private $_LastTime = false;
-    private $_Lat = false;
-    private $_Lon = false;
-    private $_Alt = false;
-    private $_Speed = false;
-    private $_Course = false;
-    private $_Mileage = false;
-    private $_Way = false;
-    private $_AllSeconds = false;
-    private $_SecondLast = false;
-    private $_Power = false;
-    private $_Reserv = false;
-    private $_StateU_Ain1 = false;
-    private $_StateU_Ain2 = false;
-    private $_StateU_Ain3 = false;
-    private $_StateU_Ain4 = false;
-    private $_StateU_Ain5 = false;
-    private $_StateU_Ain6 = false;
-    private $_StateU_Ain7 = false;
-    private $_StateU_Ain8 = false;
-    private $_StateIn1 = false;
-    private $_StateIn2 = false;
-    private $_stateOut1 = false;
-    private $_StateOut2 = false;
-    private $_StateInImp1 = false;
-    private $_StateInImp2 = false;
-    private $_Frequency1 = false;
-    private $_Frequency2 = false;
-    private $_Motochas = false;
-    private $_LevelRS485_1 = false;
-    private $_LevelRS485_2 = false;
-    private $_LevelRS485_3 = false;
-    private $_LevelRS485_4 = false;
-    private $_LevelRS485_5 = false;
-    private $_LevelRS485_6 = false;
-    private $_LevelRS232 = false;
-    private $_Temp1 = false;
-    private $_Temp2 = false;
-    private $_Temp3 = false;
-    private $_Temp4 = false;
-    private $_Temp5 = false;
-    private $_Temp6 = false;
-    private $_Temp7 = false;
-    private $_Temp8 = false;
-    private $_CAN_FuelLevel = false;
-    private $_CAN_FuelConsumption = false;
-    private $_CAN_EngineTurns = false;
-    private $_CAN_Temp = false;
-    private $_CAN_FullRun = false;
-    private $_CAN_AxleLoad_1 = false;
-    private $_CAN_AxleLoad_2 = false;
-    private $_CAN_AxleLoad_3 = false;
-    private $_CAN_AxleLoad_4 = false;
-    private $_CAN_AxleLoad_5 = false;
-    private $_CAN_PedalAccel = false;
-    private $_CAN_PedalStop = false;
-    private $_CAN_EngineLoad = false;
-    private $_CAN_LevelFiltr = false;
-    private $_CAN_EngineTime = false;
-    private $_CAN_TimeTO = false;
-    private $_CAN_Speed = false;
+    private $numPage = false;
+    private $Code = false;
+    private $Time = false;
+    private $State = false;
+    private $Module1 = false;
+    private $Module2 = false;
+    private $GSM = false;
+    private $StateGauge = false;
+    private $LastTime = false;
+    private $Lat = false;
+    private $Lon = false;
+    private $Alt = false;
+    private $Speed = false;
+    private $Course = false;
+    private $Mileage = false;
+    private $Way = false;
+    private $AllSeconds = false;
+    private $SecondLast = false;
+    private $Power = false;
+    private $Reserv = false;
+    private $StateU_Ain1 = false;
+    private $StateU_Ain2 = false;
+    private $StateU_Ain3 = false;
+    private $StateU_Ain4 = false;
+    private $StateU_Ain5 = false;
+    private $StateU_Ain6 = false;
+    private $StateU_Ain7 = false;
+    private $StateU_Ain8 = false;
+    private $StateIn1 = false;
+    private $StateIn2 = false;
+    private $stateOut1 = false;
+    private $StateOut2 = false;
+    private $StateInImp1 = false;
+    private $StateInImp2 = false;
+    private $Frequency1 = false;
+    private $Frequency2 = false;
+    private $Motochas = false;
+    private $LevelRS485_1 = false;
+    private $LevelRS485_2 = false;
+    private $LevelRS485_3 = false;
+    private $LevelRS485_4 = false;
+    private $LevelRS485_5 = false;
+    private $LevelRS485_6 = false;
+    private $LevelRS232 = false;
+    private $Temp1 = false;
+    private $Temp2 = false;
+    private $Temp3 = false;
+    private $Temp4 = false;
+    private $Temp5 = false;
+    private $Temp6 = false;
+    private $Temp7 = false;
+    private $Temp8 = false;
+    private $CAN_FuelLevel = false;
+    private $CAN_FuelConsumption = false;
+    private $CAN_EngineTurns = false;
+    private $CAN_Temp = false;
+    private $CAN_FullRun = false;
+    private $CAN_AxleLoad_1 = false;
+    private $CAN_AxleLoad_2 = false;
+    private $CAN_AxleLoad_3 = false;
+    private $CAN_AxleLoad_4 = false;
+    private $CAN_AxleLoad_5 = false;
+    private $CAN_PedalAccel = false;
+    private $CAN_PedalStop = false;
+    private $CAN_EngineLoad = false;
+    private $CAN_LevelFiltr = false;
+    private $CAN_EngineTime = false;
+    private $CAN_TimeTO = false;
+    private $CAN_Speed = false;
 
     /**
      * @return mixed
      */
     public function getNumPage()
     {
-        return $this->_numPage;
+        return $this->numPage;
     }
 
     /**
@@ -89,7 +89,7 @@ class telemetry_flex_v10 {
      */
     public function setNumPage($numPage)
     {
-        $this->_numPage = $numPage;
+        $this->numPage = $numPage;
     }
 
     /**
@@ -97,7 +97,7 @@ class telemetry_flex_v10 {
      */
     public function getCode()
     {
-        return $this->_Code;
+        return $this->Code;
     }
 
     /**
@@ -105,7 +105,7 @@ class telemetry_flex_v10 {
      */
     public function setCode($Code)
     {
-        $this->_Code = $Code;
+        $this->Code = $Code;
     }
 
     /**
@@ -113,7 +113,7 @@ class telemetry_flex_v10 {
      */
     public function getTime()
     {
-        return $this->_Time;
+        return $this->Time;
     }
 
     /**
@@ -121,7 +121,7 @@ class telemetry_flex_v10 {
      */
     public function setTime($Time)
     {
-        $this->_Time = $Time;
+        $this->Time = $Time;
     }
 
     /**
@@ -129,7 +129,7 @@ class telemetry_flex_v10 {
      */
     public function getState()
     {
-        return $this->_State;
+        return $this->State;
     }
 
     /**
@@ -137,7 +137,7 @@ class telemetry_flex_v10 {
      */
     public function setState($State)
     {
-        $this->_State = $State;
+        $this->State = $State;
     }
 
     /**
@@ -145,7 +145,7 @@ class telemetry_flex_v10 {
      */
     public function getModule1()
     {
-        return $this->_Module1;
+        return $this->Module1;
     }
 
     /**
@@ -153,7 +153,7 @@ class telemetry_flex_v10 {
      */
     public function setModule1($Module1)
     {
-        $this->_Module1 = $Module1;
+        $this->Module1 = $Module1;
     }
 
     /**
@@ -161,7 +161,7 @@ class telemetry_flex_v10 {
      */
     public function getModule2()
     {
-        return $this->_Module2;
+        return $this->Module2;
     }
 
     /**
@@ -169,7 +169,7 @@ class telemetry_flex_v10 {
      */
     public function setModule2($Module2)
     {
-        $this->_Module2 = $Module2;
+        $this->Module2 = $Module2;
     }
 
     /**
@@ -177,7 +177,7 @@ class telemetry_flex_v10 {
      */
     public function getGSM()
     {
-        return $this->_GSM;
+        return $this->GSM;
     }
 
     /**
@@ -185,7 +185,7 @@ class telemetry_flex_v10 {
      */
     public function setGSM($GSM)
     {
-        $this->_GSM = $GSM;
+        $this->GSM = $GSM;
     }
 
     /**
@@ -193,7 +193,7 @@ class telemetry_flex_v10 {
      */
     public function getStateGauge()
     {
-        return $this->_StateGauge;
+        return $this->StateGauge;
     }
 
     /**
@@ -201,7 +201,7 @@ class telemetry_flex_v10 {
      */
     public function setStateGauge($StateGauge)
     {
-        $this->_StateGauge = $StateGauge;
+        $this->StateGauge = $StateGauge;
     }
 
     /**
@@ -209,7 +209,7 @@ class telemetry_flex_v10 {
      */
     public function getLastTime()
     {
-        return $this->_LastTime;
+        return $this->LastTime;
     }
 
     /**
@@ -217,7 +217,7 @@ class telemetry_flex_v10 {
      */
     public function setLastTime($LastTime)
     {
-        $this->_LastTime = $LastTime;
+        $this->LastTime = $LastTime;
     }
 
     /**
@@ -225,7 +225,7 @@ class telemetry_flex_v10 {
      */
     public function getLat()
     {
-        return $this->_Lat;
+        return $this->Lat;
     }
 
     /**
@@ -233,7 +233,7 @@ class telemetry_flex_v10 {
      */
     public function setLat($Lat)
     {
-        $this->_Lat = $Lat;
+        $this->Lat = $Lat;
     }
 
     /**
@@ -241,7 +241,7 @@ class telemetry_flex_v10 {
      */
     public function getLon()
     {
-        return $this->_Lon;
+        return $this->Lon;
     }
 
     /**
@@ -249,7 +249,7 @@ class telemetry_flex_v10 {
      */
     public function setLon($Lon)
     {
-        $this->_Lon = $Lon;
+        $this->Lon = $Lon;
     }
 
     /**
@@ -257,7 +257,7 @@ class telemetry_flex_v10 {
      */
     public function getAlt()
     {
-        return $this->_Alt;
+        return $this->Alt;
     }
 
     /**
@@ -265,7 +265,7 @@ class telemetry_flex_v10 {
      */
     public function setAlt($Alt)
     {
-        $this->_Alt = $Alt;
+        $this->Alt = $Alt;
     }
 
     /**
@@ -273,7 +273,7 @@ class telemetry_flex_v10 {
      */
     public function getSpeed()
     {
-        return $this->_Speed;
+        return $this->Speed;
     }
 
     /**
@@ -281,7 +281,7 @@ class telemetry_flex_v10 {
      */
     public function setSpeed($Speed)
     {
-        $this->_Speed = $Speed;
+        $this->Speed = $Speed;
     }
 
     /**
@@ -289,7 +289,7 @@ class telemetry_flex_v10 {
      */
     public function getCourse()
     {
-        return $this->_Course;
+        return $this->Course;
     }
 
     /**
@@ -297,7 +297,7 @@ class telemetry_flex_v10 {
      */
     public function setCourse($Course)
     {
-        $this->_Course = $Course;
+        $this->Course = $Course;
     }
 
     /**
@@ -305,7 +305,7 @@ class telemetry_flex_v10 {
      */
     public function getMileage()
     {
-        return $this->_Mileage;
+        return $this->Mileage;
     }
 
     /**
@@ -313,7 +313,7 @@ class telemetry_flex_v10 {
      */
     public function setMileage($Mileage)
     {
-        $this->_Mileage = $Mileage;
+        $this->Mileage = $Mileage;
     }
 
     /**
@@ -321,7 +321,7 @@ class telemetry_flex_v10 {
      */
     public function getWay()
     {
-        return $this->_Way;
+        return $this->Way;
     }
 
     /**
@@ -329,7 +329,7 @@ class telemetry_flex_v10 {
      */
     public function setWay($Way)
     {
-        $this->_Way = $Way;
+        $this->Way = $Way;
     }
 
     /**
@@ -337,7 +337,7 @@ class telemetry_flex_v10 {
      */
     public function getAllSeconds()
     {
-        return $this->_AllSeconds;
+        return $this->AllSeconds;
     }
 
     /**
@@ -345,7 +345,7 @@ class telemetry_flex_v10 {
      */
     public function setAllSeconds($AllSeconds)
     {
-        $this->_AllSeconds = $AllSeconds;
+        $this->AllSeconds = $AllSeconds;
     }
 
     /**
@@ -353,7 +353,7 @@ class telemetry_flex_v10 {
      */
     public function getSecondLast()
     {
-        return $this->_SecondLast;
+        return $this->SecondLast;
     }
 
     /**
@@ -361,7 +361,7 @@ class telemetry_flex_v10 {
      */
     public function setSecondLast($SecondLast)
     {
-        $this->_SecondLast = $SecondLast;
+        $this->SecondLast = $SecondLast;
     }
 
     /**
@@ -369,7 +369,7 @@ class telemetry_flex_v10 {
      */
     public function getPower()
     {
-        return $this->_Power;
+        return $this->Power;
     }
 
     /**
@@ -377,7 +377,7 @@ class telemetry_flex_v10 {
      */
     public function setPower($Power)
     {
-        $this->_Power = $Power;
+        $this->Power = $Power;
     }
 
     /**
@@ -385,7 +385,7 @@ class telemetry_flex_v10 {
      */
     public function getReserv()
     {
-        return $this->_Reserv;
+        return $this->Reserv;
     }
 
     /**
@@ -393,7 +393,7 @@ class telemetry_flex_v10 {
      */
     public function setReserv($Reserv)
     {
-        $this->_Reserv = $Reserv;
+        $this->Reserv = $Reserv;
     }
 
     /**
@@ -401,7 +401,7 @@ class telemetry_flex_v10 {
      */
     public function getStateUAin1()
     {
-        return $this->_StateU_Ain1;
+        return $this->StateU_Ain1;
     }
 
     /**
@@ -409,7 +409,7 @@ class telemetry_flex_v10 {
      */
     public function setStateUAin1($StateU_Ain1)
     {
-        $this->_StateU_Ain1 = $StateU_Ain1;
+        $this->StateU_Ain1 = $StateU_Ain1;
     }
 
     /**
@@ -417,7 +417,7 @@ class telemetry_flex_v10 {
      */
     public function getStateUAin2()
     {
-        return $this->_StateU_Ain2;
+        return $this->StateU_Ain2;
     }
 
     /**
@@ -425,7 +425,7 @@ class telemetry_flex_v10 {
      */
     public function setStateUAin2($StateU_Ain2)
     {
-        $this->_StateU_Ain2 = $StateU_Ain2;
+        $this->StateU_Ain2 = $StateU_Ain2;
     }
 
     /**
@@ -433,7 +433,7 @@ class telemetry_flex_v10 {
      */
     public function getStateUAin3()
     {
-        return $this->_StateU_Ain3;
+        return $this->StateU_Ain3;
     }
 
     /**
@@ -441,7 +441,7 @@ class telemetry_flex_v10 {
      */
     public function setStateUAin3($StateU_Ain3)
     {
-        $this->_StateU_Ain3 = $StateU_Ain3;
+        $this->StateU_Ain3 = $StateU_Ain3;
     }
 
     /**
@@ -449,7 +449,7 @@ class telemetry_flex_v10 {
      */
     public function getStateUAin4()
     {
-        return $this->_StateU_Ain4;
+        return $this->StateU_Ain4;
     }
 
     /**
@@ -457,7 +457,7 @@ class telemetry_flex_v10 {
      */
     public function setStateUAin4($StateU_Ain4)
     {
-        $this->_StateU_Ain4 = $StateU_Ain4;
+        $this->StateU_Ain4 = $StateU_Ain4;
     }
 
     /**
@@ -465,7 +465,7 @@ class telemetry_flex_v10 {
      */
     public function getStateUAin5()
     {
-        return $this->_StateU_Ain5;
+        return $this->StateU_Ain5;
     }
 
     /**
@@ -473,7 +473,7 @@ class telemetry_flex_v10 {
      */
     public function setStateUAin5($StateU_Ain5)
     {
-        $this->_StateU_Ain5 = $StateU_Ain5;
+        $this->StateU_Ain5 = $StateU_Ain5;
     }
 
     /**
@@ -481,7 +481,7 @@ class telemetry_flex_v10 {
      */
     public function getStateUAin6()
     {
-        return $this->_StateU_Ain6;
+        return $this->StateU_Ain6;
     }
 
     /**
@@ -489,7 +489,7 @@ class telemetry_flex_v10 {
      */
     public function setStateUAin6($StateU_Ain6)
     {
-        $this->_StateU_Ain6 = $StateU_Ain6;
+        $this->StateU_Ain6 = $StateU_Ain6;
     }
 
     /**
@@ -497,7 +497,7 @@ class telemetry_flex_v10 {
      */
     public function getStateUAin7()
     {
-        return $this->_StateU_Ain7;
+        return $this->StateU_Ain7;
     }
 
     /**
@@ -505,7 +505,7 @@ class telemetry_flex_v10 {
      */
     public function setStateUAin7($StateU_Ain7)
     {
-        $this->_StateU_Ain7 = $StateU_Ain7;
+        $this->StateU_Ain7 = $StateU_Ain7;
     }
 
     /**
@@ -513,7 +513,7 @@ class telemetry_flex_v10 {
      */
     public function getStateUAin8()
     {
-        return $this->_StateU_Ain8;
+        return $this->StateU_Ain8;
     }
 
     /**
@@ -521,7 +521,7 @@ class telemetry_flex_v10 {
      */
     public function setStateUAin8($StateU_Ain8)
     {
-        $this->_StateU_Ain8 = $StateU_Ain8;
+        $this->StateU_Ain8 = $StateU_Ain8;
     }
 
     /**
@@ -529,7 +529,7 @@ class telemetry_flex_v10 {
      */
     public function getStateIn1()
     {
-        return $this->_StateIn1;
+        return $this->StateIn1;
     }
 
     /**
@@ -537,7 +537,7 @@ class telemetry_flex_v10 {
      */
     public function setStateIn1($StateIn1)
     {
-        $this->_StateIn1 = $StateIn1;
+        $this->StateIn1 = $StateIn1;
     }
 
     /**
@@ -545,7 +545,7 @@ class telemetry_flex_v10 {
      */
     public function getStateIn2()
     {
-        return $this->_StateIn2;
+        return $this->StateIn2;
     }
 
     /**
@@ -553,7 +553,7 @@ class telemetry_flex_v10 {
      */
     public function setStateIn2($StateIn2)
     {
-        $this->_StateIn2 = $StateIn2;
+        $this->StateIn2 = $StateIn2;
     }
 
     /**
@@ -561,7 +561,7 @@ class telemetry_flex_v10 {
      */
     public function getStateOut1()
     {
-        return $this->_stateOut1;
+        return $this->stateOut1;
     }
 
     /**
@@ -569,7 +569,7 @@ class telemetry_flex_v10 {
      */
     public function setStateOut1($stateOut1)
     {
-        $this->_stateOut1 = $stateOut1;
+        $this->stateOut1 = $stateOut1;
     }
 
     /**
@@ -577,7 +577,7 @@ class telemetry_flex_v10 {
      */
     public function getStateOut2()
     {
-        return $this->_StateOut2;
+        return $this->StateOut2;
     }
 
     /**
@@ -585,7 +585,7 @@ class telemetry_flex_v10 {
      */
     public function setStateOut2($StateOut2)
     {
-        $this->_StateOut2 = $StateOut2;
+        $this->StateOut2 = $StateOut2;
     }
 
     /**
@@ -593,7 +593,7 @@ class telemetry_flex_v10 {
      */
     public function getStateInImp1()
     {
-        return $this->_StateInImp1;
+        return $this->StateInImp1;
     }
 
     /**
@@ -601,7 +601,7 @@ class telemetry_flex_v10 {
      */
     public function setStateInImp1($StateInImp1)
     {
-        $this->_StateInImp1 = $StateInImp1;
+        $this->StateInImp1 = $StateInImp1;
     }
 
     /**
@@ -609,7 +609,7 @@ class telemetry_flex_v10 {
      */
     public function getStateInImp2()
     {
-        return $this->_StateInImp2;
+        return $this->StateInImp2;
     }
 
     /**
@@ -617,7 +617,7 @@ class telemetry_flex_v10 {
      */
     public function setStateInImp2($StateInImp2)
     {
-        $this->_StateInImp2 = $StateInImp2;
+        $this->StateInImp2 = $StateInImp2;
     }
 
     /**
@@ -625,7 +625,7 @@ class telemetry_flex_v10 {
      */
     public function getFrequency1()
     {
-        return $this->_Frequency1;
+        return $this->Frequency1;
     }
 
     /**
@@ -633,7 +633,7 @@ class telemetry_flex_v10 {
      */
     public function setFrequency1($Frequency1)
     {
-        $this->_Frequency1 = $Frequency1;
+        $this->Frequency1 = $Frequency1;
     }
 
     /**
@@ -641,7 +641,7 @@ class telemetry_flex_v10 {
      */
     public function getFrequency2()
     {
-        return $this->_Frequency2;
+        return $this->Frequency2;
     }
 
     /**
@@ -649,7 +649,7 @@ class telemetry_flex_v10 {
      */
     public function setFrequency2($Frequency2)
     {
-        $this->_Frequency2 = $Frequency2;
+        $this->Frequency2 = $Frequency2;
     }
 
     /**
@@ -657,7 +657,7 @@ class telemetry_flex_v10 {
      */
     public function getMotochas()
     {
-        return $this->_Motochas;
+        return $this->Motochas;
     }
 
     /**
@@ -665,7 +665,7 @@ class telemetry_flex_v10 {
      */
     public function setMotochas($Motochas)
     {
-        $this->_Motochas = $Motochas;
+        $this->Motochas = $Motochas;
     }
 
     /**
@@ -673,7 +673,7 @@ class telemetry_flex_v10 {
      */
     public function getLevelRS4851()
     {
-        return $this->_LevelRS485_1;
+        return $this->LevelRS485_1;
     }
 
     /**
@@ -681,7 +681,7 @@ class telemetry_flex_v10 {
      */
     public function setLevelRS4851($LevelRS485_1)
     {
-        $this->_LevelRS485_1 = $LevelRS485_1;
+        $this->LevelRS485_1 = $LevelRS485_1;
     }
 
     /**
@@ -689,7 +689,7 @@ class telemetry_flex_v10 {
      */
     public function getLevelRS4852()
     {
-        return $this->_LevelRS485_2;
+        return $this->LevelRS485_2;
     }
 
     /**
@@ -697,7 +697,7 @@ class telemetry_flex_v10 {
      */
     public function setLevelRS4852($LevelRS485_2)
     {
-        $this->_LevelRS485_2 = $LevelRS485_2;
+        $this->LevelRS485_2 = $LevelRS485_2;
     }
 
     /**
@@ -705,7 +705,7 @@ class telemetry_flex_v10 {
      */
     public function getLevelRS4853()
     {
-        return $this->_LevelRS485_3;
+        return $this->LevelRS485_3;
     }
 
     /**
@@ -713,7 +713,7 @@ class telemetry_flex_v10 {
      */
     public function setLevelRS4853($LevelRS485_3)
     {
-        $this->_LevelRS485_3 = $LevelRS485_3;
+        $this->LevelRS485_3 = $LevelRS485_3;
     }
 
     /**
@@ -721,7 +721,7 @@ class telemetry_flex_v10 {
      */
     public function getLevelRS4854()
     {
-        return $this->_LevelRS485_4;
+        return $this->LevelRS485_4;
     }
 
     /**
@@ -729,7 +729,7 @@ class telemetry_flex_v10 {
      */
     public function setLevelRS4854($LevelRS485_4)
     {
-        $this->_LevelRS485_4 = $LevelRS485_4;
+        $this->LevelRS485_4 = $LevelRS485_4;
     }
 
     /**
@@ -737,7 +737,7 @@ class telemetry_flex_v10 {
      */
     public function getLevelRS4855()
     {
-        return $this->_LevelRS485_5;
+        return $this->LevelRS485_5;
     }
 
     /**
@@ -745,7 +745,7 @@ class telemetry_flex_v10 {
      */
     public function setLevelRS4855($LevelRS485_5)
     {
-        $this->_LevelRS485_5 = $LevelRS485_5;
+        $this->LevelRS485_5 = $LevelRS485_5;
     }
 
     /**
@@ -753,7 +753,7 @@ class telemetry_flex_v10 {
      */
     public function getLevelRS4856()
     {
-        return $this->_LevelRS485_6;
+        return $this->LevelRS485_6;
     }
 
     /**
@@ -761,7 +761,7 @@ class telemetry_flex_v10 {
      */
     public function setLevelRS4856($LevelRS485_6)
     {
-        $this->_LevelRS485_6 = $LevelRS485_6;
+        $this->LevelRS485_6 = $LevelRS485_6;
     }
 
     /**
@@ -769,7 +769,7 @@ class telemetry_flex_v10 {
      */
     public function getLevelRS232()
     {
-        return $this->_LevelRS232;
+        return $this->LevelRS232;
     }
 
     /**
@@ -777,7 +777,7 @@ class telemetry_flex_v10 {
      */
     public function setLevelRS232($LevelRS232)
     {
-        $this->_LevelRS232 = $LevelRS232;
+        $this->LevelRS232 = $LevelRS232;
     }
 
     /**
@@ -785,7 +785,7 @@ class telemetry_flex_v10 {
      */
     public function getTemp1()
     {
-        return $this->_Temp1;
+        return $this->Temp1;
     }
 
     /**
@@ -793,7 +793,7 @@ class telemetry_flex_v10 {
      */
     public function setTemp1($Temp1)
     {
-        $this->_Temp1 = $Temp1;
+        $this->Temp1 = $Temp1;
     }
 
     /**
@@ -801,7 +801,7 @@ class telemetry_flex_v10 {
      */
     public function getTemp2()
     {
-        return $this->_Temp2;
+        return $this->Temp2;
     }
 
     /**
@@ -809,7 +809,7 @@ class telemetry_flex_v10 {
      */
     public function setTemp2($Temp2)
     {
-        $this->_Temp2 = $Temp2;
+        $this->Temp2 = $Temp2;
     }
 
     /**
@@ -817,7 +817,7 @@ class telemetry_flex_v10 {
      */
     public function getTemp3()
     {
-        return $this->_Temp3;
+        return $this->Temp3;
     }
 
     /**
@@ -825,7 +825,7 @@ class telemetry_flex_v10 {
      */
     public function setTemp3($Temp3)
     {
-        $this->_Temp3 = $Temp3;
+        $this->Temp3 = $Temp3;
     }
 
     /**
@@ -833,7 +833,7 @@ class telemetry_flex_v10 {
      */
     public function getTemp4()
     {
-        return $this->_Temp4;
+        return $this->Temp4;
     }
 
     /**
@@ -841,7 +841,7 @@ class telemetry_flex_v10 {
      */
     public function setTemp4($Temp4)
     {
-        $this->_Temp4 = $Temp4;
+        $this->Temp4 = $Temp4;
     }
 
     /**
@@ -849,7 +849,7 @@ class telemetry_flex_v10 {
      */
     public function getTemp5()
     {
-        return $this->_Temp5;
+        return $this->Temp5;
     }
 
     /**
@@ -857,7 +857,7 @@ class telemetry_flex_v10 {
      */
     public function setTemp5($Temp5)
     {
-        $this->_Temp5 = $Temp5;
+        $this->Temp5 = $Temp5;
     }
 
     /**
@@ -865,7 +865,7 @@ class telemetry_flex_v10 {
      */
     public function getTemp6()
     {
-        return $this->_Temp6;
+        return $this->Temp6;
     }
 
     /**
@@ -873,7 +873,7 @@ class telemetry_flex_v10 {
      */
     public function setTemp6($Temp6)
     {
-        $this->_Temp6 = $Temp6;
+        $this->Temp6 = $Temp6;
     }
 
     /**
@@ -881,7 +881,7 @@ class telemetry_flex_v10 {
      */
     public function getTemp7()
     {
-        return $this->_Temp7;
+        return $this->Temp7;
     }
 
     /**
@@ -889,7 +889,7 @@ class telemetry_flex_v10 {
      */
     public function setTemp7($Temp7)
     {
-        $this->_Temp7 = $Temp7;
+        $this->Temp7 = $Temp7;
     }
 
     /**
@@ -897,7 +897,7 @@ class telemetry_flex_v10 {
      */
     public function getTemp8()
     {
-        return $this->_Temp8;
+        return $this->Temp8;
     }
 
     /**
@@ -905,7 +905,7 @@ class telemetry_flex_v10 {
      */
     public function setTemp8($Temp8)
     {
-        $this->_Temp8 = $Temp8;
+        $this->Temp8 = $Temp8;
     }
 
     /**
@@ -913,7 +913,7 @@ class telemetry_flex_v10 {
      */
     public function getCANFuelLevel()
     {
-        return $this->_CAN_FuelLevel;
+        return $this->CAN_FuelLevel;
     }
 
     /**
@@ -921,7 +921,7 @@ class telemetry_flex_v10 {
      */
     public function setCANFuelLevel($CAN_FuelLevel)
     {
-        $this->_CAN_FuelLevel = $CAN_FuelLevel;
+        $this->CAN_FuelLevel = $CAN_FuelLevel;
     }
 
     /**
@@ -929,7 +929,7 @@ class telemetry_flex_v10 {
      */
     public function getCANFuelConsumption()
     {
-        return $this->_CAN_FuelConsumption;
+        return $this->CAN_FuelConsumption;
     }
 
     /**
@@ -937,7 +937,7 @@ class telemetry_flex_v10 {
      */
     public function setCANFuelConsumption($CAN_FuelConsumption)
     {
-        $this->_CAN_FuelConsumption = $CAN_FuelConsumption;
+        $this->CAN_FuelConsumption = $CAN_FuelConsumption;
     }
 
     /**
@@ -945,7 +945,7 @@ class telemetry_flex_v10 {
      */
     public function getCANEngineTurns()
     {
-        return $this->_CAN_EngineTurns;
+        return $this->CAN_EngineTurns;
     }
 
     /**
@@ -953,7 +953,7 @@ class telemetry_flex_v10 {
      */
     public function setCANEngineTurns($CAN_EngineTurns)
     {
-        $this->_CAN_EngineTurns = $CAN_EngineTurns;
+        $this->CAN_EngineTurns = $CAN_EngineTurns;
     }
 
     /**
@@ -961,7 +961,7 @@ class telemetry_flex_v10 {
      */
     public function getCANTemp()
     {
-        return $this->_CAN_Temp;
+        return $this->CAN_Temp;
     }
 
     /**
@@ -969,7 +969,7 @@ class telemetry_flex_v10 {
      */
     public function setCANTemp($CAN_Temp)
     {
-        $this->_CAN_Temp = $CAN_Temp;
+        $this->CAN_Temp = $CAN_Temp;
     }
 
     /**
@@ -977,7 +977,7 @@ class telemetry_flex_v10 {
      */
     public function getCANFullRun()
     {
-        return $this->_CAN_FullRun;
+        return $this->CAN_FullRun;
     }
 
     /**
@@ -985,7 +985,7 @@ class telemetry_flex_v10 {
      */
     public function setCANFullRun($CAN_FullRun)
     {
-        $this->_CAN_FullRun = $CAN_FullRun;
+        $this->CAN_FullRun = $CAN_FullRun;
     }
 
     /**
@@ -993,7 +993,7 @@ class telemetry_flex_v10 {
      */
     public function getCANAxleLoad1()
     {
-        return $this->_CAN_AxleLoad_1;
+        return $this->CAN_AxleLoad_1;
     }
 
     /**
@@ -1001,7 +1001,7 @@ class telemetry_flex_v10 {
      */
     public function setCANAxleLoad1($CAN_AxleLoad_1)
     {
-        $this->_CAN_AxleLoad_1 = $CAN_AxleLoad_1;
+        $this->CAN_AxleLoad_1 = $CAN_AxleLoad_1;
     }
 
     /**
@@ -1009,7 +1009,7 @@ class telemetry_flex_v10 {
      */
     public function getCANAxleLoad2()
     {
-        return $this->_CAN_AxleLoad_2;
+        return $this->CAN_AxleLoad_2;
     }
 
     /**
@@ -1017,7 +1017,7 @@ class telemetry_flex_v10 {
      */
     public function setCANAxleLoad2($CAN_AxleLoad_2)
     {
-        $this->_CAN_AxleLoad_2 = $CAN_AxleLoad_2;
+        $this->CAN_AxleLoad_2 = $CAN_AxleLoad_2;
     }
 
     /**
@@ -1025,7 +1025,7 @@ class telemetry_flex_v10 {
      */
     public function getCANAxleLoad3()
     {
-        return $this->_CAN_AxleLoad_3;
+        return $this->CAN_AxleLoad_3;
     }
 
     /**
@@ -1033,7 +1033,7 @@ class telemetry_flex_v10 {
      */
     public function setCANAxleLoad3($CAN_AxleLoad_3)
     {
-        $this->_CAN_AxleLoad_3 = $CAN_AxleLoad_3;
+        $this->CAN_AxleLoad_3 = $CAN_AxleLoad_3;
     }
 
     /**
@@ -1041,7 +1041,7 @@ class telemetry_flex_v10 {
      */
     public function getCANAxleLoad4()
     {
-        return $this->_CAN_AxleLoad_4;
+        return $this->CAN_AxleLoad_4;
     }
 
     /**
@@ -1049,7 +1049,7 @@ class telemetry_flex_v10 {
      */
     public function setCANAxleLoad4($CAN_AxleLoad_4)
     {
-        $this->_CAN_AxleLoad_4 = $CAN_AxleLoad_4;
+        $this->CAN_AxleLoad_4 = $CAN_AxleLoad_4;
     }
 
     /**
@@ -1057,7 +1057,7 @@ class telemetry_flex_v10 {
      */
     public function getCANAxleLoad5()
     {
-        return $this->_CAN_AxleLoad_5;
+        return $this->CAN_AxleLoad_5;
     }
 
     /**
@@ -1065,7 +1065,7 @@ class telemetry_flex_v10 {
      */
     public function setCANAxleLoad5($CAN_AxleLoad_5)
     {
-        $this->_CAN_AxleLoad_5 = $CAN_AxleLoad_5;
+        $this->CAN_AxleLoad_5 = $CAN_AxleLoad_5;
     }
 
     /**
@@ -1073,7 +1073,7 @@ class telemetry_flex_v10 {
      */
     public function getCANPedalAccel()
     {
-        return $this->_CAN_PedalAccel;
+        return $this->CAN_PedalAccel;
     }
 
     /**
@@ -1081,7 +1081,7 @@ class telemetry_flex_v10 {
      */
     public function setCANPedalAccel($CAN_PedalAccel)
     {
-        $this->_CAN_PedalAccel = $CAN_PedalAccel;
+        $this->CAN_PedalAccel = $CAN_PedalAccel;
     }
 
     /**
@@ -1089,7 +1089,7 @@ class telemetry_flex_v10 {
      */
     public function getCANPedalStop()
     {
-        return $this->_CAN_PedalStop;
+        return $this->CAN_PedalStop;
     }
 
     /**
@@ -1097,7 +1097,7 @@ class telemetry_flex_v10 {
      */
     public function setCANPedalStop($CAN_PedalStop)
     {
-        $this->_CAN_PedalStop = $CAN_PedalStop;
+        $this->CAN_PedalStop = $CAN_PedalStop;
     }
 
     /**
@@ -1105,7 +1105,7 @@ class telemetry_flex_v10 {
      */
     public function getCANEngineLoad()
     {
-        return $this->_CAN_EngineLoad;
+        return $this->CAN_EngineLoad;
     }
 
     /**
@@ -1113,7 +1113,7 @@ class telemetry_flex_v10 {
      */
     public function setCANEngineLoad($CAN_EngineLoad)
     {
-        $this->_CAN_EngineLoad = $CAN_EngineLoad;
+        $this->CAN_EngineLoad = $CAN_EngineLoad;
     }
 
     /**
@@ -1121,7 +1121,7 @@ class telemetry_flex_v10 {
      */
     public function getCANLevelFiltr()
     {
-        return $this->_CAN_LevelFiltr;
+        return $this->CAN_LevelFiltr;
     }
 
     /**
@@ -1129,7 +1129,7 @@ class telemetry_flex_v10 {
      */
     public function setCANLevelFiltr($CAN_LevelFiltr)
     {
-        $this->_CAN_LevelFiltr = $CAN_LevelFiltr;
+        $this->CAN_LevelFiltr = $CAN_LevelFiltr;
     }
 
     /**
@@ -1137,7 +1137,7 @@ class telemetry_flex_v10 {
      */
     public function getCANEngineTime()
     {
-        return $this->_CAN_EngineTime;
+        return $this->CAN_EngineTime;
     }
 
     /**
@@ -1145,7 +1145,7 @@ class telemetry_flex_v10 {
      */
     public function setCANEngineTime($CAN_EngineTime)
     {
-        $this->_CAN_EngineTime = $CAN_EngineTime;
+        $this->CAN_EngineTime = $CAN_EngineTime;
     }
 
     /**
@@ -1153,7 +1153,7 @@ class telemetry_flex_v10 {
      */
     public function getCANTimeTO()
     {
-        return $this->_CAN_TimeTO;
+        return $this->CAN_TimeTO;
     }
 
     /**
@@ -1161,7 +1161,7 @@ class telemetry_flex_v10 {
      */
     public function setCANTimeTO($CAN_TimeTO)
     {
-        $this->_CAN_TimeTO = $CAN_TimeTO;
+        $this->CAN_TimeTO = $CAN_TimeTO;
     }
 
     /**
@@ -1169,7 +1169,7 @@ class telemetry_flex_v10 {
      */
     public function getCANSpeed()
     {
-        return $this->_CAN_Speed;
+        return $this->CAN_Speed;
     }
 
     /**
@@ -1177,7 +1177,7 @@ class telemetry_flex_v10 {
      */
     public function setCANSpeed($CAN_Speed)
     {
-        $this->_CAN_Speed = $CAN_Speed;
+        $this->CAN_Speed = $CAN_Speed;
     }
 
 }
