@@ -63,6 +63,7 @@
          */
         public function __construct($debug = false)
         {
+            date_default_timezone_set('Europe/Moscow');
             set_time_limit(0);
             ob_implicit_flush();
 

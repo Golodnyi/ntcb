@@ -21,11 +21,17 @@
 
     require_once __DIR__ . SLASH . 'ntcb_flex.php';
 
+    $port = 9000;
+
+    if (isset($argv[1]) && is_numeric($argv[1]))
+    {
+        $port = $argv[1];
+    }
+
     try
     {
-        error_reporting(E_ALL);
         $ntcb = new ntcb_flex(true);
-        $ntcb->listen('0.0.0.0', PORT);
+        $ntcb->listen('0.0.0.0', $port);
         $ntcb->run();
     } catch (Exception $e)
     {

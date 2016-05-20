@@ -1,31 +1,91 @@
-#!/bin/bash
+#!/usr/bin/php
 
-case "$@" in
-    start)
-        sudo -u ftp nohup php /www/ntcb/www/start.php >> /dev/null &
-        sleep 1
-        sudo -u ftp php /www/ntcb/www/status.php
-        ;;
-    stop)
-        sudo -u ftp php /www/ntcb/www/stop.php
-        sleep 1
-        sudo -u ftp php /www/ntcb/www/status.php
-        ;;
-    status)
-        sudo -u ftp php /www/ntcb/www/status.php
-        ;;
-    reload)
-        sudo -u ftp php /www/ntcb/www/stop.php
-        sleep 1
-        sudo -u ftp php /www/ntcb/www/status.php
-        sudo -u ftp nohup php /www/ntcb/www/start.php >> /dev/null &
-        sleep 1
-        sudo -u ftp php /www/ntcb/www/status.php
-        ;;
-    update)
-        cd /www/ntcb/www
-        sudo -u ftp git pull
-        ;;
-    *) echo "Неизвестная команда. Допустимые команды: start, stop, reload, status, update"
-        ;;
-esac
+<?php
+
+const USER = 'golodnyi';
+
+if (!defined('SLASH')) {
+    if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+        define('SLASH', '\\');
+    } else {
+        define('SLASH', '/');
+    }
+}
+
+function status()
+{
+    sleep(1);
+    if (file_exists(__DIR__ . '/run.lock')) {
+        $file_pid = file_get_contents(__DIR__ . '/run.lock');
+        $ps = shell_exec('ps -A | grep ' . $file_pid);
+        if (!is_null($ps)) {
+            die('Сервер NTCB запущен' . "\n");
+        }
+        die('Сервер NTCB остановлен' . "\n");
+    } else {
+        die('Сервер NTCB остановлен' . "\n");
+    }
+}
+
+function stop()
+{
+    if (file_exists(__DIR__ . '/run.lock'))
+    {
+        $file_pid = file_get_contents(__DIR__ . '/run.lock');
+        $ps = shell_exec('ps -A | grep ' . $file_pid);
+        if (!is_null($ps))
+        {
+            shell_exec('kill ' . $file_pid);
+        }
+    }
+}
+
+function start($port = 9000)
+{
+    shell_exec('sudo -u ' . USER . ' nohup php ' . __DIR__ . '/start.php ' . $port . ' >> /dev/null &');
+}
+
+if ($argc < 2)
+{
+    die("Неизвестная команда. Допустимые команды: start [port], stop, reload [port], status, update\n");
+}
+
+switch ($argv[1]) {
+    case 'start':
+        $port = 9000;
+
+        if (isset($argv[2]) && is_numeric($argv[2]))
+        {
+            $port = $argv[2];
+        }
+
+        start($port);
+        status();
+        break;
+    case 'stop':
+        stop();
+        status();
+        break;
+    case 'status':
+        status();
+        break;
+    case 'reload':
+        stop();
+        status();
+        $port = 9000;
+
+        if (isset($argv[2]) && is_int($argv[2]))
+        {
+            $port = $argv[2];
+        }
+
+        start($port);
+        status();
+        break;
+    case 'update':
+        shell_exec('cd ' . __DIR__);
+        shell_exec('sudo -u ' . USER . ' git pull');
+        break;
+    default:
+        echo "Неизвестная команда. Допустимые команды: start [port], stop, reload [port], status, update\n";
+}
