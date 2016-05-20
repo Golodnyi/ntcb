@@ -83,9 +83,7 @@ switch ($argv[1]) {
         status();
         break;
     case 'update':
-        echo 'cd ' . __DIR__ . SLASH . "\n";
-        shell_exec('cd ' . __DIR__ . SLASH);
-        echo shell_exec('sudo -u ' . USER . ' git pull');
+        echo shell_exec('cd ' . __DIR__ . SLASH . ' && sudo -u ' . USER . ' git pull');
         break;
     default:
         echo "Неизвестная команда. Допустимые команды: start [port], stop, reload [port], status, update\n";
