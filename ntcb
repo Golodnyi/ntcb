@@ -19,11 +19,11 @@ function status()
         $file_pid = file_get_contents(__DIR__ . '/run.lock');
         $ps = shell_exec('ps -A | grep ' . $file_pid);
         if (!is_null($ps)) {
-            die('Сервер NTCB запущен' . "\n");
+            return 'Сервер NTCB запущен' . "\n";
         }
-        die('Сервер NTCB остановлен' . "\n");
+        return 'Сервер NTCB остановлен' . "\n";
     } else {
-        die('Сервер NTCB остановлен' . "\n");
+        return 'Сервер NTCB остановлен' . "\n";
     }
 }
 
@@ -60,18 +60,18 @@ switch ($argv[1]) {
         }
 
         start($port);
-        status();
+        echo status();
         break;
     case 'stop':
         stop();
-        status();
+        echo status();
         break;
     case 'status':
-        status();
+        echo status();
         break;
     case 'reload':
         stop();
-        status();
+        echo status();
         $port = 9000;
 
         if (isset($argv[2]) && is_numeric($argv[2]))
