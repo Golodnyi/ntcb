@@ -83,7 +83,7 @@ switch ($argv[1]) {
         status();
         break;
     case 'update':
-        shell_exec('cd ' . __DIR__);
+        shell_exec('cd ' . __DIR__ . SLASH);
         shell_exec('sudo -u ' . USER . ' git pull');
         break;
     default:
