@@ -15,8 +15,8 @@ if (!defined('SLASH')) {
 function status()
 {
     sleep(1);
-    if (file_exists(__DIR__ . '/run.lock')) {
-        $file_pid = file_get_contents(__DIR__ . '/run.lock');
+    if (file_exists(__DIR__ . SLASH . 'run.lock')) {
+        $file_pid = file_get_contents(__DIR__ . SLASH . 'run.lock');
         $ps = shell_exec('ps -A | grep ' . $file_pid);
         if (!is_null($ps)) {
             return 'Сервер NTCB запущен' . "\n";
@@ -29,9 +29,9 @@ function status()
 
 function stop()
 {
-    if (file_exists(__DIR__ . '/run.lock'))
+    if (file_exists(__DIR__ . SLASH . 'run.lock'))
     {
-        $file_pid = file_get_contents(__DIR__ . '/run.lock');
+        $file_pid = file_get_contents(__DIR__ . SLASH . 'run.lock');
         $ps = shell_exec('ps -A | grep ' . $file_pid);
         if (!is_null($ps))
         {
@@ -42,7 +42,7 @@ function stop()
 
 function start($port = 9000)
 {
-    shell_exec('sudo -u ' . USER . ' nohup php ' . __DIR__ . '/start.php ' . $port . ' >> /dev/null &');
+    shell_exec('sudo -u ' . USER . ' nohup php ' . __DIR__ . SLASH . 'start.php ' . $port . ' >> /dev/null &');
 }
 
 if ($argc < 2)
@@ -50,15 +50,15 @@ if ($argc < 2)
     die("Неизвестная команда. Допустимые команды: start [port], stop, reload [port], status, update\n");
 }
 
+$port = 9000;
+
+if (isset($argv[2]) && is_numeric($argv[2]))
+{
+    $port = $argv[2];
+}
+
 switch ($argv[1]) {
     case 'start':
-        $port = 9000;
-
-        if (isset($argv[2]) && is_numeric($argv[2]))
-        {
-            $port = $argv[2];
-        }
-
         start($port);
         echo status();
         break;
@@ -72,13 +72,6 @@ switch ($argv[1]) {
     case 'reload':
         stop();
         echo status();
-        $port = 9000;
-
-        if (isset($argv[2]) && is_numeric($argv[2]))
-        {
-            $port = $argv[2];
-        }
-
         start($port);
         echo status();
         break;
