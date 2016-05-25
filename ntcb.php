@@ -131,6 +131,8 @@
                 throw new Exception(socket_strerror(socket_last_error($socket)), socket_last_error($socket));
             }
 
+            socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, ['sec' => 10, 'usec' => 0]);
+
             $this->log('Подключились к сокету: ' . print_r($socket, true));
 
             if (!(socket_bind($socket, $address, $port)))
@@ -697,7 +699,7 @@
         {
             if ($this->_debug)
             {
-                $output = $output_console = '[' . date(DATE_W3C) . '] ' . $message . "\n";
+                $output = $output_console = '[' . date('H:i:s') . '] ' . $message . "\n";
 
                 if (OS == 'win')
                 {
