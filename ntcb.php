@@ -131,7 +131,7 @@
                 throw new Exception(socket_strerror(socket_last_error($socket)), socket_last_error($socket));
             }
 
-            socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, ['sec' => 3, 'usec' => 0]);
+            socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, ['sec' => 10, 'usec' => 0]);
 
             $this->log('Подключились к сокету: ' . print_r($socket, true));
 
