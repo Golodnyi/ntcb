@@ -786,6 +786,11 @@
                     throw new Exception('Неверная конфигурация датчика, не передано время события ' . var_dump($t->getTime()), -55);
                 }
 
+                if ($t->getModule1() === false)
+                {
+                    throw new Exception('Неверная конфигурация датчика, не передано состояние функциональных модулей 1 ' . var_dump($t->getGSM()), -55);
+                }
+
                 if ($t->getGSM() === false)
                 {
                     throw new Exception('Неверная конфигурация датчика, не передан уровень сигнала ' . var_dump($t->getGSM()), -55);
@@ -882,27 +887,34 @@
                 {
                     $stmt = $db->prepare('
                         INSERT INTO ntcb
-                            (`IMEI`, `reqType`, `numPage`, `Code`, `Time`, `GSM`, `LastTime`, `Lat`, `Lon`, `Alt`, `Course`, `Mileage`, `CAN_EngineTurns`, `CAN_Temp`, `CAN_EngineLoad`, `CAN_Speed`)
+                            (`IMEI`, `reqType`, `numPage`, `Code`, `Module1GSM`, `Module1USB`, `Module1Watch`, `Module1SIM`, `Module1Network`, `Module1Roaming`, `Module1Engine`, `Time`, `GSM`, `LastTime`, `Lat`, `Lon`, `Alt`, `Course`, `Mileage`, `CAN_EngineTurns`, `CAN_Temp`, `CAN_EngineLoad`, `CAN_Speed`)
                         VALUES (
-                            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     ');
 
                     $stmt->bindValue(1, $this->getImei(), PDO::PARAM_INT);
                     $stmt->bindValue(2, $pref, PDO::PARAM_STR);
                     $stmt->bindValue(3, $t->getNumPage(), PDO::PARAM_INT);
                     $stmt->bindValue(4, $t->getCode(), PDO::PARAM_INT);
-                    $stmt->bindValue(5, $t->getTime(), PDO::PARAM_INT);
-                    $stmt->bindValue(6, $t->getGSM(), PDO::PARAM_INT);
-                    $stmt->bindValue(7, $t->getLastTime(), PDO::PARAM_INT);
-                    $stmt->bindValue(8, $t->getLat(), PDO::PARAM_INT);
-                    $stmt->bindValue(9, $t->getLon(), PDO::PARAM_INT);
-                    $stmt->bindValue(10, $t->getAlt(), PDO::PARAM_INT);
-                    $stmt->bindValue(11, $t->getCourse(), PDO::PARAM_INT);
-                    $stmt->bindValue(12, $t->getMileage(), PDO::PARAM_INT);
-                    $stmt->bindValue(13, $t->getCANEngineTurns(), PDO::PARAM_INT);
-                    $stmt->bindValue(14, $t->getCANTemp(), PDO::PARAM_INT);
-                    $stmt->bindValue(15, $t->getCANEngineLoad(), PDO::PARAM_INT);
-                    $stmt->bindValue(16, $t->getCANSpeed(), PDO::PARAM_INT);
+                    $stmt->bindValue(5, intval($t->getModule1()[0]), PDO::PARAM_INT);
+                    $stmt->bindValue(6, intval($t->getModule1()[1]), PDO::PARAM_INT);
+                    $stmt->bindValue(7, intval($t->getModule1()[3]), PDO::PARAM_INT);
+                    $stmt->bindValue(8, intval($t->getModule1()[4]), PDO::PARAM_INT);
+                    $stmt->bindValue(9, intval($t->getModule1()[5]), PDO::PARAM_INT);
+                    $stmt->bindValue(10, intval($t->getModule1()[6]), PDO::PARAM_INT);
+                    $stmt->bindValue(11, intval($t->getModule1()[7]), PDO::PARAM_INT);
+                    $stmt->bindValue(12, $t->getTime(), PDO::PARAM_INT);
+                    $stmt->bindValue(13, $t->getGSM(), PDO::PARAM_INT);
+                    $stmt->bindValue(14, $t->getLastTime(), PDO::PARAM_INT);
+                    $stmt->bindValue(15, $t->getLat(), PDO::PARAM_INT);
+                    $stmt->bindValue(16, $t->getLon(), PDO::PARAM_INT);
+                    $stmt->bindValue(17, $t->getAlt(), PDO::PARAM_INT);
+                    $stmt->bindValue(18, $t->getCourse(), PDO::PARAM_INT);
+                    $stmt->bindValue(19, $t->getMileage(), PDO::PARAM_INT);
+                    $stmt->bindValue(20, $t->getCANEngineTurns(), PDO::PARAM_INT);
+                    $stmt->bindValue(21, $t->getCANTemp(), PDO::PARAM_INT);
+                    $stmt->bindValue(22, $t->getCANEngineLoad(), PDO::PARAM_INT);
+                    $stmt->bindValue(23, $t->getCANSpeed(), PDO::PARAM_INT);
                     $insert = $stmt->execute();
                 } catch (PDOException $e)
                 {

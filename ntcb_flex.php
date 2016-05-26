@@ -626,21 +626,9 @@
             $enabled = [];
             foreach($bitfield_temp as $byte)
             {
-                $bit = decbin($byte);
-                /**
-                 * decbin опускает ведущие не значащие нули
-                 * для нас они значащие, дополняем их
-                 */
-                if (strlen($bit) < 8)
-                {
-                    for ($i = strlen($bit); $i < 8; $i++)
-                    {
-                        $bit[$i] = 0;
-                    }
-                    $bit = strrev($bit);
-                }
+                $bit = sprintf( "%08d", decbin($byte));
 
-                for ($j = 0; $j < 8; $j++)
+                for ($j = 0; $j < strlen($bit); $j++)
                 {
                     $bitfield .= $bit[$j];
                     if ($bit[$j] == 1)

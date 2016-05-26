@@ -153,7 +153,9 @@ class telemetry_flex_v10 {
      */
     public function setModule1($Module1)
     {
-        $this->Module1 = $Module1;
+        $bit = strrev(sprintf( "%08d", decbin($Module1)));
+        var_dump($bit);
+        $this->Module1 = $bit;
     }
 
     /**
