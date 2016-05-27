@@ -860,7 +860,7 @@
 
                 if ($exist)
                 {
-                    $this->log('Данная запись уже есть в бд, пропускаем...');
+                    $this->log('Данная запись (' . $t->getNumPage() . ') уже есть в бд, пропускаем...');
                     continue;
                 }
 
@@ -926,6 +926,7 @@
                     throw new Exception('Ошибка при insert данных', -55);
                 }
 
+                $this->log('Сохранили запись ' . $t->getNumPage());
             }
 
             return true;
