@@ -899,7 +899,7 @@
                     {
                         $stmt = $db->prepare('
                         UPDATE ntcb
-                            SET `IMEI` = ?, `reqType` = ?, `numPage` = ?, `Code` = ?, `Module1GSM` = ?, `Module1USB` = ?, `Module1Watch` = ?, `Module1SIM` = ?, `Module1Network` = ?, `Module1Roaming` = ?, `Module1Engine` = ?, `Time` = ?, `GSM` = ?, `LastTime` = ?, `Lat` = ?, `Lon` = ?, `Alt` = ?, `Course` = ?, `Mileage` = ?, `CAN_EngineTurns` = ?, `CAN_Temp` = ?, `CAN_EngineLoad` = ?, `CAN_Speed = ?`
+                            SET `IMEI` = ?, `reqType` = ?, `numPage` = ?, `Code` = ?, `Module1GSM` = ?, `Module1USB` = ?, `Module1Watch` = ?, `Module1SIM` = ?, `Module1Network` = ?, `Module1Roaming` = ?, `Module1Engine` = ?, `Time` = ?, `GSM` = ?, `LastTime` = ?, `Lat` = ?, `Lon` = ?, `Alt` = ?, `Course` = ?, `Mileage` = ?, `CAN_EngineTurns` = ?, `CAN_Temp` = ?, `CAN_EngineLoad` = ?, `CAN_Speed` = ?
                         WHERE `IMEI` = ? AND `numPage` = ?
                         ');
                         $this->log('Обновили запись ' . $t->getNumPage());
