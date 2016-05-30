@@ -858,7 +858,7 @@
                     throw new Exception($e->getMessage(), $e->getCode());
                 }
 
-                if ($exist)
+                if ($exist && $t->getNumPage() > 0)
                 {
                     $this->log('Данная запись (' . $t->getNumPage() . ') уже есть в бд, пропускаем...');
                     continue;
@@ -885,12 +885,25 @@
                  */
                 try
                 {
-                    $stmt = $db->prepare('
+                    if (!$exist)
+                    {
+                        $stmt = $db->prepare('
                         INSERT INTO ntcb
                             (`IMEI`, `reqType`, `numPage`, `Code`, `Module1GSM`, `Module1USB`, `Module1Watch`, `Module1SIM`, `Module1Network`, `Module1Roaming`, `Module1Engine`, `Time`, `GSM`, `LastTime`, `Lat`, `Lon`, `Alt`, `Course`, `Mileage`, `CAN_EngineTurns`, `CAN_Temp`, `CAN_EngineLoad`, `CAN_Speed`)
                         VALUES (
                             ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    ');
+                        ');
+                        $this->log('Сохранили запись ' . $t->getNumPage());
+                    }
+                    else
+                    {
+                        $stmt = $db->prepare('
+                        UPDATE ntcb
+                            SET `IMEI` = ?, `reqType` = ?, `numPage` = ?, `Code` = ?, `Module1GSM` = ?, `Module1USB` = ?, `Module1Watch` = ?, `Module1SIM` = ?, `Module1Network` = ?, `Module1Roaming` = ?, `Module1Engine` = ?, `Time` = ?, `GSM` = ?, `LastTime` = ?, `Lat` = ?, `Lon` = ?, `Alt` = ?, `Course` = ?, `Mileage` = ?, `CAN_EngineTurns` = ?, `CAN_Temp` = ?, `CAN_EngineLoad` = ?, `CAN_Speed = ?`
+                        WHERE `IMEI` = ? AND `numPage` = ?
+                        ');
+                        $this->log('Обновили запись ' . $t->getNumPage());
+                    }
 
                     $stmt->bindValue(1, $this->getImei(), PDO::PARAM_INT);
                     $stmt->bindValue(2, $pref, PDO::PARAM_STR);
@@ -915,6 +928,13 @@
                     $stmt->bindValue(21, $t->getCANTemp(), PDO::PARAM_INT);
                     $stmt->bindValue(22, $t->getCANEngineLoad(), PDO::PARAM_INT);
                     $stmt->bindValue(23, $t->getCANSpeed(), PDO::PARAM_INT);
+
+                    if ($exist)
+                    {
+                        $stmt->bindValue(24, $this->getImei(), PDO::PARAM_INT);
+                        $stmt->bindValue(25, $t->getNumPage(), PDO::PARAM_INT);
+                    }
+
                     $insert = $stmt->execute();
                 } catch (PDOException $e)
                 {
@@ -926,7 +946,6 @@
                     throw new Exception('Ошибка при insert данных', -55);
                 }
 
-                $this->log('Сохранили запись ' . $t->getNumPage());
             }
 
             return true;
