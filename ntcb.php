@@ -889,9 +889,9 @@
                     {
                         $stmt = $db->prepare('
                         INSERT INTO ntcb
-                            (`IMEI`, `reqType`, `numPage`, `Code`, `Module1GSM`, `Module1USB`, `Module1Watch`, `Module1SIM`, `Module1Network`, `Module1Roaming`, `Module1Engine`, `Time`, `GSM`, `LastTime`, `Lat`, `Lon`, `Alt`, `Course`, `Mileage`, `CAN_EngineTurns`, `CAN_Temp`, `CAN_EngineLoad`, `CAN_Speed`)
+                            (`IMEI`, `reqType`, `numPage`, `Code`, `Module1GSM`, `Module1USB`, `Module1Watch`, `Module1SIM`, `Module1Network`, `Module1Roaming`, `Module1Engine`, `Time`, `GSM`, `LastTime`, `Lat`, `Lon`, `Alt`, `Course`, `Mileage`, `CAN_EngineTurns`, `CAN_Temp`, `CAN_EngineLoad`, `CAN_Speed`, `CAN_AxleLoad1`, `CAN_AxleLoad2`, `CAN_AxleLoad3`, `CAN_AxleLoad4`, `CAN_AxleLoad5`)
                         VALUES (
-                            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                         ');
                         $this->log('Сохранили запись ' . $t->getNumPage());
                     }
@@ -899,7 +899,7 @@
                     {
                         $stmt = $db->prepare('
                         UPDATE ntcb
-                            SET `IMEI` = ?, `reqType` = ?, `numPage` = ?, `Code` = ?, `Module1GSM` = ?, `Module1USB` = ?, `Module1Watch` = ?, `Module1SIM` = ?, `Module1Network` = ?, `Module1Roaming` = ?, `Module1Engine` = ?, `Time` = ?, `GSM` = ?, `LastTime` = ?, `Lat` = ?, `Lon` = ?, `Alt` = ?, `Course` = ?, `Mileage` = ?, `CAN_EngineTurns` = ?, `CAN_Temp` = ?, `CAN_EngineLoad` = ?, `CAN_Speed` = ?
+                            SET `IMEI` = ?, `reqType` = ?, `numPage` = ?, `Code` = ?, `Module1GSM` = ?, `Module1USB` = ?, `Module1Watch` = ?, `Module1SIM` = ?, `Module1Network` = ?, `Module1Roaming` = ?, `Module1Engine` = ?, `Time` = ?, `GSM` = ?, `LastTime` = ?, `Lat` = ?, `Lon` = ?, `Alt` = ?, `Course` = ?, `Mileage` = ?, `CAN_EngineTurns` = ?, `CAN_Temp` = ?, `CAN_EngineLoad` = ?, `CAN_Speed` = ?, `CAN_AxleLoad1` = ?, `CAN_AxleLoad2` = ?, `CAN_AxleLoad3` = ?, `CAN_AxleLoad4` = ?, `CAN_AxleLoad5` = ?
                         WHERE `IMEI` = ? AND `numPage` = ?
                         ');
                         $this->log('Обновили запись ' . $t->getNumPage());
@@ -928,11 +928,16 @@
                     $stmt->bindValue(21, $t->getCANTemp(), PDO::PARAM_INT);
                     $stmt->bindValue(22, $t->getCANEngineLoad(), PDO::PARAM_INT);
                     $stmt->bindValue(23, $t->getCANSpeed(), PDO::PARAM_INT);
+                    $stmt->bindValue(24, $t->getCANAxleLoad1(), PDO::PARAM_INT);
+                    $stmt->bindValue(25, $t->getCANAxleLoad2(), PDO::PARAM_INT);
+                    $stmt->bindValue(26, $t->getCANAxleLoad3(), PDO::PARAM_INT);
+                    $stmt->bindValue(27, $t->getCANAxleLoad4(), PDO::PARAM_INT);
+                    $stmt->bindValue(28, $t->getCANAxleLoad4(), PDO::PARAM_INT);
 
                     if ($exist)
                     {
-                        $stmt->bindValue(24, $this->getImei(), PDO::PARAM_INT);
-                        $stmt->bindValue(25, $t->getNumPage(), PDO::PARAM_INT);
+                        $stmt->bindValue(29, $this->getImei(), PDO::PARAM_INT);
+                        $stmt->bindValue(30, $t->getNumPage(), PDO::PARAM_INT);
                     }
 
                     $insert = $stmt->execute();
