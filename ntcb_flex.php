@@ -461,7 +461,7 @@
             for ($i = 0; $i < $size; $i++)
             {
                 $this->log('==========');
-                $telemetry = new telemetry_flex_v10();
+                $telemetry = new telemetry_flex_v10($this->imei);
                 for ($j = 0; $j < strlen($this->getBitfield()); $j++)
                 {
                     if (!$this->getBitfield()[$j])
