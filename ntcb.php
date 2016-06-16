@@ -846,6 +846,49 @@
                     throw new Exception('Неверная конфигурация датчика, не передана скорость ' . var_dump($t->getCANSpeed()), -55);
                 }
 
+                $EngineWeightLimit = 55000;
+
+                try
+                {
+                    $stmt = $db->prepare('SELECT * FROM ntcb_info WHERE `IMEI` = ? LIMIT 1');
+                    $stmt->bindValue(1, $this->getImei(), PDO::PARAM_INT);
+                    $stmt->execute();
+                    $info = $stmt->fetch();
+                } catch (PDOException $e)
+                {
+                    throw new Exception($e->getMessage(), $e->getCode());
+                }
+
+                if ($info)
+                {
+                    $EngineWeightLimit = $info->EngineWeightLimit;
+                }
+
+                if ($t->getCANAxleLoad1() <> 65535 && $t->getCANAxleLoad1() > $EngineWeightLimit)
+                {
+                    $t->notify('Нагрузка на ось 1 превышена ' . $t->getCANAxleLoad1() /**нагрузка на ось 1 превышена**/);
+                }
+
+                if ($t->getCANAxleLoad2() <> 65535 && $t->getCANAxleLoad2() > $EngineWeightLimit)
+                {
+                    $t->notify('Нагрузка на ось 2 превышена ' . $t->getCANAxleLoad2() /**нагрузка на ось 1 превышена**/);
+                }
+
+                if ($t->getCANAxleLoad3() <> 65535 && $t->getCANAxleLoad3() > $EngineWeightLimit)
+                {
+                    $t->notify('Нагрузка на ось 3 превышена ' . $t->getCANAxleLoad3() /**нагрузка на ось 1 превышена**/);
+                }
+
+                if ($t->getCANAxleLoad4() <> 65535 && $t->getCANAxleLoad4() > $EngineWeightLimit)
+                {
+                    $t->notify('Нагрузка на ось 4 превышена ' . $t->getCANAxleLoad4() /**нагрузка на ось 1 превышена**/);
+                }
+
+                if ($t->getCANAxleLoad5() <> 65535 && $t->getCANAxleLoad5() > $EngineWeightLimit)
+                {
+                    $t->notify('Нагрузка на ось 5 превышена ' . $t->getCANAxleLoad5() /**нагрузка на ось 1 превышена**/);
+                }
+
                 try
                 {
                     $stmt = $db->prepare('SELECT 1 FROM ntcb WHERE `IMEI` = ? AND `numPage` = ? LIMIT 1');

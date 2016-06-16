@@ -1019,11 +1019,6 @@ class telemetry_flex_v10 {
      */
     public function setCANAxleLoad1($CAN_AxleLoad_1)
     {
-        if ($CAN_AxleLoad_1 > 55000 && $CAN_AxleLoad_1 <> 65535)
-        {
-            $this->notify('Нагрузка на ось 1 превышена ' . $CAN_AxleLoad_1 /**нагрузка на ось 1 превышена**/);
-        }
-
         $this->CAN_AxleLoad_1 = $CAN_AxleLoad_1;
     }
 
@@ -1040,11 +1035,6 @@ class telemetry_flex_v10 {
      */
     public function setCANAxleLoad2($CAN_AxleLoad_2)
     {
-        if ($CAN_AxleLoad_2 > 55000  && $CAN_AxleLoad_2 <> 65535)
-        {
-            $this->notify('Нагрузка на ось 2 превышена ' . $CAN_AxleLoad_2 /**нагрузка на ось 2 превышена**/);
-        }
-
         $this->CAN_AxleLoad_2 = $CAN_AxleLoad_2;
     }
 
@@ -1061,12 +1051,7 @@ class telemetry_flex_v10 {
      */
     public function setCANAxleLoad3($CAN_AxleLoad_3)
     {
-        if ($CAN_AxleLoad_3 > 55000  && $CAN_AxleLoad_3 <> 65535)
-        {
-            $this->notify('Нагрузка на ось 3 превышена ' . $CAN_AxleLoad_3 /**нагрузка на ось 3 превышена**/);
-        }
-
-        $this->CAN_AxleLoad_3 = $CAN_AxleLoad_3;
+         $this->CAN_AxleLoad_3 = $CAN_AxleLoad_3;
     }
 
     /**
@@ -1082,11 +1067,6 @@ class telemetry_flex_v10 {
      */
     public function setCANAxleLoad4($CAN_AxleLoad_4)
     {
-        if ($CAN_AxleLoad_4 > 55000  && $CAN_AxleLoad_4 <> 65535)
-        {
-            $this->notify('Нагрузка на ось 4 превышена ' . $CAN_AxleLoad_4 /**нагрузка на ось 4 превышена**/);
-        }
-
         $this->CAN_AxleLoad_4 = $CAN_AxleLoad_4;
     }
 
@@ -1103,11 +1083,6 @@ class telemetry_flex_v10 {
      */
     public function setCANAxleLoad5($CAN_AxleLoad_5)
     {
-        if ($CAN_AxleLoad_5 > 55000  && $CAN_AxleLoad_5 <> 65535)
-        {
-            $this->notify('Нагрузка на ось 5 превышена ' . $CAN_AxleLoad_5 /**нагрузка на ось 5 превышена**/);
-        }
-
         $this->CAN_AxleLoad_5 = $CAN_AxleLoad_5;
     }
 
@@ -1228,7 +1203,7 @@ class telemetry_flex_v10 {
         $this->CAN_Speed = $CAN_Speed;
     }
 
-    private function notify($text)
+    public function notify($text)
     {
         $message = $this->IMEI . ': ' .$text;
 
