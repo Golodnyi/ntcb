@@ -315,7 +315,7 @@
                             }
 
                             $this->log('CRC8 корректный');
-                            $this->export($this->getTelemetry(), $pref);
+                            $this->export($this->getTelemetry());
                             $this->sendConfirmFlex10($accept);
                         } else if ($this->getStructVersion() == self::STRUCT_VERSION20)
                         {

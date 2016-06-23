@@ -961,11 +961,6 @@ class telemetry_flex_v10 {
      */
     public function setCANEngineTurns($CAN_EngineTurns)
     {
-        if ($CAN_EngineTurns > 3000 && $CAN_EngineTurns <> 65535)
-        {
-            $this->notify('Обороты двигателя превышены ' . $CAN_EngineTurns /**обороты двигателя превышены**/);
-        }
-
         $this->CAN_EngineTurns = $CAN_EngineTurns;
     }
 
@@ -982,11 +977,6 @@ class telemetry_flex_v10 {
      */
     public function setCANTemp($CAN_Temp)
     {
-        if ($CAN_Temp > 100 && $CAN_Temp <> - 128)
-        {
-            $this->notify('Температура ОЖ превышена ' . $CAN_Temp /**температура ОЖ превышена**/);
-        }
-
         $this->CAN_Temp = $CAN_Temp;
     }
 
@@ -1195,11 +1185,6 @@ class telemetry_flex_v10 {
      */
     public function setCANSpeed($CAN_Speed)
     {
-        if ($CAN_Speed > 50  && $CAN_Speed <> 255)
-        {
-            $this->notify('Скорость превышена ' . $CAN_Speed /**превыщение скорости**/);
-        }
-
         $this->CAN_Speed = $CAN_Speed;
     }
 

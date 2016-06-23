@@ -732,7 +732,7 @@
             return $temp_sum;
         }
 
-        protected function export(array $telemetry, $pref)
+        protected function export(array $telemetry)
         {
             $this->log('Экспорт данных в бд');
 
@@ -864,29 +864,54 @@
                     $EngineWeightLimit = $info->EngineWeightLimit;
                 }
 
+                $pref = '~A';
+
                 if ($t->getCANAxleLoad1() <> 65535 && $t->getCANAxleLoad1() > $EngineWeightLimit)
                 {
+                    $pref = '~T';
                     $t->notify('Нагрузка на ось 1 превышена ' . $t->getCANAxleLoad1() /**нагрузка на ось 1 превышена**/);
                 }
 
                 if ($t->getCANAxleLoad2() <> 65535 && $t->getCANAxleLoad2() > $EngineWeightLimit)
                 {
+                    $pref = '~T';
                     $t->notify('Нагрузка на ось 2 превышена ' . $t->getCANAxleLoad2() /**нагрузка на ось 1 превышена**/);
                 }
 
                 if ($t->getCANAxleLoad3() <> 65535 && $t->getCANAxleLoad3() > $EngineWeightLimit)
                 {
+                    $pref = '~T';
                     $t->notify('Нагрузка на ось 3 превышена ' . $t->getCANAxleLoad3() /**нагрузка на ось 1 превышена**/);
                 }
 
                 if ($t->getCANAxleLoad4() <> 65535 && $t->getCANAxleLoad4() > $EngineWeightLimit)
                 {
+                    $pref = '~T';
                     $t->notify('Нагрузка на ось 4 превышена ' . $t->getCANAxleLoad4() /**нагрузка на ось 1 превышена**/);
                 }
 
                 if ($t->getCANAxleLoad5() <> 65535 && $t->getCANAxleLoad5() > $EngineWeightLimit)
                 {
+                    $pref = '~T';
                     $t->notify('Нагрузка на ось 5 превышена ' . $t->getCANAxleLoad5() /**нагрузка на ось 1 превышена**/);
+                }
+
+                if ($t->getCANSpeed() > 50  && $t->getCANSpeed() <> 255)
+                {
+                    $pref = '~T';
+                    $this->notify('Скорость превышена ' . $t->getCANSpeed() /**превыщение скорости**/);
+                }
+
+                if ($t->getCANTemp() > 100 && $t->getCANTemp() <> - 128)
+                {
+                    $pref = '~T';
+                    $this->notify('Температура ОЖ превышена ' . $t->getCANTemp() /**температура ОЖ превышена**/);
+                }
+
+                if ($t->getCANEngineTurns() > 3000 && $t->getCANEngineTurns() <> 65535)
+                {
+                    $pref = '~T';
+                    $this->notify('Обороты двигателя превышены ' . $t->getCANEngineTurns() /**обороты двигателя превышены**/);
                 }
 
                 try
