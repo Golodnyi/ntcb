@@ -766,11 +766,6 @@
                     throw new Exception('Неверная конфигурация датчика, не передан IMEI ' . var_dump($this->getImei()), -55);
                 }
 
-                if ($pref  === false)
-                {
-                    throw new Exception('Неверная конфигурация датчика, не передан префикс запроса ' . var_dump($pref), -55);
-                }
-
                 if ($t->getNumPage() === false)
                 {
                     throw new Exception('Неверная конфигурация датчика, не передан номер ' . var_dump($t->getNumPage()), -55);
