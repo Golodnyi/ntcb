@@ -60,6 +60,8 @@
 
         /**
          * @param bool $debug
+         *
+         * @throws \Exception
          */
         public function __construct($debug = false)
         {
@@ -894,19 +896,19 @@
                 if ($t->getCANSpeed() > 50  && $t->getCANSpeed() <> 255)
                 {
                     $pref = '~T';
-                    $this->notify('Скорость превышена ' . $t->getCANSpeed() /**превыщение скорости**/);
+                    $t->notify('Скорость превышена ' . $t->getCANSpeed() /**превыщение скорости**/);
                 }
 
                 if ($t->getCANTemp() > 100 && $t->getCANTemp() <> - 128)
                 {
                     $pref = '~T';
-                    $this->notify('Температура ОЖ превышена ' . $t->getCANTemp() /**температура ОЖ превышена**/);
+                    $t->notify('Температура ОЖ превышена ' . $t->getCANTemp() /**температура ОЖ превышена**/);
                 }
 
                 if ($t->getCANEngineTurns() > 3000 && $t->getCANEngineTurns() <> 65535)
                 {
                     $pref = '~T';
-                    $this->notify('Обороты двигателя превышены ' . $t->getCANEngineTurns() /**обороты двигателя превышены**/);
+                    $t->notify('Обороты двигателя превышены ' . $t->getCANEngineTurns() /**обороты двигателя превышены**/);
                 }
 
                 try
