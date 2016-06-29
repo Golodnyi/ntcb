@@ -1190,6 +1190,8 @@ class telemetry_flex_v10 {
 
     public function notify($text)
     {
+        return true;
+        
         $message = $this->IMEI . ': ' .$text;
 
         $mail = new PHPMailer;
