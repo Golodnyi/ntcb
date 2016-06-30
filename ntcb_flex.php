@@ -491,7 +491,14 @@
                     }
 
                     $buf = current($buf);
-                    $this->log($this->_telemetry_values10[$j][1] . ': ' . $buf);
+                    $more = '';
+
+                    if ($this->_telemetry_values10[$j][1] == 'Time')
+                    {
+                        $more = ' (' . date('Y-m-d H:i:s', $buf) .')';
+                    }
+                    
+                    $this->log($this->_telemetry_values10[$j][1] . ': ' . $buf . $more);
                     $telemetry->$method($buf);
                 }
                 $a_telemetry[] = $telemetry;
