@@ -7,20 +7,8 @@
      * TODO: класс нуждается в рефакторинге
      */
 
-    if (!defined('SLASH'))
-    {
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
-        {
-            define('SLASH', '\\');
-        }
-        else
-        {
-            define('SLASH', '/');
-        }
-    }
-
-    require_once __DIR__ . SLASH . 'ntcb.php';
-    require_once __DIR__ . SLASH . 'classes' . SLASH . 'telemetry_flex_v10.php';
+    require_once __DIR__ . DIRECTORY_SEPARATOR . 'ntcb.php';
+    require_once __DIR__ . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'telemetry_flex_v10.php';
 
     class ntcb_flex extends ntcb
     {

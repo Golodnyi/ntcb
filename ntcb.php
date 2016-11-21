@@ -81,20 +81,8 @@
 
             file_put_contents(__DIR__ . '/run.lock', getmypid());
 
-            if (!defined('SLASH'))
-            {
-                if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
-                {
-                    define('SLASH', '\\');
-                }
-                else
-                {
-                    define('SLASH', '/');
-                }
-            }
-
             $this->setDebug($debug);
-            $this->log('Запущен из: ' . __DIR__ . SLASH);
+            $this->log('Запущен из: ' . __DIR__ . DIRECTORY_SEPARATOR);
             $this->log('Режим отладки: ' . print_r($debug, true));
         }
 
@@ -710,7 +698,7 @@
                 }
 
                 echo $output_console;
-                file_put_contents(__DIR__ . SLASH . 'logs/' . date('Y-m-d') . '.log', $output, FILE_APPEND);
+                file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . 'logs/' . date('Y-m-d') . '.log', $output, FILE_APPEND);
             }
         }
 

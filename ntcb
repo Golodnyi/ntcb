@@ -4,19 +4,11 @@
 
 const USER = 'ftp';
 
-if (!defined('SLASH')) {
-    if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
-        define('SLASH', '\\');
-    } else {
-        define('SLASH', '/');
-    }
-}
-
 function status()
 {
     sleep(1);
-    if (file_exists(__DIR__ . SLASH . 'run.lock')) {
-        $file_pid = file_get_contents(__DIR__ . SLASH . 'run.lock');
+    if (file_exists(__DIR__ . DIRECTORY_SEPARATOR . 'run.lock')) {
+        $file_pid = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'run.lock');
         $ps = shell_exec('ps -A | grep ' . $file_pid);
         if (!is_null($ps)) {
             return 'Сервер NTCB запущен' . "\n";
@@ -29,9 +21,9 @@ function status()
 
 function stop()
 {
-    if (file_exists(__DIR__ . SLASH . 'run.lock'))
+    if (file_exists(__DIR__ . DIRECTORY_SEPARATOR . 'run.lock'))
     {
-        $file_pid = file_get_contents(__DIR__ . SLASH . 'run.lock');
+        $file_pid = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'run.lock');
         $ps = shell_exec('ps -A | grep ' . $file_pid);
         if (!is_null($ps))
         {
@@ -42,7 +34,7 @@ function stop()
 
 function start($port = 9000)
 {
-    shell_exec('sudo -u ' . USER . ' nohup php ' . __DIR__ . SLASH . 'start.php ' . $port . ' >> /dev/null &');
+    shell_exec('sudo -u ' . USER . ' nohup php ' . __DIR__ . DIRECTORY_SEPARATOR . 'start.php ' . $port . ' >> /dev/null &');
 }
 
 if ($argc < 2)
@@ -76,9 +68,9 @@ switch ($argv[1]) {
         echo status();
         break;
     case 'update':
-        echo shell_exec('cd ' . __DIR__ . SLASH . ' && sudo -u ' . USER . ' git pull');
-        echo shell_exec('cd ' . __DIR__ . SLASH . ' && sudo -u ' . USER . ' composer install');
-        echo shell_exec('cd ' . __DIR__ . SLASH . ' && sudo -u ' . USER . ' composer update');
+        echo shell_exec('cd ' . __DIR__ . DIRECTORY_SEPARATOR . ' && sudo -u ' . USER . ' git pull');
+        echo shell_exec('cd ' . __DIR__ . DIRECTORY_SEPARATOR . ' && sudo -u ' . USER . ' composer install');
+        echo shell_exec('cd ' . __DIR__ . DIRECTORY_SEPARATOR . ' && sudo -u ' . USER . ' composer update');
         break;
     default:
         echo "Неизвестная команда. Допустимые команды: start [port], stop, reload [port], status, update\n";

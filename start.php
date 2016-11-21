@@ -6,20 +6,7 @@
  */
     date_default_timezone_set('Europe/Moscow');
 
-    if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN')
-    {
-        define('SLASH', '\\');
-        define('PORT', 9000);
-        define('OS', 'win');
-    }
-    else
-    {
-        define('SLASH', '/');
-        define('PORT', 9000);
-        define('OS', 'lin');
-    }
-
-    require_once __DIR__ . SLASH . 'ntcb_flex.php';
+    require_once __DIR__ . DIRECTORY_SEPARATOR . 'ntcb_flex.php';
 
     $port = 9000;
 
@@ -40,7 +27,7 @@
             " [code " . $e->getCode() . "]\n";
 
         file_put_contents(
-            __DIR__ . SLASH . 'ntcb.log',
+            __DIR__ . DIRECTORY_SEPARATOR . 'ntcb.log',
             '[' . $e->getCode() . ']' . ' ' . $e->getMessage() . "\n",
             FILE_APPEND
         );
