@@ -806,7 +806,7 @@
                     throw new Exception('Неверная конфигурация датчика, не передан пробег ' . var_dump($t->getMileage()), -55);
                 }
 
-                if ($t->getCANEngineTurns() === false)
+                /**if ($t->getCANEngineTurns() === false)
                 {
                     throw new Exception('Неверная конфигурация датчика, не переданы обороты двигателя ' . var_dump($t->getCANEngineTurns()), -55);
                 }
@@ -824,13 +824,18 @@
                 if ($t->getCANSpeed() === false)
                 {
                     throw new Exception('Неверная конфигурация датчика, не передана скорость ' . var_dump($t->getCANSpeed()), -55);
-                }
+                }**/
 
                 $EngineWeightLimit = 55000;
 
                 try
                 {
-                    $stmt = $db->prepare('SELECT * FROM ntcb_info WHERE `IMEI` = ? LIMIT 1');
+                    $stmt = $db->prepare('
+                      SELECT nc.* FROM ntcb_cars as nc
+                        INNER JOIN ntcb_sensor_cars as nsc ON nsc.car_id = nc.id
+                        INNER JOIN ntcb_sensors as ns ON ns.imei = nsc.sensor_imei
+                      WHERE ns.`imei` = ? LIMIT 1
+                    ');
                     $stmt->bindValue(1, $this->getImei(), PDO::PARAM_INT);
                     $stmt->execute();
                     $info = $stmt->fetch();
@@ -841,7 +846,7 @@
 
                 if ($info)
                 {
-                    $EngineWeightLimit = $info->EngineWeightLimit;
+                    $EngineWeightLimit = $info->engine_weight_max;
                 }
 
                 $pref = '~A';
@@ -937,9 +942,9 @@
                     {
                         $stmt = $db->prepare('
                         INSERT INTO ntcb
-                            (`IMEI`, `reqType`, `numPage`, `Code`, `Module1GSM`, `Module1USB`, `Module1Watch`, `Module1SIM`, `Module1Network`, `Module1Roaming`, `Module1Engine`, `Time`, `GSM`, `LastTime`, `Lat`, `Lon`, `Alt`, `Course`, `Mileage`, `CAN_EngineTurns`, `CAN_Temp`, `CAN_EngineLoad`, `CAN_Speed`, `CAN_AxleLoad1`, `CAN_AxleLoad2`, `CAN_AxleLoad3`, `CAN_AxleLoad4`, `CAN_AxleLoad5`)
+                            (`IMEI`, `reqType`, `numPage`, `Code`, `Module1GSM`, `Module1USB`, `Module1Watch`, `Module1SIM`, `Module1Network`, `Module1Roaming`, `Module1Engine`, `Time`, `GSM`, `LastTime`, `Lat`, `Lon`, `Alt`, `Course`, `Mileage`, `CAN_EngineTurns`, `CAN_Temp`, `CAN_EngineLoad`, `CAN_Speed`, `CAN_AxleLoad1`, `CAN_AxleLoad2`, `CAN_AxleLoad3`, `CAN_AxleLoad4`, `CAN_AxleLoad5`, `StateU_Ain1`, `StateU_Ain2`, `StateInImp2`, `Temp1`, `Speed`)
                         VALUES (
-                            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                         ');
                         $this->log('Сохранили запись ' . $t->getNumPage());
                     }
@@ -947,7 +952,7 @@
                     {
                         $stmt = $db->prepare('
                         UPDATE ntcb
-                            SET `IMEI` = ?, `reqType` = ?, `numPage` = ?, `Code` = ?, `Module1GSM` = ?, `Module1USB` = ?, `Module1Watch` = ?, `Module1SIM` = ?, `Module1Network` = ?, `Module1Roaming` = ?, `Module1Engine` = ?, `Time` = ?, `GSM` = ?, `LastTime` = ?, `Lat` = ?, `Lon` = ?, `Alt` = ?, `Course` = ?, `Mileage` = ?, `CAN_EngineTurns` = ?, `CAN_Temp` = ?, `CAN_EngineLoad` = ?, `CAN_Speed` = ?, `CAN_AxleLoad1` = ?, `CAN_AxleLoad2` = ?, `CAN_AxleLoad3` = ?, `CAN_AxleLoad4` = ?, `CAN_AxleLoad5` = ?
+                            SET `IMEI` = ?, `reqType` = ?, `numPage` = ?, `Code` = ?, `Module1GSM` = ?, `Module1USB` = ?, `Module1Watch` = ?, `Module1SIM` = ?, `Module1Network` = ?, `Module1Roaming` = ?, `Module1Engine` = ?, `Time` = ?, `GSM` = ?, `LastTime` = ?, `Lat` = ?, `Lon` = ?, `Alt` = ?, `Course` = ?, `Mileage` = ?, `CAN_EngineTurns` = ?, `CAN_Temp` = ?, `CAN_EngineLoad` = ?, `CAN_Speed` = ?, `CAN_AxleLoad1` = ?, `CAN_AxleLoad2` = ?, `CAN_AxleLoad3` = ?, `CAN_AxleLoad4` = ?, `CAN_AxleLoad5` = ?, `StateU_Ain1` = ?, `StateU_Ain2` = ?, `StateInImp2` = ?, `Temp1` = ?, `Speed` = ?
                         WHERE `IMEI` = ? AND `numPage` = ?
                         ');
                         $this->log('Обновили запись ' . $t->getNumPage());
@@ -981,11 +986,16 @@
                     $stmt->bindValue(26, $t->getCANAxleLoad3(), PDO::PARAM_INT);
                     $stmt->bindValue(27, $t->getCANAxleLoad4(), PDO::PARAM_INT);
                     $stmt->bindValue(28, $t->getCANAxleLoad4(), PDO::PARAM_INT);
+                    $stmt->bindValue(29, $t->getStateUAin1(), PDO::PARAM_INT);
+                    $stmt->bindValue(30, $t->getStateUAin2(), PDO::PARAM_INT);
+                    $stmt->bindValue(31, $t->getStateInImp1(), PDO::PARAM_INT);
+                    $stmt->bindValue(32, $t->getTemp1(), PDO::PARAM_INT);
+                    $stmt->bindValue(33, $t->getSpeed(), PDO::PARAM_INT);
 
                     if ($exist)
                     {
-                        $stmt->bindValue(29, $this->getImei(), PDO::PARAM_INT);
-                        $stmt->bindValue(30, $t->getNumPage(), PDO::PARAM_INT);
+                        $stmt->bindValue(34, $this->getImei(), PDO::PARAM_INT);
+                        $stmt->bindValue(35, $t->getNumPage(), PDO::PARAM_INT);
                     }
 
                     $insert = $stmt->execute();
@@ -996,7 +1006,7 @@
 
                 if ($insert === false)
                 {
-                    throw new Exception('Ошибка при insert данных', -55);
+                    throw new Exception('Ошибка при insert данных ' . $stmt->queryString, -55);
                 }
 
             }
