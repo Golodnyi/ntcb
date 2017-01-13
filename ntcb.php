@@ -692,11 +692,6 @@
             {
                 $output = $output_console = '[' . date('H:i:s') . '] ' . $message . "\n";
 
-                if (OS == 'win')
-                {
-                    $output_console = iconv(mb_detect_encoding($output), 'cp866', $output);
-                }
-
                 echo $output_console;
                 file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . 'logs/' . date('Y-m-d') . '.log', $output, FILE_APPEND);
             }
