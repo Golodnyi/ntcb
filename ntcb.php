@@ -966,9 +966,9 @@ abstract class ntcb
                 {
                     $stmt = $db->prepare('
                         INSERT INTO ntcb
-                            (`IMEI`, `reqType`, `numPage`, `Code`, `Module1GSM`, `Module1USB`, `Module1Watch`, `Module1SIM`, `Module1Network`, `Module1Roaming`, `Module1Engine`, `Time`, `GSM`, `LastTime`, `Lat`, `Lon`, `Alt`, `Course`, `Mileage`, `CAN_EngineTurns`, `CAN_Temp`, `CAN_EngineLoad`, `CAN_Speed`, `CAN_AxleLoad1`, `CAN_AxleLoad2`, `CAN_AxleLoad3`, `CAN_AxleLoad4`, `CAN_AxleLoad5`, `StateU_Ain1`, `StateU_Ain2`, `StateInImp2`, `Temp1`, `Temp2`, `Speed`, `Frequency1`)
+                            (`IMEI`, `reqType`, `numPage`, `Code`, `Module1GSM`, `Module1USB`, `Module1Watch`, `Module1SIM`, `Module1Network`, `Module1Roaming`, `Module1Engine`, `Time`, `GSM`, `LastTime`, `Lat`, `Lon`, `Alt`, `Course`, `Mileage`, `CAN_EngineTurns`, `CAN_Temp`, `CAN_EngineLoad`, `CAN_Speed`, `CAN_AxleLoad1`, `CAN_AxleLoad2`, `CAN_AxleLoad3`, `CAN_AxleLoad4`, `CAN_AxleLoad5`, `StateU_Ain1`, `StateU_Ain2`, `StateInImp2`, `Temp1`, `Temp2`, `Speed`, `Frequency1`, `Motochas`, `Power`, `Reserv`)
                         VALUES (
-                            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                         ');
                     $this->log('Сохранили запись ' . $t->getNumPage());
                 }
@@ -976,7 +976,7 @@ abstract class ntcb
                 {
                     $stmt = $db->prepare('
                         UPDATE ntcb
-                            SET `IMEI` = ?, `reqType` = ?, `numPage` = ?, `Code` = ?, `Module1GSM` = ?, `Module1USB` = ?, `Module1Watch` = ?, `Module1SIM` = ?, `Module1Network` = ?, `Module1Roaming` = ?, `Module1Engine` = ?, `Time` = ?, `GSM` = ?, `LastTime` = ?, `Lat` = ?, `Lon` = ?, `Alt` = ?, `Course` = ?, `Mileage` = ?, `CAN_EngineTurns` = ?, `CAN_Temp` = ?, `CAN_EngineLoad` = ?, `CAN_Speed` = ?, `CAN_AxleLoad1` = ?, `CAN_AxleLoad2` = ?, `CAN_AxleLoad3` = ?, `CAN_AxleLoad4` = ?, `CAN_AxleLoad5` = ?, `StateU_Ain1` = ?, `StateU_Ain2` = ?, `StateInImp2` = ?, `Temp1` = ?, `Temp2` = ?, `Speed` = ?, `Frequency1` = ?
+                            SET `IMEI` = ?, `reqType` = ?, `numPage` = ?, `Code` = ?, `Module1GSM` = ?, `Module1USB` = ?, `Module1Watch` = ?, `Module1SIM` = ?, `Module1Network` = ?, `Module1Roaming` = ?, `Module1Engine` = ?, `Time` = ?, `GSM` = ?, `LastTime` = ?, `Lat` = ?, `Lon` = ?, `Alt` = ?, `Course` = ?, `Mileage` = ?, `CAN_EngineTurns` = ?, `CAN_Temp` = ?, `CAN_EngineLoad` = ?, `CAN_Speed` = ?, `CAN_AxleLoad1` = ?, `CAN_AxleLoad2` = ?, `CAN_AxleLoad3` = ?, `CAN_AxleLoad4` = ?, `CAN_AxleLoad5` = ?, `StateU_Ain1` = ?, `StateU_Ain2` = ?, `StateInImp2` = ?, `Temp1` = ?, `Temp2` = ?, `Speed` = ?, `Frequency1` = ?, `Motochas` = ?, `Power` = ?, `Reserv` = ?
                         WHERE `IMEI` = ? AND `numPage` = ?
                         ');
                     $this->log('Обновили запись ' . $t->getNumPage());
@@ -1017,11 +1017,14 @@ abstract class ntcb
                 $stmt->bindValue(33, $t->getTemp2(), PDO::PARAM_INT);
                 $stmt->bindValue(34, $t->getSpeed(), PDO::PARAM_INT);
                 $stmt->bindValue(35, $t->getFrequency1(), PDO::PARAM_INT);
+                $stmt->bindValue(36, $t->getMotochas(), PDO::PARAM_INT);
+                $stmt->bindValue(37, $t->getPower(), PDO::PARAM_INT);
+                $stmt->bindValue(38, $t->getReserv(), PDO::PARAM_INT);
                 
                 if ($exist)
                 {
-                    $stmt->bindValue(36, $this->getImei(), PDO::PARAM_INT);
-                    $stmt->bindValue(37, $t->getNumPage(), PDO::PARAM_INT);
+                    $stmt->bindValue(39, $this->getImei(), PDO::PARAM_INT);
+                    $stmt->bindValue(40, $t->getNumPage(), PDO::PARAM_INT);
                 }
                 
                 $insert = $stmt->execute();
