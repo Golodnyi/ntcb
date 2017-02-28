@@ -197,6 +197,15 @@ abstract class ntcb
         {
             throw new Exception('Сокет не установлен', -1);
         }
+    
+        if (function_exists('pcntl_fork'))
+        {
+            $this->log('Сервер запущен в режиме многопоточности');
+        }
+        else
+        {
+            $this->log('Сервер не поддерживает многопоточность');
+        }
         
         $this->log('Ожидание подключения...');
         
@@ -208,20 +217,34 @@ abstract class ntcb
                 continue;
             }
     
-            $pid = pcntl_fork();
-            if ($pid == -1) {
-                continue;
-            } else if ($pid) {
-                pcntl_wait($status);
-            } else {
-                $this->log('Создаю дочерний процесс: ' . getmypid());
+            if (function_exists('pcntl_fork'))
+            {
+                $pid = pcntl_fork();
+                if ($pid == -1)
+                {
+                    continue;
+                }
+                else if ($pid)
+                {
+                    pcntl_wait($status);
+                }
+                else
+                {
+                    $this->log('Создаю дочерний процесс: ' . getmypid());
+                    if ($this->fork($accept) === false)
+                    {
+                        continue;
+                    }
+                    exit(0);
+                }
+            }
+            else
+            {
                 if ($this->fork($accept) === false)
                 {
                     continue;
                 }
-                exit(0);
             }
-            
             
         }
     }
@@ -247,6 +270,8 @@ abstract class ntcb
         }
     
         $this->reconnect($accept);
+        
+        return true;
     }
     
     protected function checkSum()
