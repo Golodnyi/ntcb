@@ -207,26 +207,46 @@ abstract class ntcb
                 $this->log(socket_strerror(socket_last_error($this->getSocket())));
                 continue;
             }
-            $this->log('Подключился датчик!');
-            
-            try
-            {
-                $this->readHeader($accept);
-                $this->getBodySize();
-                $this->readBody($accept);
-                $this->checkSum();
-                $this->unpackImei();
-                $this->sendHandshake($accept);
-                $this->processing($accept);
-            } catch (Exception $e)
-            {
-                $this->log($e->getMessage());
-                $this->reconnect($accept);
+    
+            $pid = pcntl_fork();
+            if ($pid == -1) {
                 continue;
+            } else if ($pid) {
+                pcntl_wait($status);
+            } else {
+                $this->log('Создаю дочерний процесс: ' . getmypid());
+                if ($this->fork($accept) === false)
+                {
+                    continue;
+                }
+                exit(0);
             }
             
-            $this->reconnect($accept);
+            
         }
+    }
+    
+    private function fork($accept)
+    {
+        $this->log('Подключился датчик!');
+    
+        try
+        {
+            $this->readHeader($accept);
+            $this->getBodySize();
+            $this->readBody($accept);
+            $this->checkSum();
+            $this->unpackImei();
+            $this->sendHandshake($accept);
+            $this->processing($accept);
+        } catch (Exception $e)
+        {
+            $this->log($e->getMessage());
+            $this->reconnect($accept);
+            return false;
+        }
+    
+        $this->reconnect($accept);
     }
     
     protected function checkSum()
