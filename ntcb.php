@@ -184,6 +184,7 @@ abstract class ntcb
         socket_close($accept);
         $this->log('Отключаемся от датчика!');
         $this->log('++++++++++');
+        exit(0);
     }
     
     /**
@@ -235,7 +236,6 @@ abstract class ntcb
                     {
                         continue;
                     }
-                    exit(0);
                 }
             }
             else
