@@ -128,11 +128,15 @@ abstract class ntcb
         
         if (!(socket_bind($socket, $address, $port)))
         {
+            $this->log(socket_strerror(socket_last_error($socket)));
+            $this->log('++++++++++');
             throw new Exception(socket_strerror(socket_last_error($socket)), socket_last_error($socket));
         }
         
         if (!(socket_listen($socket, SOMAXCONN)))
         {
+            $this->log(socket_strerror(socket_last_error($socket)));
+            $this->log('++++++++++');
             throw new Exception(socket_strerror(socket_last_error($socket)), socket_last_error($socket));
         }
         
