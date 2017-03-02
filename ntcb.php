@@ -219,6 +219,8 @@ abstract class ntcb
                 continue;
             }
     
+            $this->log('Подключился датчик, ip: ' . $_SERVER[ "REMOTE_ADDR" ]);
+            
             if (function_exists('pcntl_fork'))
             {
                 $pid = pcntl_fork();
@@ -252,8 +254,6 @@ abstract class ntcb
     
     private function fork($accept)
     {
-        $this->log('Подключился датчик!');
-    
         try
         {
             $this->readHeader($accept);
