@@ -219,7 +219,8 @@ abstract class ntcb
                 continue;
             }
     
-            $this->log('Подключился датчик, ip: ' . $_SERVER[ "REMOTE_ADDR" ]);
+            socket_getpeername($accept, $ip);
+            $this->log('Подключился датчик, ip: ' . $ip);
             
             if (function_exists('pcntl_fork'))
             {
