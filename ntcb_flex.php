@@ -195,9 +195,9 @@
             }
         }
 
-        private function sendConfirmFlex10($accept)
+        private function sendConfirmFlex10($accept, $prefix = false, $setSize = true)
         {
-            $binary = $this->generateConfirmFlex10();
+            $binary = $this->generateConfirmFlex10($prefix, $setSize);
             $send = socket_write($accept, $binary, strlen($binary));
 
             if ($send != strlen($binary))
@@ -207,16 +207,25 @@
 
         }
 
-        private function generateConfirmFlex10()
+        private function generateConfirmFlex10($prefix = false, $setSize = true)
         {
-            $binary = '';
-            $tpv = self::TELEMETRY_PREFIX_VAL;
-
-            for ($i = 0; $i < strlen(self::TELEMETRY_PREFIX_VAL); $i++)
+            if (!$prefix)
             {
-                $binary .= pack('C', ord($tpv[$i]));
+                $prefix = self::TELEMETRY_PREFIX_VAL;
             }
-            $binary .= pack('C', $this->getTelemetryFlex10Size());
+            
+            $binary = '';
+
+            for ($i = 0; $i < strlen($prefix); $i++)
+            {
+                $binary .= pack('C', ord($prefix[$i]));
+            }
+            
+            if ($setSize)
+            {
+                $binary .= pack('C', $this->getTelemetryFlex10Size());
+            }
+            
             $crc8 = $this->crc8($binary, strlen($binary));
             $binary .= pack('C', $crc8);
             $this->log('Отправили подтверждение о получении данных');
@@ -319,7 +328,22 @@
                         //TODO: написать unpack функцию
                         if ($this->getStructVersion() == self::STRUCT_VERSION10)
                         {
-                            throw new Exception('Телеметрические данные текущего состояния 10-ой версии не поддерживается', -51);
+                            $this->log('Телеметрические данные 10-ой версии, текущего состояния');
+                            $binary .= $this->unpackTelemetryData10($accept, false);
+    
+                            $m_crc = $this->crc8($binary, strlen($binary));
+                            $binary .= $crc = socket_read($accept, 1);
+                            $crc = current(unpack('C', $crc));
+                            $this->setBody($binary);
+    
+                            if ($m_crc !== $crc)
+                            {
+                                throw new Exception('CRC8 не сходится, пришло: ' . $crc . ', посчитали ' . $m_crc);
+                            }
+    
+                            $this->log('CRC8 корректный');
+                            $this->export($this->getTelemetry());
+                            $this->sendConfirmFlex10($accept, self::TELEMETRY_CURRENT_PREFIX_VAL, false);
                         } else if ($this->getStructVersion() == self::STRUCT_VERSION20)
                         {
                             throw new Exception('Телеметрические данные текущего состояния 20-ой версии не поддерживается', -51);
@@ -417,7 +441,7 @@
             return $crc;
         }
 
-        private function unpackTelemetryData10($accept)
+        private function unpackTelemetryData10($accept, $readSize = true)
         {
             if ($this->getStructVersion() != self::STRUCT_VERSION10)
             {
@@ -434,14 +458,18 @@
 
             if ($this->getPrefixTelemetry() == self::TELEMETRY_PREFIX_VAL)
             {
-                $binary .= $size = socket_read($accept, 1);
-
-                if ($size === false)
+                if ($readSize)
                 {
-                    throw new Exception('Датчик не вернул размер телеметрических данных', -37);
+                    $binary .= $size = socket_read($accept, 1);
+    
+                    if ($size === false)
+                    {
+                        throw new Exception('Датчик не вернул размер телеметрических данных', -37);
+                    }
+    
+                    $size = current(unpack('C', $size));
                 }
-
-                $size = current(unpack('C', $size));
+                
                 $this->setTelemetryFlex10Size($size);
             }
             $this->log('Получили ' . $size . ' блоков');
