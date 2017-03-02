@@ -316,8 +316,7 @@
                             $this->sendConfirmFlex10($accept);
                         } else if ($this->getStructVersion() == self::STRUCT_VERSION20)
                         {
-                            throw new Exception('Телеметрические данные 20-ой версии не поддерживается', -51);
-                            //TODO: реализовать unpack фцнкцию для 2-ой версии
+                            throw new Exception('Телеметрические данные 20-ой версии не поддерживаются', -51);
                         }
                         else
                         {
@@ -325,7 +324,6 @@
                         }
                         break;
                     case self::TELEMETRY_CURRENT_PREFIX_VAL:
-                        //TODO: написать unpack функцию
                         if ($this->getStructVersion() == self::STRUCT_VERSION10)
                         {
                             $this->log('Телеметрические данные 10-ой версии, текущего состояния');
@@ -346,7 +344,7 @@
                             $this->sendConfirmFlex10($accept, self::TELEMETRY_CURRENT_PREFIX_VAL, false);
                         } else if ($this->getStructVersion() == self::STRUCT_VERSION20)
                         {
-                            throw new Exception('Телеметрические данные текущего состояния 20-ой версии не поддерживается', -51);
+                            throw new Exception('Телеметрические данные текущего состояния 20-ой версии не поддерживаются', -51);
                         }
                         else
                         {
@@ -354,7 +352,6 @@
                         }
                         break;
                     case self::WARNING_PREFIX_VAL:
-                        //ODO: написать unpack функцию
                         if ($this->getStructVersion() == self::STRUCT_VERSION10)
                         {
                             $this->log('Тревожный запрос, данные 10-ой версии');
