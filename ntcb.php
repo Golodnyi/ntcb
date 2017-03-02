@@ -209,6 +209,7 @@ abstract class ntcb
         }
         
         $this->log('Ожидание подключения...');
+        $this->log('==========');
         
         while (true)
         {
