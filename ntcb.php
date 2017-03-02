@@ -728,6 +728,7 @@ abstract class ntcb
                 strlen($imei) . ' байт', -18);
         }
         $this->log('IMEI: ' . $imei);
+        $this->log('++++++++++');
         $this->imei = $imei;
     }
     
@@ -739,7 +740,14 @@ abstract class ntcb
      */
     public function log($message)
     {
-        $dir = __DIR__ . DIRECTORY_SEPARATOR . 'logs/' . $this->getImei();
+        $folder = 'connect';
+        
+        if ($this->getImei())
+        {
+            $folder = $this->getImei();
+        }
+    
+        $dir = __DIR__ . DIRECTORY_SEPARATOR . 'logs/' . $folder;
         
         if (!is_dir($dir))
         {
