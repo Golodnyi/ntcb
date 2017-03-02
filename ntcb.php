@@ -739,6 +739,13 @@ abstract class ntcb
      */
     public function log($message)
     {
+        $dir = __DIR__ . DIRECTORY_SEPARATOR . 'logs/' . $this->getImei();
+        
+        if (!is_dir($dir))
+        {
+            mkdir($dir);
+        }
+        
         if ($message == 'Success')
         {
             return;
@@ -748,7 +755,7 @@ abstract class ntcb
             $output = $output_console = '[' . date('H:i:s') . '] ' . $message . "\n";
             
             echo $output_console;
-            file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . 'logs/' . date('Y-m-d') . '.log', $output, FILE_APPEND);
+            file_put_contents($dir . DIRECTORY_SEPARATOR . date('Y-m-d') . '.log', $output, FILE_APPEND);
         }
     }
     
