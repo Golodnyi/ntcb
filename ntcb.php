@@ -1006,7 +1006,7 @@ abstract class ntcb
                 $this->log('Сохранили запись ' . $t->getNumPage());
     
                 $stmt->bindValue(1, $this->getImei(), PDO::PARAM_INT);
-                $stmt->bindValue(2, $pref, PDO::PARAM_STR);
+                $stmt->bindValue(2, $prefix, PDO::PARAM_STR);
                 $stmt->bindValue(3, $t->getNumPage(), PDO::PARAM_INT);
                 $stmt->bindValue(4, $t->getCode(), PDO::PARAM_INT);
                 $stmt->bindValue(5, intval($t->getModule1()[0]), PDO::PARAM_INT);
