@@ -1013,9 +1013,9 @@ abstract class ntcb
             {
                 $stmt = $db->prepare('
                     INSERT INTO ntcb
-                        (`IMEI`, `reqType`, `numPage`, `Code`, `Module1GSM`, `Module1USB`, `Module1Watch`, `Module1SIM`, `Module1Network`, `Module1Roaming`, `Module1Engine`, `Time`, `GSM`, `LastTime`, `Lat`, `Lon`, `Alt`, `Course`, `Mileage`, `CAN_EngineTurns`, `CAN_Temp`, `CAN_EngineLoad`, `CAN_Speed`, `CAN_AxleLoad1`, `CAN_AxleLoad2`, `CAN_AxleLoad3`, `CAN_AxleLoad4`, `CAN_AxleLoad5`, `StateU_Ain1`, `StateU_Ain2`, `StateInImp2`, `Temp1`, `Temp2`, `Speed`, `Frequency1`, `Motochas`, `Power`, `Reserv`)
+                        (`IMEI`, `reqType`, `numPage`, `Code`, `Module1GSM`, `Module1USB`, `Module1Watch`, `Module1SIM`, `Module1Network`, `Module1Roaming`, `Module1Engine`, `Time`, `GSM`, `LastTime`, `Lat`, `Lon`, `Alt`, `Course`, `Mileage`, `CAN_EngineTurns`, `CAN_Temp`, `CAN_EngineLoad`, `CAN_Speed`, `CAN_AxleLoad1`, `CAN_AxleLoad2`, `CAN_AxleLoad3`, `CAN_AxleLoad4`, `CAN_AxleLoad5`, `StateU_Ain1`, `StateU_Ain2`, `StateU_Ain3`, `StateInImp2`, `Temp1`, `Temp2`, `Speed`, `Frequency1`, `Motochas`, `Power`, `Reserv`)
                     VALUES (
-                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     ');
                 $this->log('Сохранили запись ' . $t->getNumPage());
     
@@ -1049,14 +1049,15 @@ abstract class ntcb
                 $stmt->bindValue(28, $t->getCANAxleLoad4(), PDO::PARAM_INT);
                 $stmt->bindValue(29, $t->getStateUAin1(), PDO::PARAM_INT);
                 $stmt->bindValue(30, $t->getStateUAin2(), PDO::PARAM_INT);
-                $stmt->bindValue(31, $t->getStateInImp1(), PDO::PARAM_INT);
-                $stmt->bindValue(32, $t->getTemp1(), PDO::PARAM_INT);
-                $stmt->bindValue(33, $t->getTemp2(), PDO::PARAM_INT);
-                $stmt->bindValue(34, $t->getSpeed(), PDO::PARAM_INT);
-                $stmt->bindValue(35, $t->getFrequency1(), PDO::PARAM_INT);
-                $stmt->bindValue(36, $t->getMotochas(), PDO::PARAM_INT);
-                $stmt->bindValue(37, $t->getPower(), PDO::PARAM_INT);
-                $stmt->bindValue(38, $t->getReserv(), PDO::PARAM_INT);
+                $stmt->bindValue(31, $t->getStateUAin3(), PDO::PARAM_INT);
+                $stmt->bindValue(32, $t->getStateInImp1(), PDO::PARAM_INT);
+                $stmt->bindValue(33, $t->getTemp1(), PDO::PARAM_INT);
+                $stmt->bindValue(34, $t->getTemp2(), PDO::PARAM_INT);
+                $stmt->bindValue(35, $t->getSpeed(), PDO::PARAM_INT);
+                $stmt->bindValue(36, $t->getFrequency1(), PDO::PARAM_INT);
+                $stmt->bindValue(37, $t->getMotochas(), PDO::PARAM_INT);
+                $stmt->bindValue(38, $t->getPower(), PDO::PARAM_INT);
+                $stmt->bindValue(39, $t->getReserv(), PDO::PARAM_INT);
                 
                 $insert = $stmt->execute();
             } catch (PDOException $e)
