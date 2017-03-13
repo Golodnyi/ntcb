@@ -919,9 +919,12 @@ abstract class ntcb
                 $EngineWeightLimit = $info->max_engine_turns;
             }
             
-            //if (!$prefix)
+            $prefix = '~A';
+            
+            if ($t->getStateUAin1() <= 2300)
             {
-                $prefix = '~A';
+                $prefix = '~T';
+                $t->setCode('65535');
             }
             
             if ($t->getCANAxleLoad1() <> 65535 && $t->getCANAxleLoad1() > $EngineWeightLimit)
