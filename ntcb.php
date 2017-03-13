@@ -919,7 +919,7 @@ abstract class ntcb
                 $EngineWeightLimit = $info->max_engine_turns;
             }
             
-            if (!$prefix)
+            //if (!$prefix)
             {
                 $prefix = '~A';
             }
