@@ -35,166 +35,6 @@
             'C' => 1,
             'F' => 4
         ];
-
-        private $_telemetry_values10 = [
-            0 => [0 => 'L', 1 => 'numPage'], // id записи в черном ящике
-            1 => [0 => 'S', 1 => 'Code'], // код события
-            2 => [0 => 'L', 1 => 'Time'], // время события
-            3 => [0 => 'C', 1 => 'State'], // статус устройства (битфилд)
-            4 => [0 => 'C', 1 => 'Module1'], // статус функциональных модулей 1 (битфилд)
-            5 => [0 => 'C', 1 => 'Module2'], // статус функциональных модулей 2 (битфилд)
-            6 => [0 => 'C', 1 => 'GSM'], // уровень gsm
-            7 => [0 => 'C', 1 => 'StateGauge'], // состояние навигационного датчика GPS/Глонасс (битфилд)
-            8 => [0 => 'L', 1 => 'LastTime'], // время последних валидных координат
-            9 => [0 => 'l', 1 => 'Lat'], // последняя валидная широта
-            10 => [0 => 'l', 1 => 'Lon'], // долгота
-            11 => [0 => 'l', 1 => 'Alt'], // высота
-            12 => [0 => 'f', 1 => 'Speed'], // скорость (флоут)
-            13 => [0 => 'S', 1 => 'Course'], // курс
-            14 => [0 => 'f', 1 => 'Mileage'], // текущий пробег (флоут)
-            15 => [0 => 'f', 1 => 'Way'], // последний отрезок пути (флоут)
-            16 => [0 => 'S', 1 => 'AllSeconds'], // общее кол-во сек на последнем отрезке
-            17 => [0 => 'S', 1 => 'SecondLast'], // тоже самое, но по которому вычислялся пробег
-            18 => [0 => 'S', 1 => 'Power'], // напряжение на основном источнике питания
-            19 => [0 => 'S', 1 => 'Reserv'], // напряжение на резеврном источнике питания
-            20 => [0 => 'S', 1 => 'StateU_Ain1'], // напряжение на анологовом входе 1
-            21 => [0 => 'S', 1 => 'StateU_Ain2'], // 2
-            22 => [0 => 'S', 1 => 'StateU_Ain3'], // 3
-            23 => [0 => 'S', 1 => 'StateU_Ain4'], // 4
-            24 => [0 => 'S', 1 => 'StateU_Ain5'], // 5
-            25 => [0 => 'S', 1 => 'StateU_Ain6'], // 6
-            26 => [0 => 'S', 1 => 'StateU_Ain7'], // 7
-            27 => [0 => 'S', 1 => 'StateU_Ain8'], // 8
-            28 => [0 => 'C', 1 => 'StateIn1'], // текущие показания дискретных датчиков 1
-            29 => [0 => 'C', 1 => 'StateIn2'], // 2
-            30 => [0 => 'C', 1 => 'stateOut1'], // текущее состояние выходов 1
-            31 => [0 => 'C', 1 => 'StateOut2'], // 2
-            32 => [0 => 'L', 1 => 'StateInImp1'], // показания счетчика импульсов 1
-            33 => [0 => 'L', 1 => 'StateInImp2'], // 2
-            34 => [0 => 'S', 1 => 'Frequency1'], // частота на аналогово-часточном датчике уровня топлива 1
-            35 => [0 => 'S', 1 => 'Frequency2'], // 2
-            36 => [0 => 'L', 1 => 'Motochas'], // моточасы, посчитанные во время срабатывания датчика работы генератора
-            37 => [0 => 'S', 1 => 'LevelRS485_1'], // уровень топлива, измеренный датчиком уровня топлива 1 RS-485
-            38 => [0 => 'S', 1 => 'LevelRS485_2'], // 2
-            39 => [0 => 'S', 1 => 'LevelRS485_3'], // 3
-            40 => [0 => 'S', 1 => 'LevelRS485_4'], // 4
-            41 => [0 => 'S', 1 => 'LevelRS485_5'], // 5
-            42 => [0 => 'S', 1 => 'LevelRS485_6'], // 6
-            43 => [0 => 'S', 1 => 'LevelRS232'], // уровень топлива, измененный датчиком уровня топлива RS-232
-            44 => [0 => 'c', 1 => 'Temp1'], // температура с цифрового датчика 1 (в цельсиях)
-            45 => [0 => 'c', 1 => 'Temp2'], // 2
-            46 => [0 => 'c', 1 => 'Temp3'], // 3
-            47 => [0 => 'c', 1 => 'Temp4'], // 4
-            48 => [0 => 'c', 1 => 'Temp5'], // 5
-            49 => [0 => 'c', 1 => 'Temp6'], // 6
-            50 => [0 => 'c', 1 => 'Temp7'], // 7
-            51 => [0 => 'c', 1 => 'Temp8'], // 8
-            52 => [0 => 'S', 1 => 'CAN_FuelLevel'], // уровень топлива в баке
-            53 => [0 => 'f', 1 => 'CAN_FuelConsumption'], // полный расход топлива
-            54 => [0 => 'S', 1 => 'CAN_EngineTurns'], // обороты двигателя
-            55 => [0 => 'c', 1 => 'CAN_Temp'], // температура охлаждающей жидкости двигатедя
-            56 => [0 => 'f', 1 => 'CAN_FullRun'], // полный пробег ТС
-            57 => [0 => 'S', 1 => 'CAN_AxleLoad_1'], // нагрузка на ось 1
-            58 => [0 => 'S', 1 => 'CAN_AxleLoad_2'], // 2
-            59 => [0 => 'S', 1 => 'CAN_AxleLoad_3'], // 3
-            60 => [0 => 'S', 1 => 'CAN_AxleLoad_4'], // 4
-            61 => [0 => 'S', 1 => 'CAN_AxleLoad_5'], // 5
-            62 => [0 => 'C', 1 => 'CAN_PedalAccel'], // положение педали газа
-            63 => [0 => 'C', 1 => 'CAN_PedalStop'], // тормоза
-            64 => [0 => 'C', 1 => 'CAN_EngineLoad'], // нагрузка на двигатель
-            65 => [0 => 'S', 1 => 'CAN_LevelFiltr'], // уровень жидкости в дизельном фильтре выхлопных газов
-            66 => [0 => 'L', 1 => 'CAN_EngineTime'], // время работы двигателя
-            67 => [0 => 's', 1 => 'CAN_TimeTO'], // расстояние до то
-            68 => [0 => 'C', 1 => 'CAN_Speed'], // скорость ТС
-        ];
-    
-        private $_telemetry_values11 = [
-            0 => [0 => 'L', 1 => 'numPage'], // id записи в черном ящике
-            1 => [0 => 'S', 1 => 'Code'], // код события
-            2 => [0 => 'L', 1 => 'Time'], // время события
-            3 => [0 => 'C', 1 => 'State'], // статус устройства (битфилд)
-            4 => [0 => 'C', 1 => 'Module1'], // статус функциональных модулей 1 (битфилд)
-            5 => [0 => 'C', 1 => 'Module2'], // статус функциональных модулей 2 (битфилд)
-            6 => [0 => 'C', 1 => 'GSM'], // уровень gsm
-            7 => [0 => 'C', 1 => 'StateGauge'], // состояние навигационного датчика GPS/Глонасс (битфилд)
-            8 => [0 => 'L', 1 => 'LastTime'], // время последних валидных координат
-            9 => [0 => 'l', 1 => 'Lat'], // последняя валидная широта
-            10 => [0 => 'l', 1 => 'Lon'], // долгота
-            11 => [0 => 'l', 1 => 'Alt'], // высота
-            12 => [0 => 'f', 1 => 'Speed'], // скорость (флоут)
-            13 => [0 => 'S', 1 => 'Course'], // курс
-            14 => [0 => 'f', 1 => 'Mileage'], // текущий пробег (флоут)
-            15 => [0 => 'f', 1 => 'Way'], // последний отрезок пути (флоут)
-            16 => [0 => 'S', 1 => 'AllSeconds'], // общее кол-во сек на последнем отрезке
-            17 => [0 => 'S', 1 => 'SecondLast'], // тоже самое, но по которому вычислялся пробег
-            18 => [0 => 'S', 1 => 'Power'], // напряжение на основном источнике питания
-            19 => [0 => 'S', 1 => 'Reserv'], // напряжение на резеврном источнике питания
-            20 => [0 => 'S', 1 => 'StateU_Ain1'], // напряжение на анологовом входе 1
-            21 => [0 => 'S', 1 => 'StateU_Ain2'], // 2
-            22 => [0 => 'S', 1 => 'StateU_Ain3'], // 3
-            23 => [0 => 'S', 1 => 'StateU_Ain4'], // 4
-            24 => [0 => 'S', 1 => 'StateU_Ain5'], // 5
-            25 => [0 => 'S', 1 => 'StateU_Ain6'], // 6
-            26 => [0 => 'S', 1 => 'StateU_Ain7'], // 7
-            27 => [0 => 'S', 1 => 'StateU_Ain8'], // 8
-            28 => [0 => 'C', 1 => 'StateIn1'], // текущие показания дискретных датчиков 1
-            29 => [0 => 'C', 1 => 'StateIn2'], // 2
-            30 => [0 => 'C', 1 => 'stateOut1'], // текущее состояние выходов 1
-            31 => [0 => 'C', 1 => 'StateOut2'], // 2
-            32 => [0 => 'L', 1 => 'StateInImp1'], // показания счетчика импульсов 1
-            33 => [0 => 'L', 1 => 'StateInImp2'], // 2
-            34 => [0 => 'S', 1 => 'Frequency1'], // частота на аналогово-часточном датчике уровня топлива 1
-            35 => [0 => 'S', 1 => 'Frequency2'], // 2
-            36 => [0 => 'L', 1 => 'Motochas'], // моточасы, посчитанные во время срабатывания датчика работы генератора
-            37 => [0 => 'S', 1 => 'LevelRS485_1'], // уровень топлива, измеренный датчиком уровня топлива 1 RS-485
-            38 => [0 => 'S', 1 => 'LevelRS485_2'], // 2
-            39 => [0 => 'S', 1 => 'LevelRS485_3'], // 3
-            40 => [0 => 'S', 1 => 'LevelRS485_4'], // 4
-            41 => [0 => 'S', 1 => 'LevelRS485_5'], // 5
-            42 => [0 => 'S', 1 => 'LevelRS485_6'], // 6
-            43 => [0 => 'S', 1 => 'LevelRS232'], // уровень топлива, измененный датчиком уровня топлива RS-232
-            44 => [0 => 'c', 1 => 'Temp1'], // температура с цифрового датчика 1 (в цельсиях)
-            45 => [0 => 'c', 1 => 'Temp2'], // 2
-            46 => [0 => 'c', 1 => 'Temp3'], // 3
-            47 => [0 => 'c', 1 => 'Temp4'], // 4
-            48 => [0 => 'c', 1 => 'Temp5'], // 5
-            49 => [0 => 'c', 1 => 'Temp6'], // 6
-            50 => [0 => 'c', 1 => 'Temp7'], // 7
-            51 => [0 => 'c', 1 => 'Temp8'], // 8
-            52 => [0 => 'S', 1 => 'CAN_FuelLevel'], // уровень топлива в баке
-            53 => [0 => 'f', 1 => 'CAN_FuelConsumption'], // полный расход топлива
-            54 => [0 => 'S', 1 => 'CAN_EngineTurns'], // обороты двигателя
-            55 => [0 => 'c', 1 => 'CAN_Temp'], // температура охлаждающей жидкости двигатедя
-            56 => [0 => 'f', 1 => 'CAN_FullRun'], // полный пробег ТС
-            57 => [0 => 'S', 1 => 'CAN_AxleLoad_1'], // нагрузка на ось 1
-            58 => [0 => 'S', 1 => 'CAN_AxleLoad_2'], // 2
-            59 => [0 => 'S', 1 => 'CAN_AxleLoad_3'], // 3
-            60 => [0 => 'S', 1 => 'CAN_AxleLoad_4'], // 4
-            61 => [0 => 'S', 1 => 'CAN_AxleLoad_5'], // 5
-            62 => [0 => 'C', 1 => 'CAN_PedalAccel'], // положение педали газа
-            63 => [0 => 'C', 1 => 'CAN_PedalStop'], // тормоза
-            64 => [0 => 'C', 1 => 'CAN_EngineLoad'], // нагрузка на двигатель
-            65 => [0 => 'S', 1 => 'CAN_LevelFiltr'], // уровень жидкости в дизельном фильтре выхлопных газов
-            66 => [0 => 'L', 1 => 'CAN_EngineTime'], // время работы двигателя
-            67 => [0 => 's', 1 => 'CAN_TimeTO'], // расстояние до то
-            68 => [0 => 'C', 1 => 'CAN_Speed'], // скорость ТС
-            69 => [0 => 'S', 1 => 'ATemp1'], // Термопары
-            70 => [0 => 'S', 1 => 'ATemp2'],
-            71 => [0 => 'S', 1 => 'ATemp3'],
-            72 => [0 => 'S', 1 => 'ATemp4'],
-            73 => [0 => 'S', 1 => 'ATemp5'],
-            74 => [0 => 'S', 1 => 'ATemp6'],
-            75 => [0 => 'S', 1 => 'ATemp7'],
-            76 => [0 => 'S', 1 => 'ATemp8'],
-            77 => [0 => 'S', 1 => 'ATemp9'],
-            78 => [0 => 'S', 1 => 'ATemp10'],
-            79 => [0 => 'S', 1 => 'ATemp11'],
-            80 => [0 => 'S', 1 => 'ATemp12'],
-            81 => [0 => 'S', 1 => 'ATemp13'],
-            82 => [0 => 'S', 1 => 'ATemp14'],
-            83 => [0 => 'S', 1 => 'ATemp15'],
-            84 => [0 => 'S', 1 => 'ATemp16'],
-        ];
         
         private $_prefix;
         private $_prefix_telemetry;
@@ -630,22 +470,22 @@
                         continue;
                     }
                 
-                    $size_read = $this->_size_array[strtoupper($this->_telemetry_values10[$j][0])];
+                    $size_read = $this->_size_array[strtoupper(telemetry_flex_v10::$_telemetry_values[$j][0])];
                     $binary .= $buf = socket_read($accept, $size_read);
                 
                     if ($buf === false)
                     {
-                        $this->log('Ошибка получения данных из сокета, параметр ' . $this->_telemetry_values10[$j][1] .' (' . socket_strerror(socket_last_error($this->getSocket())) . ' [' . socket_last_error($this->getSocket()) . '])');
+                        $this->log('Ошибка получения данных из сокета, параметр ' . telemetry_flex_v10::$_telemetry_values[$j][1] .' (' . socket_strerror(socket_last_error($this->getSocket())) . ' [' . socket_last_error($this->getSocket()) . '])');
                         continue;
                     }
-                    $buf = unpack($this->_telemetry_values10[$j][0], $buf);
+                    $buf = unpack(telemetry_flex_v10::$_telemetry_values[$j][0], $buf);
                 
                     if ($buf === false)
                     {
-                        throw new Exception('Функция unpack вернула ошибку на параметре ' . $this->_telemetry_values10[$j][1] . ' (' . $this->_telemetry_values10[$i][0] . ')');
+                        throw new Exception('Функция unpack вернула ошибку на параметре ' . telemetry_flex_v10::$_telemetry_values[$j][1] . ' (' . telemetry_flex_v10::$_telemetry_values[$i][0] . ')');
                     }
                 
-                    $method = 'set' . ucfirst(str_replace('_', '', $this->_telemetry_values10[$j][1]));
+                    $method = 'set' . ucfirst(str_replace('_', '', telemetry_flex_v10::$_telemetry_values[$j][1]));
                     if (!method_exists($telemetry, $method))
                     {
                         throw new Exception('Метод ' . $method . ' не существует', -50);
@@ -654,12 +494,12 @@
                     $buf = current($buf);
                     $more = '';
                 
-                    if ($this->_telemetry_values10[$j][1] == 'Time')
+                    if (telemetry_flex_v10::$_telemetry_values[$j][1] == 'Time')
                     {
                         $more = ' (' . date('Y-m-d H:i:s', $buf) .')';
                     }
                 
-                    $this->log($this->_telemetry_values10[$j][1] . ': ' . $buf . $more);
+                    $this->log(telemetry_flex_v10::$_telemetry_values[$j][1] . ': ' . $buf . $more);
                     $telemetry->$method($buf);
                 }
                 $a_telemetry[] = $telemetry;
@@ -713,22 +553,22 @@
                         continue;
                     }
                 
-                    $size_read = $this->_size_array[strtoupper($this->_telemetry_values11[$j][0])];
+                    $size_read = $this->_size_array[strtoupper(telemetry_flex_v11::$_telemetry_values[$j][0])];
                     $binary .= $buf = socket_read($accept, $size_read);
                 
                     if ($buf === false)
                     {
-                        $this->log('Ошибка получения данных из сокета, параметр ' . $this->_telemetry_values11[$j][1] .' (' . socket_strerror(socket_last_error($this->getSocket())) . ' [' . socket_last_error($this->getSocket()) . '])');
+                        $this->log('Ошибка получения данных из сокета, параметр ' . telemetry_flex_v11::$_telemetry_values[$j][1] .' (' . socket_strerror(socket_last_error($this->getSocket())) . ' [' . socket_last_error($this->getSocket()) . '])');
                         continue;
                     }
-                    $buf = unpack($this->_telemetry_values11[$j][0], $buf);
+                    $buf = unpack(telemetry_flex_v11::$_telemetry_values[$j][0], $buf);
                 
                     if ($buf === false)
                     {
-                        throw new Exception('Функция unpack вернула ошибку на параметре ' . $this->_telemetry_values11[$j][1] . ' (' . $this->_telemetry_values10[$i][0] . ')');
+                        throw new Exception('Функция unpack вернула ошибку на параметре ' . telemetry_flex_v11::$_telemetry_values[$j][1] . ' (' . telemetry_flex_v10::$_telemetry_values[$i][0] . ')');
                     }
                 
-                    $method = 'set' . ucfirst(str_replace('_', '', $this->_telemetry_values11[$j][1]));
+                    $method = 'set' . ucfirst(str_replace('_', '', telemetry_flex_v11::$_telemetry_values[$j][1]));
                     if (!method_exists($telemetry, $method))
                     {
                         throw new Exception('Метод ' . $method . ' не существует', -50);
@@ -737,12 +577,12 @@
                     $buf = current($buf);
                     $more = '';
                 
-                    if ($this->_telemetry_values11[$j][1] == 'Time')
+                    if (telemetry_flex_v11::$_telemetry_values[$j][1] == 'Time')
                     {
                         $more = ' (' . date('Y-m-d H:i:s', $buf) .')';
                     }
                 
-                    $this->log($this->_telemetry_values11[$j][1] . ': ' . $buf . $more);
+                    $this->log(telemetry_flex_v11::$_telemetry_values[$j][1] . ': ' . $buf . $more);
                     $telemetry->$method($buf);
                 }
                 $a_telemetry[] = $telemetry;
@@ -884,7 +724,7 @@
                     $bitfield .= $bit[$j];
                     if ($bit[$j] == 1)
                     {
-                        $enabled[] = $this->_telemetry_values10[$z][1];
+                        $enabled[] = telemetry_flex_v10::$_telemetry_values[$z][1];
                     }
 
                     if (++$z >= $data_size)
