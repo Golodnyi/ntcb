@@ -223,6 +223,9 @@ abstract class ntcb
                 continue;
             }
     
+            $mem_start = memory_get_usage();
+            $time_start = microtime(true);
+            
             socket_getpeername($accept, $ip);
             $this->log('Подключился датчик, ip: ' . $ip);
             
@@ -254,6 +257,7 @@ abstract class ntcb
                 }
             }
             
+            $this->log('MEMORY: ' . number_format(memory_get_usage()/1024, 2) . ' kbyte, time: ' . number_format(microtime(true) - $time_start, 2) .' sec.');
         }
     }
     
