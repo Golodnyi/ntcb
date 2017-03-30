@@ -934,49 +934,49 @@ abstract class ntcb
             if ($t->getCANAxleLoad1() <> 65535 && $t->getCANAxleLoad1() > $EngineWeightLimit)
             {
                 $prefix = '~T';
-                $t->notify('Нагрузка на ось 1 превышена ' . $t->getCANAxleLoad1());
+                $this->notify($this->getImei(), 'Нагрузка на ось 1 превышена ' . $t->getCANAxleLoad1());
             }
             
             if ($t->getCANAxleLoad2() <> 65535 && $t->getCANAxleLoad2() > $EngineWeightLimit)
             {
                 $prefix = '~T';
-                $t->notify('Нагрузка на ось 2 превышена ' . $t->getCANAxleLoad2());
+               $this->notify($this->getImei(),'Нагрузка на ось 2 превышена ' . $t->getCANAxleLoad2());
             }
             
             if ($t->getCANAxleLoad3() <> 65535 && $t->getCANAxleLoad3() > $EngineWeightLimit)
             {
                 $prefix = '~T';
-                $t->notify('Нагрузка на ось 3 превышена ' . $t->getCANAxleLoad3());
+               $this->notify($this->getImei(),'Нагрузка на ось 3 превышена ' . $t->getCANAxleLoad3());
             }
             
             if ($t->getCANAxleLoad4() <> 65535 && $t->getCANAxleLoad4() > $EngineWeightLimit)
             {
                 $prefix = '~T';
-                $t->notify('Нагрузка на ось 4 превышена ' . $t->getCANAxleLoad4());
+               $this->notify($this->getImei(),'Нагрузка на ось 4 превышена ' . $t->getCANAxleLoad4());
             }
             
             if ($t->getCANAxleLoad5() <> 65535 && $t->getCANAxleLoad5() > $EngineWeightLimit)
             {
                 $prefix = '~T';
-                $t->notify('Нагрузка на ось 5 превышена ' . $t->getCANAxleLoad5());
+               $this->notify($this->getImei(),'Нагрузка на ось 5 превышена ' . $t->getCANAxleLoad5());
             }
             
             if ($t->getCANSpeed() > 50 && $t->getCANSpeed() <> 255)
             {
                 $prefix = '~T';
-                $t->notify('Скорость превышена ' . $t->getCANSpeed());
+               $this->notify($this->getImei(),'Скорость превышена ' . $t->getCANSpeed());
             }
             
             if ($t->getCANTemp() > 100 && $t->getCANTemp() <> -128)
             {
                 $prefix = '~T';
-                $t->notify('Температура ОЖ превышена ' . $t->getCANTemp());
+               $this->notify($this->getImei(),'Температура ОЖ превышена ' . $t->getCANTemp());
             }
             
             if ($t->getCANEngineTurns() > 3000 && $t->getCANEngineTurns() <> 65535)
             {
                 $prefix = '~T';
-                $t->notify('Обороты двигателя превышены ' . $t->getCANEngineTurns());
+               $this->notify($this->getImei(),'Обороты двигателя превышены ' . $t->getCANEngineTurns());
             }
             
             try
@@ -1080,5 +1080,38 @@ abstract class ntcb
         }
         
         return true;
+    }
+    
+    public function notify($imei, $text)
+    {
+        return true;
+        
+        $message = $imei . ': ' .$text;
+        
+        $mail = new PHPMailer;
+        $mail->isSMTP();
+        $mail->SMTPDebug = 0;
+        $mail->Debugoutput = 'html';
+        $mail->Host = 'smtp.yandex.ru';
+        $mail->Port = 465;
+        $mail->SMTPSecure = 'ssl';
+        
+        $mail->SMTPAuth = true;
+        $mail->Username = "noreply@getpart.ru";
+        $mail->Password = "password3446564rtgh";
+        
+        $mail->setFrom('noreply@getpart.ru', 'GetPart Notify');
+        $mail->addReplyTo('noreply@getpart.ru', 'GetPart Notify');
+        
+        $mail->addAddress('ochen@golodnyi.ru', 'ochen@golodnyi.ru');
+        $mail->Subject = 'Нарушение в работе двигателя ' . $this->IMEI;
+        $mail->msgHTML($message);
+        
+        if (!$mail->send()) {
+            echo "Mailer Error: " . $mail->ErrorInfo;
+        } else {
+            echo "Message sent!";
+        }
+        
     }
 }

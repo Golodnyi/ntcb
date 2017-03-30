@@ -1291,39 +1291,6 @@ class telemetry_flex_v11 {
     {
         $this->CAN_Speed = $CAN_Speed;
     }
-
-    public function notify($text)
-    {
-        return true;
-        
-        $message = $this->IMEI . ': ' .$text;
-
-        $mail = new PHPMailer;
-        $mail->isSMTP();
-        $mail->SMTPDebug = 0;
-        $mail->Debugoutput = 'html';
-        $mail->Host = 'smtp.yandex.ru';
-        $mail->Port = 465;
-        $mail->SMTPSecure = 'ssl';
-
-        $mail->SMTPAuth = true;
-        $mail->Username = "noreply@getpart.ru";
-        $mail->Password = "password3446564rtgh";
-
-        $mail->setFrom('noreply@getpart.ru', 'GetPart Notify');
-        $mail->addReplyTo('noreply@getpart.ru', 'GetPart Notify');
-
-        $mail->addAddress('ochen@golodnyi.ru', 'ochen@golodnyi.ru');
-        $mail->Subject = 'Нарушение в работе двигателя ' . $this->IMEI;
-        $mail->msgHTML($message);
-
-        if (!$mail->send()) {
-            echo "Mailer Error: " . $mail->ErrorInfo;
-        } else {
-            echo "Message sent!";
-        }
-
-    }
     
     /**
      * @return bool
