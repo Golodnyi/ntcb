@@ -223,7 +223,6 @@ abstract class ntcb
                 continue;
             }
     
-            $mem_start = memory_get_usage();
             $time_start = microtime(true);
             
             socket_getpeername($accept, $ip);
