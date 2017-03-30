@@ -256,7 +256,7 @@ abstract class ntcb
                 }
             }
             
-            $this->log('MEMORY: ' . number_format(memory_get_usage()/1024, 2) . ' kbyte, time: ' . number_format(microtime(true) - $time_start, 2) .' sec.');
+            $this->log('MEMORY: ' . number_format(memory_get_usage()/1024, 2) . ' kbyte, TIME: ' . number_format(microtime(true) - $time_start, 2) .' sec.');
             $this->log('++++++++++');
         }
     }
