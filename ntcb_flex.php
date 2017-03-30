@@ -9,6 +9,7 @@
 
     require_once __DIR__ . DIRECTORY_SEPARATOR . 'ntcb.php';
     require_once __DIR__ . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'telemetry_flex_v10.php';
+    require_once __DIR__ . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'telemetry_flex_v11.php';
 
     class ntcb_flex extends ntcb
     {
