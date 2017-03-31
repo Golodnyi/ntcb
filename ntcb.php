@@ -797,7 +797,7 @@ abstract class ntcb
         return $temp_sum;
     }
     
-    protected function export(array $telemetry, $prefix = false)
+    protected function export($version, array $telemetry, $prefix = false)
     {
         $this->log('Экспорт данных в бд');
         
@@ -808,278 +808,31 @@ abstract class ntcb
             return false;
         }
         
-        $dbhost = "localhost";
-        $dbname = "getpart";
-        $dbuser = "getpart2";
-        $dbpswd = "BiBxzE";
-        
         try
         {
-            
-            $db = new PDO("mysql:host=" . $dbhost . ";dbname=" . $dbname, $dbuser, $dbpswd);
-            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
-            $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
-            $db->setAttribute(PDO::MYSQL_ATTR_INIT_COMMAND, 'SET NAMES UTF8');
-            
-        } catch (PDOException $e)
+            $this->log('Экспорт данных ' . $version . ' версии.');
+    
+            if ($version == ntcb_flex::STRUCT_VERSION10)
+            {
+                require_once __DIR__ . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'export' .
+                    DIRECTORY_SEPARATOR . 'mysql_flex_v10.php';
+                mysql_flex_v10::export($this->getImei(), $telemetry, $prefix);
+            }
+            elseif ($version == ntcb_flex::STRUCT_VERSION11)
+            {
+                //require_once __DIR__ . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'export' . DIRECTORY_SEPARATOR . 'mysql_flex_v11.php';
+                //mysql_flex_v11::export($this->getImei(), $telemetry, $prefix);
+            }
+            else
+            {
+                throw new Exception('Неверный формат для экпорта');
+            }
+        } catch (Exception $e)
         {
             throw new Exception($e->getMessage(), $e->getCode());
         }
-        
-        /** @var telemetry_flex_v10 $t */
-        foreach ($telemetry as $t)
-        {
-            if ($this->getImei() === false)
-            {
-                throw new Exception('Неверная конфигурация датчика, не передан IMEI ' . var_dump($this->getImei()),
-                    -55);
-            }
-            
-            if ($t->getNumPage() === false)
-            {
-                throw new Exception('Неверная конфигурация датчика, не передан номер ' . var_dump($t->getNumPage()),
-                    -55);
-            }
-            
-            if ($t->getCode() === false)
-            {
-                throw new Exception('Неверная конфигурация датчика, не передан код события ' . var_dump($t->getCode()),
-                    -55);
-            }
-            
-            if ($t->getTime() === false)
-            {
-                throw new Exception('Неверная конфигурация датчика, не передано время события ' .
-                    var_dump($t->getTime()), -55);
-            }
-            
-            if ($t->getModule1() === false)
-            {
-                throw new Exception('Неверная конфигурация датчика, не передано состояние функциональных модулей 1 ' .
-                    var_dump($t->getGSM()), -55);
-            }
-            
-            if ($t->getGSM() === false)
-            {
-                throw new Exception('Неверная конфигурация датчика, не передан уровень сигнала ' .
-                    var_dump($t->getGSM()), -55);
-            }
-            
-            if ($t->getLastTime() === false)
-            {
-                throw new Exception('Неверная конфигурация датчика, не передано время последних координат ' .
-                    var_dump($t->getLastTime()), -55);
-            }
-            
-            if ($t->getLat() === false)
-            {
-                throw new Exception('Неверная конфигурация датчика, не передана широта ' . var_dump($t->getLat()), -55);
-            }
-            
-            if ($t->getLon() === false)
-            {
-                throw new Exception('Неверная конфигурация датчика, не передана долгота ' . var_dump($t->getLon()),
-                    -55);
-            }
-            
-            if ($t->getAlt() === false)
-            {
-                throw new Exception('Неверная конфигурация датчика, не передана высота ' . var_dump($t->getAlt()), -55);
-            }
-            
-            if ($t->getCourse() === false)
-            {
-                throw new Exception('Неверная конфигурация датчика, не передан курс ' . var_dump($t->getCourse()), -55);
-            }
-            
-            if ($t->getMileage() === false)
-            {
-                throw new Exception('Неверная конфигурация датчика, не передан пробег ' . var_dump($t->getMileage()),
-                    -55);
-            }
-            
-            $EngineWeightLimit = 55000;
-            
-            try
-            {
-                $stmt = $db->prepare('
-                      SELECT nc.*, ne.min_engine_turns as min_engine_turns, ne.max_engine_turns as max_engine_turns, ne.max_speed as max_speed FROM ntcb_cars as nc
-                        INNER JOIN ntcb_sensor_cars as nsc ON nsc.car_id = nc.id
-                        INNER JOIN ntcb_sensors as ns ON ns.imei = nsc.sensor_imei
-                        INNER JOIN ntcb_engine_cars as nec ON nec.car_id = nc.id
-                        INNER JOIN ntcb_engines as ne ON ne.id = nec.engine_id
-                      WHERE ns.`imei` = ? LIMIT 1
-                    ');
-                $stmt->bindValue(1, $this->getImei(), PDO::PARAM_INT);
-                $stmt->execute();
-                $info = $stmt->fetch();
-            } catch (PDOException $e)
-            {
-                throw new Exception($e->getMessage(), $e->getCode());
-            }
     
-            if ($info)
-            {
-                $EngineWeightLimit = $info->max_engine_turns;
-            }
-            
-            $prefix = '~A';
-            
-            if ($t->getStateUAin1() <= 2300)
-            {
-                $prefix = '~T';
-                $t->setCode('65535');
-            }
-            
-            if ($t->getCANAxleLoad1() <> 65535 && $t->getCANAxleLoad1() > $EngineWeightLimit)
-            {
-                $prefix = '~T';
-                $this->notify($this->getImei(), 'Нагрузка на ось 1 превышена ' . $t->getCANAxleLoad1());
-            }
-            
-            if ($t->getCANAxleLoad2() <> 65535 && $t->getCANAxleLoad2() > $EngineWeightLimit)
-            {
-                $prefix = '~T';
-               $this->notify($this->getImei(),'Нагрузка на ось 2 превышена ' . $t->getCANAxleLoad2());
-            }
-            
-            if ($t->getCANAxleLoad3() <> 65535 && $t->getCANAxleLoad3() > $EngineWeightLimit)
-            {
-                $prefix = '~T';
-               $this->notify($this->getImei(),'Нагрузка на ось 3 превышена ' . $t->getCANAxleLoad3());
-            }
-            
-            if ($t->getCANAxleLoad4() <> 65535 && $t->getCANAxleLoad4() > $EngineWeightLimit)
-            {
-                $prefix = '~T';
-               $this->notify($this->getImei(),'Нагрузка на ось 4 превышена ' . $t->getCANAxleLoad4());
-            }
-            
-            if ($t->getCANAxleLoad5() <> 65535 && $t->getCANAxleLoad5() > $EngineWeightLimit)
-            {
-                $prefix = '~T';
-               $this->notify($this->getImei(),'Нагрузка на ось 5 превышена ' . $t->getCANAxleLoad5());
-            }
-            
-            if ($t->getCANSpeed() > 50 && $t->getCANSpeed() <> 255)
-            {
-                $prefix = '~T';
-               $this->notify($this->getImei(),'Скорость превышена ' . $t->getCANSpeed());
-            }
-            
-            if ($t->getCANTemp() > 100 && $t->getCANTemp() <> -128)
-            {
-                $prefix = '~T';
-               $this->notify($this->getImei(),'Температура ОЖ превышена ' . $t->getCANTemp());
-            }
-            
-            if ($t->getCANEngineTurns() > 3000 && $t->getCANEngineTurns() <> 65535)
-            {
-                $prefix = '~T';
-               $this->notify($this->getImei(),'Обороты двигателя превышены ' . $t->getCANEngineTurns());
-            }
-            
-            try
-            {
-                $stmt = $db->prepare('SELECT 1 FROM ntcb WHERE `IMEI` = ? AND `numPage` = ? LIMIT 1');
-                $stmt->bindValue(1, $this->getImei(), PDO::PARAM_INT);
-                $stmt->bindValue(2, $t->getNumPage(), PDO::PARAM_INT);
-                $stmt->execute();
-                $exist = $stmt->rowCount();
-            } catch (PDOException $e)
-            {
-                throw new Exception($e->getMessage(), $e->getCode());
-            }
-            
-            if ($exist && $t->getNumPage() > 0)
-            {
-                $this->log('Данная запись (' . $t->getNumPage() . ') уже есть в бд, пропускаем...');
-                continue;
-            }
-            
-            /**
-             * Записываем:
-             * IMEI - уникальный идентификатор устройства (int 15)
-             * reqType - тип запроса (телеметрические данные или тревожное сообщение)  (char 2)
-             * numPage - уникальный ID записи (unsigned int 4)
-             * Code - код события (unsigned int 2)
-             * Time - время события (unsigned int 4 или timestamp)
-             * GSM - уровень сигнала (unsigned int 1)
-             * LastTime - время последних валидных координат (unsigned int 4 или timestamp)
-             * Lat - широта (signed int 4)
-             * Lon - долгота (signed int 4)
-             * Alt - высота (signed int 4)
-             * Course - куср (в градусах) (unsigned int 2)
-             * Mileage - текущий пробег в км (float 4 bytes)
-             * CAN_EngineTurns - обороты двигателя (unsigned int 2)
-             * CAN_Temp - температура охлаждающей жидкости в цельсиях (signed int 1)
-             * CAN_EngineLoad - нагрузка на двигатель в процентах (unsigned int 1)
-             * CAN_Speed - скорость (unsigned int 1)
-             */
-            try
-            {
-                $stmt = $db->prepare('
-                    INSERT INTO ntcb
-                        (`IMEI`, `reqType`, `numPage`, `Code`, `Module1GSM`, `Module1USB`, `Module1Watch`, `Module1SIM`, `Module1Network`, `Module1Roaming`, `Module1Engine`, `Time`, `GSM`, `LastTime`, `Lat`, `Lon`, `Alt`, `Course`, `Mileage`, `CAN_EngineTurns`, `CAN_Temp`, `CAN_EngineLoad`, `CAN_Speed`, `CAN_AxleLoad1`, `CAN_AxleLoad2`, `CAN_AxleLoad3`, `CAN_AxleLoad4`, `CAN_AxleLoad5`, `StateU_Ain1`, `StateU_Ain2`, `StateU_Ain3`, `StateInImp2`, `Temp1`, `Temp2`, `Speed`, `Frequency1`, `Motochas`, `Power`, `Reserv`)
-                    VALUES (
-                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    ');
-                $this->log('Сохранили запись ' . $t->getNumPage());
-    
-                $stmt->bindValue(1, $this->getImei(), PDO::PARAM_INT);
-                $stmt->bindValue(2, $prefix, PDO::PARAM_STR);
-                $stmt->bindValue(3, $t->getNumPage(), PDO::PARAM_INT);
-                $stmt->bindValue(4, $t->getCode(), PDO::PARAM_INT);
-                $stmt->bindValue(5, intval($t->getModule1()[0]), PDO::PARAM_INT);
-                $stmt->bindValue(6, intval($t->getModule1()[1]), PDO::PARAM_INT);
-                $stmt->bindValue(7, intval($t->getModule1()[3]), PDO::PARAM_INT);
-                $stmt->bindValue(8, intval($t->getModule1()[4]), PDO::PARAM_INT);
-                $stmt->bindValue(9, intval($t->getModule1()[5]), PDO::PARAM_INT);
-                $stmt->bindValue(10, intval($t->getModule1()[6]), PDO::PARAM_INT);
-                $stmt->bindValue(11, intval($t->getModule1()[7]), PDO::PARAM_INT);
-                $stmt->bindValue(12, $t->getTime(), PDO::PARAM_INT);
-                $stmt->bindValue(13, $t->getGSM(), PDO::PARAM_INT);
-                $stmt->bindValue(14, $t->getLastTime(), PDO::PARAM_INT);
-                $stmt->bindValue(15, $t->getLat(), PDO::PARAM_INT);
-                $stmt->bindValue(16, $t->getLon(), PDO::PARAM_INT);
-                $stmt->bindValue(17, $t->getAlt(), PDO::PARAM_INT);
-                $stmt->bindValue(18, $t->getCourse(), PDO::PARAM_INT);
-                $stmt->bindValue(19, $t->getMileage(), PDO::PARAM_INT);
-                $stmt->bindValue(20, $t->getCANEngineTurns(), PDO::PARAM_INT);
-                $stmt->bindValue(21, $t->getCANTemp(), PDO::PARAM_INT);
-                $stmt->bindValue(22, $t->getCANEngineLoad(), PDO::PARAM_INT);
-                $stmt->bindValue(23, $t->getCANSpeed(), PDO::PARAM_INT);
-                $stmt->bindValue(24, $t->getCANAxleLoad1(), PDO::PARAM_INT);
-                $stmt->bindValue(25, $t->getCANAxleLoad2(), PDO::PARAM_INT);
-                $stmt->bindValue(26, $t->getCANAxleLoad3(), PDO::PARAM_INT);
-                $stmt->bindValue(27, $t->getCANAxleLoad4(), PDO::PARAM_INT);
-                $stmt->bindValue(28, $t->getCANAxleLoad4(), PDO::PARAM_INT);
-                $stmt->bindValue(29, $t->getStateUAin1(), PDO::PARAM_INT);
-                $stmt->bindValue(30, $t->getStateUAin2(), PDO::PARAM_INT);
-                $stmt->bindValue(31, $t->getStateUAin3(), PDO::PARAM_INT);
-                $stmt->bindValue(32, $t->getStateInImp1(), PDO::PARAM_INT);
-                $stmt->bindValue(33, $t->getTemp1(), PDO::PARAM_INT);
-                $stmt->bindValue(34, $t->getTemp2(), PDO::PARAM_INT);
-                $stmt->bindValue(35, $t->getSpeed(), PDO::PARAM_INT);
-                $stmt->bindValue(36, $t->getFrequency1(), PDO::PARAM_INT);
-                $stmt->bindValue(37, $t->getMotochas(), PDO::PARAM_INT);
-                $stmt->bindValue(38, $t->getPower(), PDO::PARAM_INT);
-                $stmt->bindValue(39, $t->getReserv(), PDO::PARAM_INT);
-                
-                $insert = $stmt->execute();
-            } catch (PDOException $e)
-            {
-                throw new Exception($e->getMessage(), $e->getCode());
-            }
-            
-            if ($insert === false)
-            {
-                throw new Exception('Ошибка при insert данных ' . $stmt->queryString, -55);
-            }
-            
-        }
-        
-        return true;
+        $this->log('Экспорт данных завершен');
     }
     
     public function notify($imei, $text)

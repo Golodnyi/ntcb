@@ -1295,7 +1295,7 @@ class telemetry_flex_v11 {
     /**
      * @return bool
      */
-    public function isATemp1()
+    public function getATemp1()
     {
         return $this->ATemp1;
     }
@@ -1311,7 +1311,7 @@ class telemetry_flex_v11 {
     /**
      * @return bool
      */
-    public function isATemp2()
+    public function getATemp2()
     {
         return $this->ATemp2;
     }
@@ -1327,7 +1327,7 @@ class telemetry_flex_v11 {
     /**
      * @return bool
      */
-    public function isATemp3()
+    public function getATemp3()
     {
         return $this->ATemp3;
     }
@@ -1343,7 +1343,7 @@ class telemetry_flex_v11 {
     /**
      * @return bool
      */
-    public function isATemp4()
+    public function getATemp4()
     {
         return $this->ATemp4;
     }
@@ -1359,7 +1359,7 @@ class telemetry_flex_v11 {
     /**
      * @return bool
      */
-    public function isATemp5()
+    public function getATemp5()
     {
         return $this->ATemp5;
     }
@@ -1375,7 +1375,7 @@ class telemetry_flex_v11 {
     /**
      * @return bool
      */
-    public function isATemp6()
+    public function getATemp6()
     {
         return $this->ATemp6;
     }
@@ -1391,7 +1391,7 @@ class telemetry_flex_v11 {
     /**
      * @return bool
      */
-    public function isATemp7()
+    public function getATemp7()
     {
         return $this->ATemp7;
     }
@@ -1407,7 +1407,7 @@ class telemetry_flex_v11 {
     /**
      * @return bool
      */
-    public function isATemp8()
+    public function getATemp8()
     {
         return $this->ATemp8;
     }
@@ -1423,7 +1423,7 @@ class telemetry_flex_v11 {
     /**
      * @return bool
      */
-    public function isATemp9()
+    public function getATemp9()
     {
         return $this->ATemp9;
     }
@@ -1439,7 +1439,7 @@ class telemetry_flex_v11 {
     /**
      * @return bool
      */
-    public function isATemp10()
+    public function getATemp10()
     {
         return $this->ATemp10;
     }
@@ -1455,7 +1455,7 @@ class telemetry_flex_v11 {
     /**
      * @return bool
      */
-    public function isATemp11()
+    public function getATemp11()
     {
         return $this->ATemp11;
     }
@@ -1471,7 +1471,7 @@ class telemetry_flex_v11 {
     /**
      * @return bool
      */
-    public function isATemp12()
+    public function getATemp12()
     {
         return $this->ATemp12;
     }
@@ -1487,7 +1487,7 @@ class telemetry_flex_v11 {
     /**
      * @return bool
      */
-    public function isATemp13()
+    public function getATemp13()
     {
         return $this->ATemp13;
     }
@@ -1503,7 +1503,7 @@ class telemetry_flex_v11 {
     /**
      * @return bool
      */
-    public function isATemp14()
+    public function getATemp14()
     {
         return $this->ATemp14;
     }
@@ -1519,7 +1519,7 @@ class telemetry_flex_v11 {
     /**
      * @return bool
      */
-    public function isATemp15()
+    public function getATemp15()
     {
         return $this->ATemp15;
     }
@@ -1535,7 +1535,7 @@ class telemetry_flex_v11 {
     /**
      * @return bool
      */
-    public function isATemp16()
+    public function getATemp16()
     {
         return $this->ATemp16;
     }
