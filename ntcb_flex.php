@@ -114,10 +114,6 @@
             try {
                 parent::processing($accept);
                 $this->readHeader($accept);
-                
-                require_once __DIR__ . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'telemetry_flex_v10.php';
-                require_once __DIR__ . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'telemetry_flex_v11.php';
-    
                 $this->readBody($accept);
                 $this->checkSum();
                 $this->matchingProtocol();
@@ -434,10 +430,12 @@
             {
                 throw new Exception('Некорректная версия структурных данных', -40);
             }
-        
+    
+            require_once __DIR__ . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'telemetry_flex_v10.php';
+    
             $binary = '';
             $size = 1;
-        
+    
             if (!class_exists('telemetry_flex_v10'))
             {
                 throw new Exception('Класс telemetry_flex_v10 не найден', -37);
@@ -517,7 +515,9 @@
             {
                 throw new Exception('Некорректная версия структурных данных', -40);
             }
-        
+    
+            require_once __DIR__ . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'telemetry_flex_v11.php';
+    
             $binary = '';
             $size = 1;
         
@@ -567,7 +567,7 @@
                 
                     if ($buf === false)
                     {
-                        throw new Exception('Функция unpack вернула ошибку на параметре ' . telemetry_flex_v11::$_telemetry_values[$j][1] . ' (' . telemetry_flex_v10::$_telemetry_values[$i][0] . ')');
+                        throw new Exception('Функция unpack вернула ошибку на параметре ' . telemetry_flex_v11::$_telemetry_values[$j][1] . ' (' . telemetry_flex_v11::$_telemetry_values[$i][0] . ')');
                     }
                 
                     $method = 'set' . ucfirst(str_replace('_', '', telemetry_flex_v11::$_telemetry_values[$j][1]));
@@ -717,6 +717,21 @@
             $bitfield = '';
             $z = 0;
             $enabled = [];
+            if ($this->getStructVersion() == self::STRUCT_VERSION10)
+            {
+                require_once __DIR__ . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'telemetry_flex_v10.php';
+                $telemetry_values = telemetry_flex_v10::$_telemetry_values;
+            }
+            elseif ($this->getStructVersion() == self::STRUCT_VERSION11)
+            {
+                require_once __DIR__ . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'telemetry_flex_v11.php';
+                $telemetry_values = telemetry_flex_v11::$_telemetry_values;
+            }
+            else
+            {
+                throw new Exception('Неверная версия структуры битфилда');
+            }
+
             foreach($bitfield_temp as $byte)
             {
                 $bit = sprintf( "%08d", decbin($byte));
@@ -726,7 +741,7 @@
                     $bitfield .= $bit[$j];
                     if ($bit[$j] == 1)
                     {
-                        $enabled[] = telemetry_flex_v10::$_telemetry_values[$z][1];
+                        $enabled[] = $telemetry_values[$z][1];
                     }
 
                     if (++$z >= $data_size)
