@@ -820,8 +820,8 @@ abstract class ntcb
             }
             elseif ($version == ntcb_flex::STRUCT_VERSION11)
             {
-                //require_once __DIR__ . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'export' . DIRECTORY_SEPARATOR . 'mysql_flex_v11.php';
-                //mysql_flex_v11::export($this->getImei(), $telemetry, $prefix);
+                require_once __DIR__ . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'export' . DIRECTORY_SEPARATOR . 'mysql_flex_v11.php';
+                mysql_flex_v11::export($this->getImei(), $telemetry, $prefix);
             }
             else
             {
