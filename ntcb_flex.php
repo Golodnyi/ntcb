@@ -431,8 +431,6 @@
                 throw new Exception('Некорректная версия структурных данных', -40);
             }
     
-            require_once __DIR__ . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'telemetry_flex_v10.php';
-    
             $binary = '';
             $size = 1;
     
@@ -515,8 +513,6 @@
             {
                 throw new Exception('Некорректная версия структурных данных', -40);
             }
-    
-            require_once __DIR__ . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'telemetry_flex_v11.php';
     
             $binary = '';
             $size = 1;
