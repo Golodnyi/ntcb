@@ -170,6 +170,9 @@ abstract class ntcb
             throw new Exception('IMEI отсутсвует в теле запроса', -20);
         }
 
+        /**
+         * читаем с 4-го байта, т.к. после префикса идет двоеточие, которое нам не интересно.
+         */
         $buffer = substr($this->getBody(), self::PREF_IMEI_LEN + 1, self::IMEI_LEN);
 
         try
