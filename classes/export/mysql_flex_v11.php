@@ -62,7 +62,7 @@ class mysql_flex_v11
                     INSERT INTO telemetry_events
                         (`IMEI`, `reqType`, `numPage`, `Code`, `Module1GSM`, `Module1USB`, `Module1Watch`, `Module1SIM`, `Module1Network`, `Module1Roaming`, `Module1Engine`, `Time`, `GSM`, `LastTime`, `Lat`, `Lon`, `Alt`, `Course`, `Mileage`, `CAN_EngineTurns`, `CAN_Temp`, `CAN_EngineLoad`, `CAN_Speed`, `CAN_AxleLoad1`, `CAN_AxleLoad2`, `CAN_AxleLoad3`, `CAN_AxleLoad4`, `CAN_AxleLoad5`, `StateU_Ain1`, `StateU_Ain2`, `StateU_Ain3`, `StateInImp2`, `Temp1`, `Temp2`, `Speed`, `Frequency1`, `Motochas`, `Power`, `Reserv`, `ATemp1`, `ATemp2`, `ATemp3`, `ATemp4`, `ATemp5`, `ATemp6`, `ATemp7`, `ATemp8`, `ATemp9`, `ATemp10`, `ATemp11`, `ATemp12`, `ATemp13`, `ATemp14`, `ATemp15`, `ATemp16`)
                     VALUES (
-                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     ');
             
                 $stmt->bindValue(1, $imei, PDO::PARAM_INT);
@@ -119,7 +119,7 @@ class mysql_flex_v11
                 $stmt->bindValue(52, $t->getATemp13(), PDO::PARAM_INT);
                 $stmt->bindValue(53, $t->getATemp14(), PDO::PARAM_INT);
                 $stmt->bindValue(54, $t->getATemp15(), PDO::PARAM_INT);
-                $stmt->bindValue(66, $t->getATemp16(), PDO::PARAM_INT);
+                $stmt->bindValue(55, $t->getATemp16(), PDO::PARAM_INT);
             
                 $insert = $stmt->execute();
             } catch (PDOException $e)
