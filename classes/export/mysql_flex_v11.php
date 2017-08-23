@@ -60,9 +60,9 @@ class mysql_flex_v11
             {
                 $stmt = $db->prepare('
                     INSERT INTO telemetry_events
-                        (`IMEI`, `reqType`, `numPage`, `Code`, `Module1GSM`, `Module1USB`, `Module1Watch`, `Module1SIM`, `Module1Network`, `Module1Roaming`, `Module1Engine`, `Time`, `GSM`, `LastTime`, `Lat`, `Lon`, `Alt`, `Course`, `Mileage`, `CAN_EngineTurns`, `CAN_Temp`, `CAN_EngineLoad`, `CAN_Speed`, `CAN_AxleLoad1`, `CAN_AxleLoad2`, `CAN_AxleLoad3`, `CAN_AxleLoad4`, `CAN_AxleLoad5`, `StateU_Ain1`, `StateU_Ain2`, `StateU_Ain3`, `StateInImp2`, `Temp1`, `Temp2`, `Speed`, `Frequency1`, `Motochas`, `Power`, `Reserv`, `ATemp1`, `ATemp2`, `ATemp3`, `ATemp4`, `ATemp5`, `ATemp6`, `ATemp7`, `ATemp8`, `ATemp9`, `ATemp10`, `ATemp11`, `ATemp12`, `ATemp13`, `ATemp14`, `ATemp15`, `ATemp16`)
+                        (`IMEI`, `reqType`, `numPage`, `Code`, `Module1GSM`, `Module1USB`, `Module1Watch`, `Module1SIM`, `Module1Network`, `Module1Roaming`, `Module1Engine`, `Time`, `GSM`, `LastTime`, `Lat`, `Lon`, `Alt`, `Course`, `Mileage`, `CAN_EngineTurns`, `CAN_Temp`, `CAN_EngineLoad`, `CAN_Speed`, `CAN_AxleLoad1`, `CAN_AxleLoad2`, `CAN_AxleLoad3`, `CAN_AxleLoad4`, `CAN_AxleLoad5`, `StateU_Ain1`, `StateU_Ain2`, `StateU_Ain3`, `StateInImp2`, `Temp1`, `Temp2`, `Temp3`, `Speed`, `Frequency1`, `Motochas`, `Power`, `Reserv`, `ATemp1`, `ATemp2`, `ATemp3`, `ATemp4`, `ATemp5`, `ATemp6`, `ATemp7`, `ATemp8`, `ATemp9`, `ATemp10`, `ATemp11`, `ATemp12`, `ATemp13`, `ATemp14`, `ATemp15`, `ATemp16`)
                     VALUES (
-                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     ');
             
                 $stmt->bindValue(1, $imei, PDO::PARAM_INT);
@@ -99,27 +99,28 @@ class mysql_flex_v11
                 $stmt->bindValue(32, $t->getStateInImp1(), PDO::PARAM_INT);
                 $stmt->bindValue(33, $t->getTemp1(), PDO::PARAM_INT);
                 $stmt->bindValue(34, $t->getTemp2(), PDO::PARAM_INT);
-                $stmt->bindValue(35, $t->getSpeed(), PDO::PARAM_INT);
-                $stmt->bindValue(36, $t->getFrequency1(), PDO::PARAM_INT);
-                $stmt->bindValue(37, $t->getMotochas(), PDO::PARAM_INT);
-                $stmt->bindValue(38, $t->getPower(), PDO::PARAM_INT);
-                $stmt->bindValue(39, $t->getReserv(), PDO::PARAM_INT);
-                $stmt->bindValue(40, $t->getATemp1(), PDO::PARAM_INT);
-                $stmt->bindValue(41, $t->getATemp2(), PDO::PARAM_INT);
-                $stmt->bindValue(42, $t->getATemp3(), PDO::PARAM_INT);
-                $stmt->bindValue(43, $t->getATemp4(), PDO::PARAM_INT);
-                $stmt->bindValue(44, $t->getATemp5(), PDO::PARAM_INT);
-                $stmt->bindValue(45, $t->getATemp6(), PDO::PARAM_INT);
-                $stmt->bindValue(46, $t->getATemp7(), PDO::PARAM_INT);
-                $stmt->bindValue(47, $t->getATemp8(), PDO::PARAM_INT);
-                $stmt->bindValue(48, $t->getATemp9(), PDO::PARAM_INT);
-                $stmt->bindValue(49, $t->getATemp10(), PDO::PARAM_INT);
-                $stmt->bindValue(50, $t->getATemp11(), PDO::PARAM_INT);
-                $stmt->bindValue(51, $t->getATemp12(), PDO::PARAM_INT);
-                $stmt->bindValue(52, $t->getATemp13(), PDO::PARAM_INT);
-                $stmt->bindValue(53, $t->getATemp14(), PDO::PARAM_INT);
-                $stmt->bindValue(54, $t->getATemp15(), PDO::PARAM_INT);
-                $stmt->bindValue(55, $t->getATemp16(), PDO::PARAM_INT);
+                $stmt->bindValue(35, $t->getTemp3(), PDO::PARAM_INT);
+                $stmt->bindValue(36, $t->getSpeed(), PDO::PARAM_INT);
+                $stmt->bindValue(37, $t->getFrequency1(), PDO::PARAM_INT);
+                $stmt->bindValue(38, $t->getMotochas(), PDO::PARAM_INT);
+                $stmt->bindValue(39, $t->getPower(), PDO::PARAM_INT);
+                $stmt->bindValue(40, $t->getReserv(), PDO::PARAM_INT);
+                $stmt->bindValue(41, $t->getATemp1(), PDO::PARAM_INT);
+                $stmt->bindValue(42, $t->getATemp2(), PDO::PARAM_INT);
+                $stmt->bindValue(43, $t->getATemp3(), PDO::PARAM_INT);
+                $stmt->bindValue(44, $t->getATemp4(), PDO::PARAM_INT);
+                $stmt->bindValue(45, $t->getATemp5(), PDO::PARAM_INT);
+                $stmt->bindValue(46, $t->getATemp6(), PDO::PARAM_INT);
+                $stmt->bindValue(47, $t->getATemp7(), PDO::PARAM_INT);
+                $stmt->bindValue(48, $t->getATemp8(), PDO::PARAM_INT);
+                $stmt->bindValue(49, $t->getATemp9(), PDO::PARAM_INT);
+                $stmt->bindValue(50, $t->getATemp10(), PDO::PARAM_INT);
+                $stmt->bindValue(51, $t->getATemp11(), PDO::PARAM_INT);
+                $stmt->bindValue(52, $t->getATemp12(), PDO::PARAM_INT);
+                $stmt->bindValue(53, $t->getATemp13(), PDO::PARAM_INT);
+                $stmt->bindValue(54, $t->getATemp14(), PDO::PARAM_INT);
+                $stmt->bindValue(55, $t->getATemp15(), PDO::PARAM_INT);
+                $stmt->bindValue(56, $t->getATemp16(), PDO::PARAM_INT);
             
                 $insert = $stmt->execute();
             } catch (PDOException $e)
