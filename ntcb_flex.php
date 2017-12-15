@@ -706,6 +706,8 @@
             {
                 throw new Exception('Отправили ' . $send . ' байт, должны были отправить ' . strlen($binary) . ' байт', - 36);
             }
+
+            $this->log('Протокол согласован');
         }
 
         private function getBitfieldFromData($bitfield_temp, $data_size)
