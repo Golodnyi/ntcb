@@ -773,7 +773,7 @@
         {
             if ($prefix != self::MATCHING_PROTOCOLS_VAL)
             {
-                throw new Exception('Некорректный префикс согласования протоколов', -32);
+                throw new Exception('Некорректный префикс согласования протоколов, ожидали ' . self::MATCHING_PROTOCOLS_VAL . ', получили:' . $prefix, -32);
             }
 
             $this->_prefix = $prefix;
