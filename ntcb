@@ -2,7 +2,7 @@
 
 <?php
 
-const USER = 'ftp';
+const USER = 'server';
 
 function status()
 {
