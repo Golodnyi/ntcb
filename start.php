@@ -7,6 +7,7 @@
     date_default_timezone_set('Europe/Moscow');
 
     require_once __DIR__ . DIRECTORY_SEPARATOR . 'ntcb_flex.php';
+    require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
     $port = 9000;
 
@@ -14,6 +15,9 @@
     {
         $port = $argv[1];
     }
+
+    $dotenv = new Dotenv\Dotenv(__DIR__);
+    $dotenv->load();
 
     try
     {

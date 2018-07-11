@@ -8,5 +8,9 @@
       "name": "Golodnyi",
       "email": "ochen@golodnyi.ru"
     }
-  ]
+  ],
+  "require": {
+    "vlucas/phpdotenv": "^2.5",
+    "squizlabs/php_codesniffer": "*"
+  }
 }
