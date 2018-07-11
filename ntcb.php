@@ -70,6 +70,15 @@ abstract class ntcb
         set_time_limit(0);
         ob_implicit_flush();
 
+        declare(ticks=1);
+        pcntl_signal(SIGINT, function($signo) {
+            if ($this->getSocket()) {
+                socket_close($this->getSocket());
+            }
+            
+            exit(0);
+        });
+
         if (file_exists(__DIR__ . '/run.lock'))
         {
             $file_pid = file_get_contents(__DIR__ . '/run.lock');
@@ -218,7 +227,7 @@ abstract class ntcb
         $this->log('Ожидание подключения...');
         $this->log('==========');
 
-        while (true)
+        while ($this->getSocket() !== null)
         {
             if (($accept = socket_accept($this->getSocket())) === false)
             {

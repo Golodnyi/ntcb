@@ -9,15 +9,10 @@ class mysql_flex_v10
 {
     public static function export($imei, array $telemetry, $prefix = false)
     {
-        $dbhost = "localhost";
-        $dbname = "glonass";
-        $dbuser = "root";
-        $dbpswd = "10ytuhtnzn";
-    
         try
         {
         
-            $db = new PDO("mysql:host=" . $dbhost . ";dbname=" . $dbname, $dbuser, $dbpswd);
+            $db = new PDO("mysql:host=" . $_ENV['DB_HOST'] . ";dbname=" . $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASS']);
             $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
             $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
             $db->setAttribute(PDO::MYSQL_ATTR_INIT_COMMAND, 'SET NAMES UTF8');
