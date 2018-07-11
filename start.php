@@ -4,35 +4,32 @@
  * Date: 05.05.16
  * Time: 12:03
  */
-    date_default_timezone_set('Europe/Moscow');
+date_default_timezone_set('Europe/Moscow');
 
-    require_once __DIR__ . DIRECTORY_SEPARATOR . 'ntcb_flex.php';
-    require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'ntcb_flex.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
-    $port = 9000;
+$port = 9000;
 
-    if (isset($argv[1]) && is_numeric($argv[1]))
-    {
-        $port = $argv[1];
-    }
+if (isset($argv[1]) && is_numeric($argv[1])) {
+    $port = $argv[1];
+}
 
-    $dotenv = new Dotenv\Dotenv(__DIR__);
-    $dotenv->load();
+$dotenv = new Dotenv\Dotenv(__DIR__);
+$dotenv->load();
 
-    try
-    {
-        $ntcb = new ntcb_flex(true);
-        $ntcb->listen('0.0.0.0', $port);
-        $ntcb->run();
-    } catch (Exception $e)
-    {
-        echo '[' . date(DATE_W3C) . '] ' .
-            $e->getMessage() .
-            " [code " . $e->getCode() . "]\n";
+try {
+    $ntcb = new ntcb_flex(true);
+    $ntcb->listen('0.0.0.0', $port);
+    $ntcb->run();
+} catch (Exception $e) {
+    echo '[' . date(DATE_W3C) . '] ' .
+        $e->getMessage() .
+        " [code " . $e->getCode() . "]\n";
 
-        file_put_contents(
-            __DIR__ . DIRECTORY_SEPARATOR . 'ntcb.log',
-            '[' . $e->getCode() . ']' . ' ' . $e->getMessage() . "\n",
-            FILE_APPEND
-        );
-    }
+    file_put_contents(
+        __DIR__ . DIRECTORY_SEPARATOR . 'ntcb.log',
+        '[' . $e->getCode() . ']' . ' ' . $e->getMessage() . "\n",
+        FILE_APPEND
+    );
+}

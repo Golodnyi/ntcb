@@ -1,5 +1,4 @@
 <?php
-
 /**
  * User: golodnyi
  * Date: 04.05.16
@@ -782,7 +781,7 @@ abstract class ntcb
         }
         if ($this->_debug)
         {
-            $output = $output_console = '[' . date('H:i:s') . '] ' . $message . "\n";
+            $output = $output_console = '[' . date('H:i:s') . '][' . number_format(memory_get_usage()/1024, 2) . '] ' . $message . "\n";
 
             echo $output_console;
             file_put_contents($dir . DIRECTORY_SEPARATOR . date('Y-m-d') . '.log', $output, FILE_APPEND);
