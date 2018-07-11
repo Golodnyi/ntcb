@@ -259,7 +259,7 @@
                             }
     
                             $this->log('CRC8 корректный');
-                            $this->export($this->getTelemetry(), $this->getPrefixTelemetry());
+                            $this->export($this->getStructVersion(), $this->getTelemetry(), $this->getPrefixTelemetry());
                             $this->sendConfirmFlex($accept);
                         } else if ($this->getStructVersion() == self::STRUCT_VERSION20)
                         {
@@ -287,7 +287,7 @@
                             }
     
                             $this->log('CRC8 корректный');
-                            $this->export($this->getStructVersion(), $this->getTelemetry());
+                            $this->export($this->getStructVersion(), $this->getTelemetry(), $this->getPrefixTelemetry());
                             $this->sendConfirmFlex($accept, self::TELEMETRY_CURRENT_PREFIX_VAL, false);
                         } else if ($this->getStructVersion() == self::STRUCT_VERSION11)
                         {
@@ -305,7 +305,7 @@
                             }
     
                             $this->log('CRC8 корректный');
-                            $this->export($this->getStructVersion(), $this->getTelemetry());
+                            $this->export($this->getStructVersion(), $this->getTelemetry(), $this->getPrefixTelemetry());
                             $this->sendConfirmFlex($accept, self::TELEMETRY_CURRENT_PREFIX_VAL, false);
                         } else if ($this->getStructVersion() == self::STRUCT_VERSION20)
                         {
