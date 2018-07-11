@@ -706,6 +706,8 @@
             {
                 throw new Exception('Отправили ' . $send . ' байт, должны были отправить ' . strlen($binary) . ' байт', - 36);
             }
+
+            $this->log('Протокол согласован');
         }
 
         private function getBitfieldFromData($bitfield_temp, $data_size)
@@ -771,7 +773,7 @@
         {
             if ($prefix != self::MATCHING_PROTOCOLS_VAL)
             {
-                throw new Exception('Некорректный префикс согласования протоколов', -32);
+                throw new Exception('Некорректный префикс согласования протоколов, ожидали ' . self::MATCHING_PROTOCOLS_VAL . ', получили:' . $prefix, -32);
             }
 
             $this->_prefix = $prefix;
