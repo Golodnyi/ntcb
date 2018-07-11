@@ -48,14 +48,6 @@ class mysql_flex_v11
                 continue;
             }
     
-            $prefix = '~A';
-    
-            if ($t->getStateUAin1() <= 2300)
-            {
-                $prefix = '~T';
-                $t->setCode('65535');
-            }
-            
             try
             {
                 $stmt = $db->prepare('

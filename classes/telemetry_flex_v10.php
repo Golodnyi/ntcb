@@ -151,7 +151,6 @@ class telemetry_flex_v10 {
     
     public function __construct($IMEI)
     {
-        require_once __DIR__ . '/../vendor/phpmailer/phpmailer/PHPMailerAutoload.php';
         $this->IMEI = $IMEI;
     }
 

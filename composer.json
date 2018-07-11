@@ -1,15 +1,12 @@
 {
-  "name": "vendor_name/package_name",
-  "description": "description_text",
+  "name": "Golodnyi/ntcb",
+  "description": "Ntcb flex server",
   "minimum-stability": "stable",
   "license": "proprietary",
   "authors": [
     {
-      "name": "author's name",
-      "email": "email@example.com"
+      "name": "Golodnyi",
+      "email": "ochen@golodnyi.ru"
     }
-  ],
-  "require": {
-    "phpmailer/phpmailer": "v5.2.16"
-  }
+  ]
 }
