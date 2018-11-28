@@ -364,10 +364,17 @@ abstract class ntcb
                 {
                     case 'preamble':
                         $p = '';
-                        foreach (unpack('c4', $buf) as $item)
+                        $prefBinary = unpack('c4', $buf);
+
+                        if (!$prefBinary) {
+                            throw new Exception('Преамбула отсутствует');
+                        }
+
+                        foreach ($prefBinary as $item)
                         {
                             $p .= chr($item);
                         }
+                        
                         $this->setPreamble($p);
                         break;
                     case 'IDr':
