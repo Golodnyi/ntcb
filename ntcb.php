@@ -364,6 +364,11 @@ abstract class ntcb
                 {
                     case 'preamble':
                         $p = '';
+
+                        if (empty($buf)) {
+                            throw new Exception('Преамбула отсутствует');
+                        }
+
                         $prefBinary = unpack('c4', $buf);
 
                         if (!$prefBinary) {
