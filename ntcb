@@ -1,8 +1,7 @@
 #!/usr/bin/php
 
 <?php
-
-const USER = 'server';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
 function status()
 {
@@ -34,7 +33,10 @@ function stop()
 
 function start($port = 9000)
 {
-    shell_exec('sudo -u ' . USER . ' nohup php ' . __DIR__ . DIRECTORY_SEPARATOR . 'start.php ' . $port . ' >> /dev/null &');
+    $dotenv = new Dotenv\Dotenv(__DIR__);
+    $dotenv->load();
+
+    shell_exec('sudo -u ' . $_ENV['LINUX_RUN_USER'] . ' nohup php ' . __DIR__ . DIRECTORY_SEPARATOR . 'start.php ' . $port . ' >> /dev/null &');
 }
 
 if ($argc < 2)
@@ -66,11 +68,6 @@ switch ($argv[1]) {
         echo status();
         start($port);
         echo status();
-        break;
-    case 'update':
-        echo shell_exec('cd ' . __DIR__ . DIRECTORY_SEPARATOR . ' && sudo -u ' . USER . ' git pull');
-        echo shell_exec('cd ' . __DIR__ . DIRECTORY_SEPARATOR . ' && sudo -u ' . USER . ' composer install');
-        echo shell_exec('cd ' . __DIR__ . DIRECTORY_SEPARATOR . ' && sudo -u ' . USER . ' composer update');
         break;
     default:
         echo "Неизвестная команда. Допустимые команды: start [port], stop, reload [port], status, update\n";
